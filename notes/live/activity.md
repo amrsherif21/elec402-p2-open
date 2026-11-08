@@ -499,3 +499,4 @@
 | 2026-11-08 08:38:55 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800b && python3 - <<'EOF' s = open("gen_tree.py").read() old = ''' if last and args.res_budget > 0: cols, nr, rlo = ripple_low(cols, args.res_budget)''' new = ' ...` |
 | 2026-11-08 08:39:04 UTC | Bash | `pkill -f gen_tree.py; cd /home/user/elec402-p2-open/build/cand800b && python3 - <<'EOF' s = open("gen_tree.py").read() old = ''' if not ok: del net.lines[save_lines:]''' new = ''' if not ok or m == 0  ...` |
 | 2026-11-08 08:41:05 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800b && ./run.sh 800 w24r3gt4pr --mode wallace --rawlevels 3 --cuts 2,4 --gp gt --k0 4 --k 4 --bpair --res-budget 0.66 2>&1 \| grep -v "u_mult.[aont][1enw]" \| ta ...` |
+| 2026-11-08 08:43:32 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800b && ./run.sh 800 d24gt4pr --mode dadda --cuts 2,4 --gp gt --k0 4 --k 4 --bpair --res-budget 0.66 2>&1 \| grep -v "u_mult.[aont][1enw]" \| tail -21` |
