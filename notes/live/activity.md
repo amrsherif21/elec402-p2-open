@@ -736,3 +736,6 @@
 | 2026-11-08 18:08:19 UTC | Bash | `git show origin/check-results:results/check_r4-c2-6e26303c4c/scorecard.md \| sed -n '3p;/^\| GPDK/p;/^\| Gate/p'` |
 | 2026-11-08 18:08:35 UTC | Bash | `ls build/r4row/ build/r4wal/ \| head -60; sed -n 1,40p build/r4wal/run.sh` |
 | 2026-11-08 18:10:02 UTC | Bash | `bash build/r4wal/run.sh 800 f8rdp --mode wallace --rawlevels 3 --cuts 2,4 --gp gt --res-budget 0.66 --bpair --k0 8 --k 5 --pair-late 2 --lvl-limit 0.66 --rst-digits 2>&1 \| tail -6; M="RUN=800 RTL_DIR= ...` |
+| 2026-11-08 18:10:23 UTC | Bash | `SP=/tmp/claude-0/-home-user-elec402-p2-open/6503db16-82a0-5ee1-9a2e-83eb2b44d2ca/scratchpad && cd $SP/wt_c400 && git checkout -q -B cand/r4wp origin/claude/focused-dijkstra-3f079i && cp /home/user/ele ...` |
+| 2026-11-08 18:11:03 UTC | Bash | `d=build/r4row/c2a_drst_only; M="RUN=800 RTL_DIR=$d/rtl BUILD=$d REP=$d/rep NETLIST=$d/map.v SDF=$d/map.sdf"; ls $d/map.v >/dev/null && make -s timing $M 2>&1 \| grep -E "^ALL PASS\|TIMING FAIL" \| head - ...` |
+| 2026-11-08 18:11:08 UTC | Bash | `until git fetch -q origin check-results 2>/dev/null && [ $(git ls-tree --name-only origin/check-results results/ \| grep -c "r4-wal\\|r4-c2a") -ge 3 ]; do sleep 30; done; for d in $(git ls-tree --name-o ...` |
