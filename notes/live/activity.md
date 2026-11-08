@@ -484,3 +484,5 @@
 | 2026-11-08 08:24:59 UTC | Bash | `sed -i 's/^read_liberty/set period $::env(PERIOD)\nread_liberty/' build/cand800b/path.tcl && docker run --rm -v "$PWD:$PWD" -w "$PWD" -e LIB=tech/NangateOpenCellLibrary_slow.lib -e NETLIST=build/cand8 ...` |
 | 2026-11-08 08:25:28 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800b && grep -n "for bi, (l, h) in enumerate(blocks):" -A 8 gen_tree.py \| sed -n 1,60p; grep -n "rG = \\|rP = \\|Gc, _ = ks(rG, rP)\\|cin = \[ZERO\] + Gc" gen_tree ...` |
 | 2026-11-08 08:26:08 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800b && python3 - <<'EOF' s = open("gen_tree.py").read() s = s.replace('ap.add_argument("--stats"', 'ap.add_argument("--bpair", action="store_true", help="first ...` |
+| 2026-11-08 08:26:53 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800b && sed -i 's/ rP = \[mA\[BP\[bi\]\] if bi in BP else ZERO for bi in range(nb - 1)\]/ rP = [mA[BP[bi]] if bi in BP and bi >= (2 if args.bpair else 1) else Z ...` |
+| 2026-11-08 08:27:17 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800b && grep -n "last = maxh(cols) <= 2" -B2 -A12 gen_tree.py` |
