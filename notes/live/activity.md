@@ -107,3 +107,6 @@
 | 2026-11-08 03:00:35 UTC | Bash | `bash submission/scripts/mutate.sh 400 2>&1 \| tail -13` |
 | 2026-11-08 03:00:42 UTC | Bash | `du -sh submission/outputs/* submission/syn_reports/400/* \| sort -h \| tail -8; git status --short \| head -30` |
 | 2026-11-08 03:01:19 UTC | Write | `/home/user/elec402-p2-open/notes/WORKLOG.md` |
+| 2026-11-08 03:01:33 UTC | Bash | `git add .gitignore Makefile submission/scripts submission/syn_reports/tool_versions.txt notes/WORKLOG.md && git commit -q -m "Checkpoint 1: toolchain (install script, make targets, Nangate45 slow corn ...` |
+| 2026-11-08 03:02:17 UTC | Bash | `(PRE=1 build/exp/run.sh e800a 1.25 0 1111 1 1000 0 kogge-stone & PRE=1 build/exp/run.sh e800b 1.25 0 0101 1 1000 0 kogge-stone & PRE=1 build/exp/run.sh e800c 1.25 0 1010 1 1000 0 kogge-stone & wait) 2 ...` |
+| 2026-11-08 03:02:40 UTC | Bash | `docker run --rm openroad/orfs:26Q4-365-g898576f04 bash -c 'echo "buffer -h; upsize -h" \| /OpenROAD-flow-scripts/tools/install/yosys/bin/yosys-abc 2>&1 \| head -40; ls /OpenROAD-flow-scripts/flow/platfo ...` |
