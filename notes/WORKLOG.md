@@ -77,3 +77,85 @@ Times are UTC on 2026-11-08. Each entry gives what was done, why, the commands a
 In the drain window the internal power of the 158 flip-flops' clock pins dominates. Operand isolation (zeros loaded when idle) keeps the datapath quiet.
 
 **03:28 Mutation test of the RTL checker (`submission/scripts/mutate.sh 400`).** 11 one-line mutants of the real RTL, covering ready/valid off-by-ones, missing resets, ignored enables and wrong data source. All 11 were killed (`submission/syn_reports/400/mutation.log`).
+
+**03:30 check/400 pushed** (`git push origin HEAD:refs/heads/check/400`, commit 60ed005). Work continued without waiting. Note: `rtl_800/` was still empty at that point, so the 800 part of that scorecard is expected to fail.
+
+## Checkpoint 3: 800 MHz
+
+**03:32 First 800 MHz probes** (`build/exp/run.sh`, mult_pipe configurations at 1.25 ns): WNS between −1.1 and −2.8 ns. The critical path was the `RST_N` input: one DFF_X1-modelled driver into 90 to 174 synchronous-reset gates, 1.4 to 2.6 ns. The Resizer cannot buffer it without placement (RSZ-0075 makeBufferedNet failed), and ABC's `buffer -p` changed nothing (the results were bit-identical).
+- **Fix in resize.tcl:** a throw-away floorplan plus global placement, made only so the Resizer can insert buffers. Timing inside the Resizer stays on the wire-load model (no `estimate_parasitics`), so it is the same view as sign-off STA. Result at 800 MHz: −1.24 → −0.73 ns. At 400 MHz the result is identical (+0.152 ns, 2387 µm²).
+
+**03:40 Parallel candidate evaluations (two subagents) while I iterated on the Booth/CSA candidate:**
+- *(B) Behavioural `*` + R extra ranks + ABC retiming (`build/cand_retime/`):*
+  - Best result: WNS −0.20 ns at R=8, about 6.1k µm². Retiming in ABC uses unit delays, so the result saturates near −0.2 ns.
+  - Plain retiming breaks F14: 319 of 432 flops had no reset after retiming, and ABC even moved registers onto RST_N. Keeping F14 needs a non-standard strip/re-add-reset step.
+  - Sign-off risk: the RTL alone is a one-stage multiplier followed by delay ranks, which GPDK045 sign-off would not retime. **Rejected.**
+  - Its SAT-based F14 netlist check was adopted as `make f14`.
+- *(C) Baugh-Wooley + Dadda, hand cut:* result pending at the time of writing; see below.
+- *(A) Booth/CSA mult_pipe, my own:* iterations below.
+
+**Booth/CSA iterations at 1.25 ns** (each fix found from the STA critical path; area is post-Resizer):
+
+| step | change | WNS ns | area µm² |
+|---|---|---|---|
+| e800b | PRE_ENC, CS after L2 & L4, CPA split 16/16 | −1.136 | 3655 |
+| g800b | + placement-backed buffering | −0.729 | 4182 |
+| i800a | + SEL_REG (register after PP select), all 4 CSA levels registered, 2-stage carry-select adder | −0.610 | 5413 |
+| k800a | + ABC maps with a Liberty copy in which slow stacked cells are `dont_use` (`lib_dont_use.py`; `abc -dont_use` did not reach ABC's SCL) | −0.440 | 5573 |
+| m800b | carry-select adder rewritten with explicit in-block Kogge-Stone prefix computing both carry-in sums at once (Yosys had built `x+y+1` as two chained adders); 4-bit blocks | −0.159 | 5853 |
+| n800b | separate write and read pointers (the shared pointer drove 2 ports, 47 fF) | −0.090 | 5965 |
+| r800b | port-only copies of RDY_*, addresses and EN_writeMem, stored inverted so Yosys does not merge them with the internal copies (`(* keep *)` did not prevent merging) | −0.014 | 5786 |
+| t800b | block-carry prefix in stage B instead of a ripple | −0.034 | 5933 |
+| u800b | MUX2 also dont_use (MUX2_X1 0.24 ns) | +0.051 | 5893 |
+| v800b | GP4: L4 register holds generate/propagate of the final rows, moving the adder's first gate level into the L4 stage (0.36 ns slack there) | +0.136 | 5824 |
+| x800 | ABC output load 23.5 → 1 fF: ABC sees every flop D pin as a primary output and had buffered each as if it drove the 23.5 fF port load | +0.150 | 5211 |
+| x800_1010 | CS registers only after L2 and L4 (473 flops instead of 577+) | −0.004 | 4431 |
+| y800_a | same, GP4 = 0 | +0.023 | 4465 |
+| z800_1011 | CS after L1, L2, L4 | −0.004 | 4973 |
+| **z800_1101** | **CS after L1, L3, L4 (L2+L3 share a stage: L3 is a single 3:2 on 3 of 4 rows)** | **+0.075** | **4755** |
+
+ABC results vary by about ±0.1–0.2 ns with small netlist-structure changes. For example, the 400 MHz RTL with the newer mult_pipe.sv (logically identical for its parameters) maps to −0.037 ns instead of +0.152 ns, so rtl_400 keeps its verified mult_pipe.sv. Each final configuration is deterministic, and the knobs are fixed per RUN in the Makefile (ABC_DRIVER, ABC_LOAD, DONT_USE).
+
+**04:20 rtl_800 = z800_1101** (latency 7, 577 flops; config in `submission/rtl_800/mkMultBuff.sv`). It meets the 62 ps target at the lowest area of the passing variants. The 1111 variant has more slack (+0.150 ns) but costs +456 µm² and about +0.34 mW of vectorless power.
+
+| step | result |
+|---|---|
+| `make check RUN=800` | ALL PASS, latency 7 |
+| `make synth RUN=800` | WNS +0.075 ns, hold +0.041 ns, 4755.0 µm², vectorless 2727.6 µW |
+| `make sim RUN=800` | ALL PASS |
+| `make timing RUN=800` | ALL PASS, 384 products |
+| `make power RUN=800` | run 3073 µW, fill window 5210 µW, drain window 2536 µW |
+| `make f14 RUN=400` | 166/166 flops reset-gated (SAT) |
+| `make f14 RUN=800` | 577/577 flops reset-gated (SAT) |
+
+`make synth RUN=400` with the final scripts and the 400 knobs reproduces the committed netlist exactly: +0.152 ns, 2386.552 µm², and `git status` shows the netlist and SDF unchanged.
+
+**04:35 Candidate (C), Baugh-Wooley + Dadda (subagent, `build/cand_dadda/`).**
+- *Best version (v6):* WNS +0.150 ns, hold +0.076 ns, 5278 µm², 616 flops, latency 8, check/sim ALL PASS.
+- *Power (µW):*
+
+  | case | (C) Dadda v6 | (A) Booth/CSA |
+  |---|---|---|
+  | whole run | 3279 | 3073 |
+  | fill window | 5725 | 5210 |
+  | drain window | 2702 | 2536 |
+  | vectorless | 2820 | 2728 |
+
+- *Control:* it independently found the same control problem (ptr/RDY port load) and solved it with inverted twin registers and split 3-bit counters.
+- *Two smaller variants it rejected:* v7 drops the product register (writeMem_val comes from logic); v8 puts the PP/tree logic on the input path (0.97 ns), which is risky for the sign-off testbench.
+
+**Decision for 800 MHz: (A) Booth/CSA `z800_1101`.**
+- Both (A) and (C) meet the 62 ps target. (A) has 10 % less area (4755 vs 5278 µm²) and 6–9 % less power in every case, which SPEC Section 5 ranks after timing and area.
+- (C) has twice the slack margin (150 ps vs 75 ps), but the target is met by both.
+- (B), retiming, fails timing (−0.20 ns) and needs reset re-insertion; rejected.
+
+**04:40 Mutation test at 800 MHz** (`submission/scripts/mutate.sh 800`): 13/13 mutants killed. The extra mutants vs 400 are EN_writeMem one cycle early, the inverted port copy not reset, and a carry-select carry-in error in mult_pipe.
+
+**04:45 Waveform figures** (`submission/scripts/waves/waves.sh 400|800`). The same gate-level checker drives the RTL and the SDF-annotated netlist, so the waves line up. GTKWave 3.3.116 runs under `xvfb-run` with `-S` Tcl scripts (`/File/Grab_To_File`), light colours set by `--rcvar`, and ImageMagick crops. Windows: first writes, transition to drain, end of drain, and a 3-cycle zoom.
+
+Gate-level only effects visible in the zoom:
+- clock-to-output delay of 0.45–0.7 ns on the registered outputs at 400 MHz;
+- a short intermediate value on writeMem_val while bits with different clk→Q settle;
+- EN_readMem following EN_blockRead (driven 20 ps after the edge) through one AND gate.
+
+RDY_mult is a register output in both designs, so it shows no glitch.

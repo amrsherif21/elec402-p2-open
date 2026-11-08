@@ -1,0 +1,374 @@
+OpenROAD unknown 
+Features included (+) or not (-): -GPU +GUI
+This program is licensed under the BSD-3 license. See the LICENSE file for details.
+Components of this program may be licensed under more restrictive licenses which must be honored.
+[INFO ODB-0227] LEF file: /OpenROAD-flow-scripts/flow/platforms/nangate45/lef/../lef/NangateOpenCellLibrary.tech.lef, created 22 layers, 27 vias
+[INFO ODB-0227] LEF file: /OpenROAD-flow-scripts/flow/platforms/nangate45/lef/../lef/NangateOpenCellLibrary.macro.mod.lef, created 135 library cells
+[WARNING ORD-2056] The following 1 liberty cell(s) do not have LEF masters and will be marked as dont-use:
+  WELLTAP_X1
+== before: -0.014 ns
+[INFO IFP-0107] Defining die area using utilization: 40.00% and aspect ratio: 1.
+[WARNING IFP-0028] Core area lower left (2.000, 2.000) snapped to (2.090, 2.800).
+[INFO IFP-0001] Added 76 rows of 568 site FreePDK45_38x28_10R_NP_162NW_34O.
+[INFO IFP-0100] Die BBox:  (  0.000  0.000 ) ( 112.020 112.020 ) um
+[INFO IFP-0101] Core BBox: (  2.090  2.800 ) ( 110.010 109.200 ) um
+[INFO IFP-0102] Core area:                        11482.688 um^2
+[INFO IFP-0103] Total instances area:              4667.236 um^2
+[INFO IFP-0104] Effective utilization:                0.406
+[INFO IFP-0105] Number of instances:                   2411
+[WARNING PPL-0113] -random and -random_seed are obsolete. Skipping random pin placement.
+[INFO GPL-0001] ---- Initialize GPL Main Data Structures
+[INFO GPL-0002] DBU: 2000
+[INFO GPL-0003] SiteSize: (  0.190  1.400 ) um
+[INFO GPL-0004] CoreBBox: (  2.090  2.800 ) ( 110.010 109.200 ) um
+[INFO GPL-0016] Core area:                   11482.688 um^2
+[INFO GPL-0036] Movable instances area:       4667.236 um^2
+[INFO GPL-0037] Total instances area:         4667.236 um^2
+[INFO GPL-0035] Pin density area adjust:       282.094 um^2
+[INFO GPL-0032] ---- Initialize Region: Top-level
+[INFO GPL-0006] Number of instances:              2411
+[INFO GPL-0007] Movable instances:                2411
+[INFO GPL-0008] Fixed instances:                     0
+[INFO GPL-0009] Dummy instances:                     0
+[INFO GPL-0010] Number of nets:                   3056
+[INFO GPL-0011] Number of pins:                   8172
+[INFO GPL-0012] Die BBox:       (  0.000  0.000 ) ( 112.020 112.020 ) um
+[INFO GPL-0013] Placement BBox: (  2.090  2.800 ) ( 110.010 109.200 ) um
+[INFO GPL-0014] Region name: top-level.
+[INFO GPL-0015] Region area:                 11482.688 um^2
+[INFO GPL-0017] Fixed instances area:            0.000 um^2
+[INFO GPL-0018] Movable instances area:       4949.330 um^2
+[INFO GPL-0019] Utilization:                    43.103 %
+[INFO GPL-0020] Standard cells area:          4949.330 um^2
+[INFO GPL-0021] Large instances area:            0.000 um^2
+[INFO GPL-0005] ---- Execute Conjugate Gradient Initial Placement.
+[INFO GPL-0051] Source of initial instance position counters:
+	Odb location = 0	Core center = 2411	Region center = 0
+[INFO GPL-0033] ---- Initialize Nesterov Region: Top-level
+[INFO GPL-0023] Placement target density:       0.6000
+[INFO GPL-0024] Movable insts average area:      2.053 um^2
+[INFO GPL-0025] Ideal bin area:                  3.421 um^2
+[INFO GPL-0026] Ideal bin count:                  3356
+[INFO GPL-0027] Total bin area:              11482.688 um^2
+[INFO GPL-0028] Bin count (X, Y):          32 ,     32
+[INFO GPL-0029] Bin size (W * H):       3.373 *  3.325 um
+[INFO GPL-0030] Number of bins:                   1024
+[INFO GPL-0084] ---- Execute Nesterov Global Placement.
+[INFO GPL-0031] HPWL: Half-Perimeter Wirelength
+Iteration | Overflow |     HPWL (um) |  HPWL(%) |   Penalty | Group
+---------------------------------------------------------------
+        0 |   0.9944 |  2.315470e+03 |   +0.00% |  6.79e-15 |      
+       10 |   0.9890 |  1.613304e+03 |  -30.32% |  1.11e-14 |      
+       20 |   0.9889 |  1.339965e+03 |  -16.94% |  1.80e-14 |      
+       30 |   0.9848 |  1.167193e+03 |  -12.89% |  2.94e-14 |      
+       40 |   0.9835 |  1.087591e+03 |   -6.82% |  4.78e-14 |      
+       50 |   0.9835 |  1.067244e+03 |   -1.87% |  7.79e-14 |      
+       60 |   0.9835 |  1.069637e+03 |   +0.22% |  1.27e-13 |      
+       70 |   0.9835 |  1.079958e+03 |   +0.96% |  2.07e-13 |      
+       80 |   0.9835 |  1.081708e+03 |   +0.16% |  3.37e-13 |      
+       90 |   0.9835 |  1.067364e+03 |   -1.33% |  5.48e-13 |      
+      100 |   0.9835 |  1.046288e+03 |   -1.97% |  8.93e-13 |      
+      110 |   0.9835 |  1.044911e+03 |   -0.13% |  1.45e-12 |      
+      120 |   0.9794 |  1.096572e+03 |   +4.94% |  2.37e-12 |      
+      130 |   0.9781 |  1.239273e+03 |  +13.01% |  3.86e-12 |      
+      140 |   0.9743 |  1.536570e+03 |  +23.99% |  6.29e-12 |      
+      150 |   0.9710 |  2.019320e+03 |  +31.42% |  1.02e-11 |      
+      160 |   0.9624 |  2.676315e+03 |  +32.54% |  1.67e-11 |      
+      170 |   0.9352 |  3.629492e+03 |  +35.62% |  2.72e-11 |      
+      180 |   0.8874 |  5.173681e+03 |  +42.55% |  4.42e-11 |      
+      190 |   0.8346 |  6.451717e+03 |  +24.70% |  7.20e-11 |      
+      200 |   0.8132 |  6.931371e+03 |   +7.43% |  1.17e-10 |      
+      210 |   0.7713 |  8.105797e+03 |  +16.94% |  1.91e-10 |      
+      220 |   0.7105 |  9.474455e+03 |  +16.88% |  3.11e-10 |      
+      230 |   0.6771 |  1.003375e+04 |   +5.90% |  5.07e-10 |      
+      240 |   0.6289 |  1.066247e+04 |   +6.27% |  8.25e-10 |      
+      250 |   0.5733 |  1.169204e+04 |   +9.66% |  1.34e-09 |      
+      260 |   0.5224 |  1.256585e+04 |   +7.47% |  2.19e-09 |      
+      270 |   0.4687 |  1.329659e+04 |   +5.82% |  3.56e-09 |      
+      280 |   0.4128 |  1.397521e+04 |   +5.10% |  5.80e-09 |      
+      290 |   0.3596 |  1.457204e+04 |   +4.27% |  9.45e-09 |      
+      300 |   0.3079 |  1.499987e+04 |   +2.94% |  1.44e-08 |      
+      310 |   0.2752 |  1.522941e+04 |   +1.53% |  2.11e-08 |      
+      320 |   0.2376 |  1.550321e+04 |   +1.80% |  3.11e-08 |      
+      330 |   0.2041 |  1.560469e+04 |   +0.65% |  4.59e-08 |      
+      340 |   0.1785 |  1.572068e+04 |   +0.74% |  6.76e-08 |      
+      350 |   0.1484 |  1.571988e+04 |   -0.01% |  9.96e-08 |      
+      360 |   0.1351 |  1.570432e+04 |   -0.10% |  1.47e-07 |      
+      370 |   0.1124 |  1.569037e+04 |   -0.09% |  2.16e-07 |      
+      377 |   0.0993 |  1.567825e+04 |          |  2.95e-07 |      
+---------------------------------------------------------------
+[INFO GPL-1001] Global placement finished at iteration 377
+[INFO GPL-1002] Placed Cell Area             4949.3301
+[INFO GPL-1003] Available Free Area         11482.6880
+[INFO GPL-1004] Minimum Feasible Density        0.4400 (cell_area / free_area)
+[INFO GPL-1006]   Suggested Target Densities:
+[INFO GPL-1007]     - For 90% usage of free space: 0.4789
+[INFO GPL-1008]     - For 80% usage of free space: 0.5388
+[INFO GPL-1009]     - For 50% usage of free space: 0.8621
+[INFO GPL-1014] Final placement area: 4949.33 (+0.00%)
+[INFO GPL-1018] Final HPWL (um): 15731.84
+[WARNING EST-0027] no estimated parasitics. Using wire load models.
+Iteration |   Area    | Resized | Buffers | Nets repaired | Remaining
+---------------------------------------------------------------------
+        0 |     +0.0% |       0 |       0 |             0 |      3056
+    final |     +0.0% |       0 |       0 |             0 |         0
+---------------------------------------------------------------------
+[INFO RSZ-0504] Runtime: 4.42s
+[WARNING RSZ-3244] -effort has no effect unless -phases lists PARALLEL_EVAL.
+[WARNING EST-0027] no estimated parasitics. Using wire load models.
+[INFO RSZ-0100] Repair move sequence: UnbufferMove SizeUpMove SwapPinsMove BufferMove CloneMove SplitLoadMove 
+[INFO RSZ-0094] Found 184 endpoints with setup violations.
+[INFO RSZ-0099] Repairing 184 out of 184 (100.00%) violating endpoints...
+   Iter   | Removed | Resized | Inserted | Cloned |  Pin  |   Area   |    WNS   |    TNS     |  Viol  |  Worst
+          | Buffers |  Gates  | Buffers  |  Gates | Swaps |          |          |            | Endpts | Endpoint
+------------------------------------------------------------------------------------------------------------------------------
+       0* |       0 |       0 |        0 |      0 |     0 |    +0.0% |   -0.014 |       -0.0 |    184 | _4789_/D
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4404_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3888_/Z
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4404_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3889_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3888_/Z
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4404_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3889_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3888_/Z
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3891_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4404_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4404_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4404_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3889_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3888_/Z
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3891_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4372_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4374_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4375_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4376_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4377_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4378_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4404_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3889_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3888_/Z
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3891_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4404_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3889_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4404_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4404_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3889_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4003_/Z
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3888_/Z
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4004_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4404_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3889_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3888_/Z
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3891_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4761_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4372_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3863_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3995_/Z
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4374_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3843_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3989_/Z
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4375_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3833_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3986_/Z
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4376_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3823_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3983_/Z
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4377_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3810_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3979_/Z
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4378_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3800_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3971_/Z
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4404_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3889_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4003_/Z
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3888_/Z
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4004_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4005_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4404_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3889_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4003_/Z
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3888_/Z
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4004_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4005_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4795_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4795_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4795_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4795_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3144_/Z
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4372_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3995_/Z
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3863_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4406_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3995_/Z
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3863_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3862_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3996_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3997_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4374_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3989_/Z
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3843_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4408_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3989_/Z
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3843_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3842_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3990_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3991_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4375_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3986_/Z
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3833_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4409_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3986_/Z
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3833_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3832_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3987_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3988_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4376_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3983_/Z
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3823_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4410_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3983_/Z
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3823_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3822_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3984_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3985_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4377_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3979_/Z
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3810_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4411_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3979_/Z
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3810_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3809_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3980_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3981_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4378_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3971_/Z
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3800_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4397_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3971_/Z
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3800_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3799_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3972_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3973_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4795_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4761_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4761_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4761_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4760_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4221_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3587_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4221_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3587_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4221_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3587_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3588_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3583_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4221_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3587_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3588_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3583_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4221_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3587_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3588_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3583_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4221_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3587_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3588_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3583_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4221_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3587_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3588_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3583_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4221_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3587_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3588_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3583_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4221_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3587_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3588_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3583_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4221_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3587_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3588_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3583_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4221_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3587_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3588_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3583_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4221_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3587_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3588_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3583_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4221_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3587_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3588_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3583_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4221_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3587_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3588_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3583_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4221_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3587_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3588_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3583_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4221_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3587_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3588_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3583_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4221_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3587_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3588_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3583_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4221_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3587_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3588_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3583_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4404_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3889_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3888_/Z
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4404_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3889_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3888_/Z
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4404_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3889_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3888_/Z
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3890_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4404_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3889_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3888_/Z
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3890_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3892_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4404_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3889_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3888_/Z
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3890_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3892_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3893_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4221_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3587_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _3601_/ZN
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4370_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4370_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4378_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4378_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4372_/Q
+[WARNING RSZ-0075] makeBufferedNet failed for driver _4372_/Q
+     335* |       0 |     108 |        0 |      0 |    16 |    +1.6% |    0.075 |        0.0 |    184 | _4294_/D
+    final |       0 |     108 |        0 |      0 |    16 |    +1.6% |    0.075 |        0.0 |     20 | _4294_/D
+------------------------------------------------------------------------------------------------------------------------------
+[INFO RSZ-0051] Resized 108 instances: 108 up, 0 up match, 0 down, 0 VT
+[INFO RSZ-0043] Swapped pins on 16 instances.
+[WARNING RSZ-0062] Unable to repair all setup violations.
+[INFO RSZ-0505] Runtime: 1.89s
+[WARNING EST-0027] no estimated parasitics. Using wire load models.
+[INFO RSZ-0046] Found 18 endpoints with hold violations.
+Iteration | Resized | Buffers | Cloned Gates |   Area   |   WNS   |   TNS   | Endpoint
+--------------------------------------------------------------------------------------
+        0 |       0 |       0 |            0 |    +0.0% |  -0.061 |  -0.061 | _4458_/D
+    final |       0 |      18 |            0 |    +0.3% |   0.041 |   0.000 | _4483_/D
+--------------------------------------------------------------------------------------
+[INFO RSZ-0032] Inserted 18 hold buffers.
+[INFO RSZ-0506] Runtime: 2.24s
+worst slack max 0.07
+worst slack min 0.04
+Design area 4755 um^2 41% utilization.

@@ -1,0 +1,5 @@
+case                                                internal switching   leakage  total uW
+synthesis estimate (vectorless, activity 0.1)        2450.40    214.21     63.03   2727.60
+run: window whole run                                2643.50    365.58     63.96   3073.10
+fill: window 270625..350625 ps                       3752.90   1389.30     67.26   5209.50
+drain: window 359375..439375 ps                      2427.50     45.37     62.81   2535.60

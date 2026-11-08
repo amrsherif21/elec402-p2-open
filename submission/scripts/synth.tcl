@@ -11,6 +11,9 @@ set lib   $::env(LIB)
 set abc_d $::env(ABC_D)
 set booth [expr {[info exists ::env(BOOTH)] ? $::env(BOOTH) : 0}]
 set out   $::env(OUT)
+# library used by ABC for mapping (may mark slow cells dont_use); everything
+# else (flip-flop mapping, area report) uses the original library
+set maplib [expr {[info exists ::env(MAPLIB)] && $::env(MAPLIB) ne "" ? $::env(MAPLIB) : $lib}]
 # final-adder architecture for $lcu (carry look-ahead unit): a Yosys parallel-prefix choice
 set adder [expr {[info exists ::env(ADDER)] ? $::env(ADDER) : "sklansky"}]
 set extra {}
@@ -32,13 +35,16 @@ opt
 # ABC: delay-oriented mapping followed by buffering and gate sizing; the
 # constraint file gives ABC the input drive and the output load of SPEC Section 6
 set cf [open [file rootname $out].abc.constr w]
-puts $cf "set_driving_cell DFF_X1\nset_load 23.5"
+set drv  [expr {[info exists ::env(ABC_DRIVER)] ? $::env(ABC_DRIVER) : "BUF_X1"}]
+set load [expr {[info exists ::env(ABC_LOAD)] ? $::env(ABC_LOAD) : 1.0}]
+if {$drv ne "" && $drv ne "none"} { puts $cf "set_driving_cell $drv" }
+puts $cf "set_load $load"
 close $cf
 set abc_script [expr {[info exists ::env(ABC_SCRIPT)] ? $::env(ABC_SCRIPT) : "submission/scripts/abc_speed.script"}]
 if {$abc_script eq "default"} {
-    abc -D $abc_d -liberty $lib -constr [file rootname $out].abc.constr
+    abc -D $abc_d -liberty $maplib -constr [file rootname $out].abc.constr
 } else {
-    abc -D $abc_d -liberty $lib -script $abc_script -constr [file rootname $out].abc.constr
+    abc -D $abc_d -liberty $maplib -script $abc_script -constr [file rootname $out].abc.constr
 }
 file delete [file rootname $out].abc.constr
 opt_clean

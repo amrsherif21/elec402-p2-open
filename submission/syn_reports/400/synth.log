@@ -1271,14 +1271,9 @@ ABC: + read_blif <abc-temp-dir>/input.blif
 ABC: + read_scl /tmp/yosys-liberty-scl-cache/yosys_merged_b5e95ad2.scl 
 ABC: Warning: Detected 2 multi-output cells (for example, "FA_X1").
 ABC: + read_constr -v /home/user/elec402-p2-open/build/400/syn.abc.constr 
-ABC: Setting driving cell to be "DFF_X1".
 ABC: Setting output load to be 23.500000.
 ABC: + source /home/user/elec402-p2-open/submission/scripts/abc_speed.script 
-ABC: Cannot find the default PI driving cell (DFF_X1) in the library.
-ABC: Cannot find the default PI driving cell (DFF_X1) in the library.
 ABC: WireLoad = "5K_hvratio_1_1"  Gates =   1333 (  7.8 %)   Cap =  7.2 ff (  5.7 %)   Area =     1729.27 ( 86.1 %)   Delay =  2337.32 ps  (  2.1 %)               
-ABC: Cannot find the default PI driving cell (DFF_X1) in the library.
-ABC: Cannot find the default PI driving cell (DFF_X1) in the library.
 ABC: + write_blif <abc-temp-dir>/output.blif 
 ABC: 
 ABC: YOSYS_ABC_DONE 
@@ -1409,6 +1404,6 @@ Found and reported 0 problems.
 Dumping module `\mkMultBuff'.
 
 Warnings: 2 unique messages, 4 total
-End of script. Logfile hash: 1c5864d8a4, time: 1.82s, user: 0.51s, system: 0.06s, MEM: 49.22 MB peak
+End of script. Logfile hash: 33abc1af75, time: 1.69s, user: 0.52s, system: 0.05s, MEM: 48.51 MB peak
 Yosys 0.68+post (git sha1 UNKNOWN, Release, GNU /usr/local/bin/wrapped-cc/g++ 15.2.0)
-Time spent: 72% 2x abc (1 sec), 6% 26x opt_clean (0 sec), ...
+Time spent: 69% 2x abc (1 sec), 7% 26x opt_clean (0 sec), ...

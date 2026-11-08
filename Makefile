@@ -9,12 +9,23 @@ ifeq ($(RUN),400)
   ABC_D   ?= 2200
   BOOTH   ?= 1
   ADDER   ?= kogge-stone
+  # ABC mapping knobs (see notes/WORKLOG.md): no input-driver model, the SPEC
+  # output load on every ABC output, full cell library
+  ABC_DRIVER ?= none
+  ABC_LOAD   ?= 23.5
+  DONT_USE   ?=
 else ifeq ($(RUN),800)
   PERIOD  ?= 1.25
   HALF    := 0.625
   ABC_D   ?= 1050
   BOOTH   ?= 1
   ADDER   ?= kogge-stone
+  # ABC mapping knobs: BUF_X1 input driver, 1 fF load (ABC outputs are mostly
+  # flip-flop D pins), and no cells with 3- or 4-high stacks or MUX2 (slow at
+  # the slow corner) during mapping
+  ABC_DRIVER ?= BUF_X1
+  ABC_LOAD   ?= 1.0
+  DONT_USE   ?= OAI33_* NOR3_* NOR4_* OR3_* OR4_* AND4_* NAND4_* AOI211_* AOI221_* AOI222_* OAI211_* OAI221_* OAI222_* MUX2_*
 else
   $(error RUN must be 400 or 800)
 endif
@@ -38,6 +49,7 @@ YOSYS_IMAGE := openroad/orfs@sha256:d3505fd5f930fcd20d3d25a41f3047230b7db7b7797e
 STA_IMAGE   := openroad/opensta@sha256:4162b4be70ee69eaa42e5eb3c830433393ff46cf0370f9b6c5b814b48a221a7a
 DOCKER      := docker run --rm -v $(ROOT):$(ROOT) -w $(ROOT)
 YOSYS       := $(DOCKER) -e RUN=$(RUN) -e RTL_DIR=$(RTL_DIR) -e LIB=$(LIB) -e ABC_D=$(ABC_D) -e BOOTH=$(BOOTH) -e ADDER=$(ADDER) -e OUT=$(BUILD)/syn.v \
+               -e ABC_DRIVER=$(ABC_DRIVER) -e ABC_LOAD=$(ABC_LOAD) -e MAPLIB=$(if $(strip $(DONT_USE)),$(BUILD)/maplib.lib,) \
                $(YOSYS_IMAGE) /OpenROAD-flow-scripts/tools/install/yosys/bin/yosys
 OPENROAD    := $(DOCKER) -e LIB=$(LIB) -e NETLIST_IN=$(BUILD)/syn.v -e NETLIST=$(NETLIST) -e PERIOD=$(PERIOD) \
                -e SETUP_MARGIN=$(SETUP_MARGIN) -e PDK_LEF_DIR=/OpenROAD-flow-scripts/flow/platforms/nangate45/lef \
@@ -45,13 +57,14 @@ OPENROAD    := $(DOCKER) -e LIB=$(LIB) -e NETLIST_IN=$(BUILD)/syn.v -e NETLIST=$
 STA         := $(DOCKER) -e RUN=$(RUN) -e LIB=$(LIB) -e NETLIST=$(NETLIST) -e SDF=$(SDF) -e PERIOD=$(PERIOD) \
                --entrypoint /OpenSTA/build/sta $(STA_IMAGE) -no_init -no_splash -exit
 
-.PHONY: synth check sim timing power all clean timing_fail sta_only
+.PHONY: synth check sim timing power all clean timing_fail sta_only f14
 
 $(REP) $(BUILD) $(OUT):
 	mkdir -p $@
 
 # ---- synthesis + static timing (netlist, SDF, area/timing/power-estimate reports)
 synth: | $(REP) $(OUT) $(BUILD)
+	$(if $(strip $(DONT_USE)),python3 submission/scripts/lib_dont_use.py $(LIB) $(BUILD)/maplib.lib $(foreach c,$(DONT_USE),'$(c)'),)
 	$(YOSYS) -q -l $(REP)/synth.log -c submission/scripts/synth.tcl
 	mv -f $(BUILD)/syn.stat.rpt $(REP)/yosys_area.rpt
 	$(OPENROAD) submission/scripts/resize.tcl > $(REP)/resize.log 2>&1
@@ -114,7 +127,11 @@ sta_only: | $(REP)
 	python3 submission/scripts/sdf_typmax.py $(SDF).sta $(SDF) && rm -f $(SDF).sta
 	@grep -E "^(worst slack|tns)" $(REP)/sta.rpt
 
-all: synth check sim timing power
+# ---- SPEC F14: formal (SAT) proof that every flip-flop of the netlist is reset by RST_N
+f14: | $(REP) $(BUILD)
+	bash submission/scripts/f14_check.sh $(NETLIST) $(BUILD)/f14 | tee $(REP)/f14.log
+
+all: synth check sim timing power f14
 
 clean:
 	rm -rf build
