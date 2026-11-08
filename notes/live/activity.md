@@ -135,3 +135,14 @@
 | 2026-11-08 03:08:36 UTC | Bash | `grep -n "^[0-9.]* Executing ABC\\|abc -D\\|-dont_use" build/exp/j400/synth.log \| head -3; grep -o "dont_use [A-Z0-9_]*" build/exp/j400/synth.log \| head -3; grep -n "OAI33\\|NOR4" build/exp/j400/syn.stat. ...` |
 | 2026-11-08 03:08:41 UTC | Bash | `sed -n 1261,1300p build/exp/j400/synth.log \| cut -c1-200` |
 | 2026-11-08 03:08:50 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand_retime/src && cat > strip_srst.v <<'EOF' // drop the synchronous reset of the rmult ranks before retiming (re-added afterwards) module \$_SDFF_PN0_ (input D, C ...` |
+| 2026-11-08 03:08:54 UTC | Write | `/home/user/elec402-p2-open/build/cand_dadda/gen.py` |
+| 2026-11-08 03:08:54 UTC | Write | `/home/user/elec402-p2-open/submission/scripts/lib_dont_use.py` |
+| 2026-11-08 03:08:56 UTC | Bash | `D=build/cand_retime/chk && mkdir -p $D/rtl && sed "s/@R@/5/" build/cand_retime/src/mkMultBuff.sv.in > $D/rtl/mkMultBuff.sv && sed "s/@R@/5/" build/cand_retime/src/rmult.sv.in > $D/rtl/rmult.sv && make ...` |
+| 2026-11-08 03:09:03 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand_dadda && python3 - <<'EOF' src = open('../../submission/rtl_400/mkMultBuff.sv').read() start = src.index('module mkMultBuff') body = src[start:] import re # re ...` |
+| 2026-11-08 03:09:23 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand_dadda && python3 - <<'EOF' s = open('gen.py').read() s = s.replace(""" if t_s > budget or (c + 1 < W and t_c > budget): break for b in (x, y, z):""", """ if t_ ...` |
+| 2026-11-08 03:09:29 UTC | Bash | `python3 submission/scripts/lib_dont_use.py tech/NangateOpenCellLibrary_slow.lib build/exp/lib_du1.lib 'OAI33_*' 'NOR3_*' 'NOR4_*' 'OR4_*' 'AND4_*' 'NAND4_*' 'AOI211_*' 'AOI221_*' 'AOI222_*' 'OAI211_*' ...` |
+| 2026-11-08 03:09:37 UTC | Bash | `ls submission/testbench; grep -n -i "DRV\\|#" submission/testbench/sdf_checker_800.sv \| head -30` |
+| 2026-11-08 03:09:38 UTC | Bash | `grep -n "MAPLIB\\|ABC_DONT" build/exp/run.sh \| cut -c1-150; grep -m3 "read_scl\\|read_lib\\|liberty" build/exp/k800a/synth.log \| cut -c1-200; grep -c "NOR3\\|OAI33" build/exp/k800a/syn.v` |
+| 2026-11-08 03:09:43 UTC | Bash | `grep -n "yosys_merged\\|Executing ABC pass\\|abc_speed" build/exp/k800a/synth.log \| head; grep -n "abc -D\\|maplib" submission/scripts/synth.tcl` |
+| 2026-11-08 03:09:45 UTC | Bash | `D=build/cand_dadda/v1; mkdir -p $D/rtl && mv $D/*.sv $D/rtl/ && make check RUN=800 RTL_DIR=$D/rtl BUILD=$D REP=$D/rep NETLIST=$D/map.v SDF=$D/map.sdf BOOTH=0 2>&1 \| tail -8` |
+| 2026-11-08 03:10:12 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand_dadda && sed -i 's\|os.makedirs(args.outdir, exist_ok=True)\|args.outdir = os.path.join(args.outdir, "rtl"); os.makedirs(args.outdir, exist_ok=True)\|' gen.py &&  ...` |
