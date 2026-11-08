@@ -1,6 +1,6 @@
 # Session record
 
-Rendered 2026-11-08 03:37:10 UTC from the Claude Code transcript.
+Rendered 2026-11-08 07:03:41 UTC from the Claude Code transcript.
 
 ### Prompt, 2026-11-08 02:33:34
 
@@ -1718,3 +1718,12 @@ A rerun from a fresh clone (install script, all `make` steps for both frequencie
 
 The report is `submission/pdf_report/report.pdf`, and the full record is in `notes/WORKLOG.md`.
 
+### Prompt, 2026-11-08 07:03:27
+
+Okay I looked into the check-result branch issue and the sign-off scorecards are now up  for both check/400 and check/800. The service was online the whole session but did not trigger as I had forgotten to set up the appropriate environment settings to enable you to use the service . The sign-off section currently says the service was probably offline, so correct that and add the comparison of your open-source results with the GPDK045 ones.
+
+While you’re in there, make the report more concise and clear. It should open with a results-focused summary, then explain the design decisions and why you made them, with the rest of the report supporting those. The main text is about 5,800 words right now, so aim for roughly half that. Every item in SPEC Section 9 still has to be covered. This is a report-only pass, so leave the RTL alone.
+
+When you’re done, rebuild the PDF, update the WORKLOG and the token usage, then commit and push.
+
+- `Bash` git status --short | head; git fetch -q origin check-results && git ls-tree -r --name-only origin/check-results | head -30; git log --oneline -3 origin/check-results
