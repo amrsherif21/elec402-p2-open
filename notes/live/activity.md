@@ -186,3 +186,12 @@
 | 2026-11-08 03:13:58 UTC | Bash | `python3 - <<'EOF' t=open('build/exp/top.sv').read() t=t.replace(""" (* keep *) logic rdy_mult_o, rdy_rd_o; """,""" (* keep *) logic rdy_mult_o, rdy_rd_o; // likewise port-only copies of the memory add ...` |
 | 2026-11-08 03:14:25 UTC | Write | `/home/user/elec402-p2-open/build/cand_dadda/gen2.py` |
 | 2026-11-08 03:14:36 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand_dadda && python3 - <<'EOF' s = open('gen2.py').read() old = s[s.index("# column c is final if no generate"):s.index("# columns 0..lo-1 are final")] s = s.repla ...` |
+| 2026-11-08 03:14:41 UTC | Bash | `python3 - <<'EOF' t=open('build/exp/top.sv').read() t=t.replace(""" // likewise port-only copies of the memory addresses and write enable (* keep *) logic [5:0] wp_o, rp_o; (* keep *) logic wr_o; """, ...` |
+| 2026-11-08 03:14:44 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand_dadda && for b in 0.62 0.66 0.70 0.74; do echo "== B=$b --pg"; python3 gen2.py /tmp/claude-0/x --b1 0.66 --budget $b --pg \| grep -v "^ *stage [123]:"; done` |
+| 2026-11-08 03:15:01 UTC | Bash | `build/cand_retime/src/f14.sh build/cand_retime/b1_r5_naive/map.v; build/cand_retime/src/f14.sh build/cand_retime/b1_r5_fix/map.v; grep -n "module .rmult" build/cand_retime/b1_r5_fix/syn.rt.il; for s i ...` |
+| 2026-11-08 03:15:07 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand_retime && sed -i 's/if {\[string match "module \\\\\\\\rmult" \$l\]}/if {$l eq "module \\\\rmult"}/' src/synth_rt.tcl && grep -n 'module \\' src/synth_rt.tcl;  ...` |
+| 2026-11-08 03:15:08 UTC | Edit | `/home/user/elec402-p2-open/build/cand_retime/src/synth_rt.tcl` |
+| 2026-11-08 03:15:14 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand_dadda && python3 - <<'EOF' s = open('gen2.py').read() # add a target-height variant of reduce_stage add = ''' def reduce_target(cols, st, budget, target): """r ...` |
+| 2026-11-08 03:15:19 UTC | Bash | `python3 - <<'EOF' p='build/exp/mult_pipe.sv' s=open(p).read() s=s.replace(""" localparam int NB = 32 / CSW; ""","") s=s.replace(""" // Kogge-Stone prefix over a CSW-bit block""",""" localparam int NB  ...` |
+| 2026-11-08 03:15:24 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand_dadda && sed -n 225,285p gen2.py` |
+| 2026-11-08 03:15:44 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand_dadda && python3 - <<'EOF' s = open('gen2.py').read() plan_code = ''' def nbits(out): return sum(1 for c in out for b in c if not is_const(b)) def reg0(out): r ...` |

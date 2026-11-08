@@ -1,6 +1,6 @@
 # Session record
 
-Rendered 2026-11-08 03:14:36 UTC from the Claude Code transcript.
+Rendered 2026-11-08 03:15:44 UTC from the Claude Code transcript.
 
 ### Prompt, 2026-11-08 02:33:34
 
@@ -584,3 +584,17 @@ Higher Resizer effort changes nothing at 800 MHz. Duplicating the address and wr
 > Yosys merged the duplicate enable flip-flops anyway, since `keep` on the wire doesn't stop it. I'm storing the port copies inverted so they're structurally different and survive.
 
 - `Bash` python3 - <<'EOF' t=open('build/exp/top.sv').read() t=t.replace(""" // likewise port-only copies of the memory addresses and write enable (* keep *) logic [5:0] wp_o, rp_o; (* keep *) logic wr_o; """, ...
+  - result: ALL PASS r800b P=1.25 enc=0 csa=1111 spl=0 abcD=1000 | yosys_area=5613.132000 rsz_area=5786 wns=-0.014 whs=0.024 pwr_est=3.1643e-03 r800c P=1.25 enc=0 csa=1111 spl=0 abcD=1000 | yosys_area=5607.014000 rsz_area=5771 wns=-0.014 whs=0.024 pwr_est=3.1593e-03 _4799_/Q (DFF_X1) fo=3 d=0.338 t=0.338 .Q(\u_mult.g_csel.co0q [5]), _4775_/Q (DFF_X1) fo=3 d=0.338 t=0.338 .Q(\u_mult.g_csel.co0q [5]),
+
+### Agent, 2026-11-08 03:14:46
+
+WNS is now −0.014 ns. What remains is stage B of the carry-select adder, where the block carries ripple across eight blocks. I'm replacing the ripple with a prefix over the blocks.
+
+- `Bash` python3 - <<'EOF' p='build/exp/mult_pipe.sv' s=open(p).read() s=s.replace(""" localparam int NB = 32 / CSW; ""","") s=s.replace(""" // Kogge-Stone prefix over a CSW-bit block""",""" localparam int NB ...
+  - result: ALL PASS s800b P=1.25 enc=0 csa=1111 spl=0 abcD=1000 | yosys_area=5770.604000 rsz_area=5988 wns=-0.037 whs=0.020 pwr_est=3.2018e-03 s800d P=1.25 enc=0 csa=1111 spl=0 abcD=1000 | yosys_area=5431.720000 rsz_area=5835 wns=-0.330 whs=0.020 pwr_est=3.1344e-03 _5488_/Q (DFF_X2) fo=4 d=0.612 t=0.612 .Q(RDY_mult), _4909_/Q (DFF_X1) fo=3 d=0.413 t=0.413 .Q(\u_mult.l4q [49]), [This command modified 1 file y ...
+
+### Agent, 2026-11-08 03:15:22
+
+With the block-carry prefix, `RDY_mult`'s port copy has been merged back into internal logic, so the ready-flag copies get the same inverted-storage treatment.
+
+- `Bash` python3 - <<'EOF' t=open('build/exp/top.sv').read() t=t.replace(""" // copies of the two ready flags that drive only the output ports, so the // port load does not slow the internal handshake logic (k ...
