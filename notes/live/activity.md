@@ -367,3 +367,26 @@
 | 2026-11-08 08:06:47 UTC | Bash | `echo 'python3 build/cand800a/rk.py $D/rep/ranks.rpt \| tee -a $D/summary.txt' >> build/cand800a/mk.sh && build/cand800a/mk.sh e1_ks1 CPA=2 PFX=0 GT=1"'"b1` |
 | 2026-11-08 08:06:50 UTC | Bash | `awk '/^Startpoint/{n++} n==1' build/cand800a/e1_ks1/rep/sta.rpt \| grep -E "\^\|v " \| head -30` |
 | 2026-11-08 08:07:17 UTC | Agent | `Clock-gating feasibility study` |
+| 2026-11-08 08:07:22 UTC | Bash | `sed -n 1,205p SPEC.md` |
+| 2026-11-08 08:07:22 UTC | Bash | `cat notes/WORKLOG.md` |
+| 2026-11-08 08:07:24 UTC | Bash | `cat build/cand400/p1c4/rtl/mkMultBuff.sv; cat build/cand400/p1c4/rtl/mult_pipe.sv; cat submission/scripts/eval_candidate.sh` |
+| 2026-11-08 08:07:26 UTC | Bash | `cat Makefile; ls submission/scripts; ls build/cand400/p1c4/rep` |
+| 2026-11-08 08:07:29 UTC | Bash | `cat submission/scripts/synth.tcl submission/scripts/resize.tcl submission/scripts/sta.tcl submission/scripts/constraints.tcl submission/scripts/power.tcl submission/scripts/ranks.tcl` |
+| 2026-11-08 08:07:30 UTC | ToolSearch | `select:WebSearch` |
+| 2026-11-08 08:07:32 UTC | Bash | `R=build/cand400/p1c4/rep; grep -E "^(worst slack\|tns\|Total\|cell area)" $R/sta.rpt; cat $R/power_summary.txt; cat $R/ranks.rpt \| grep -v Warning; grep -E "^cell " $R/sta.rpt \| head -60; cat submission/ ...` |
+| 2026-11-08 08:07:37 UTC | WebSearch | `Touati Brayton "Computing the initial states of retimed circuits" IEEE Transactions on Computer-Aided Design 1993 volume pages` |
+| 2026-11-08 08:07:37 UTC | WebSearch | `Harris "A taxonomy of parallel prefix networks" Asilomar 2003 pages 2213` |
+| 2026-11-08 08:07:38 UTC | WebSearch | `Townsend Swartzlander Abraham "A comparison of Dadda and Wallace multiplier delays" SPIE 5205` |
+| 2026-11-08 08:07:39 UTC | WebSearch | `Han Carlson "Fast area-efficient VLSI adders" ARITH 1987 pages; Brent Kung "A regular layout for parallel adders" IEEE Trans Computers 1982 C-31` |
+| 2026-11-08 08:07:39 UTC | WebSearch | `Leiserson Saxe "Retiming synchronous circuitry" Algorithmica 1991 vol 6 pages 5-35` |
+| 2026-11-08 08:07:41 UTC | WebSearch | `Parhi "VLSI Digital Signal Processing Systems: Design and Implementation" Wiley 1999 chapter 3 pipelining and parallel processing` |
+| 2026-11-08 08:07:42 UTC | Bash | `sed -n 1,40p submission/rtl_400/mkMultBuff.sv; grep -n "mult_pipe\\|LAT\b\\|localparam" submission/rtl_400/mkMultBuff.sv; diff <(sed -n '/^module/,$p' submission/rtl_400/mult_pipe.sv) <(sed -n '/^module ...` |
+| 2026-11-08 08:07:49 UTC | WebSearch | `"A taxonomy of parallel prefix networks" Harris "2213-2217"` |
+| 2026-11-08 08:07:51 UTC | WebSearch | `Sklansky "Conditional-sum addition logic" IRE Transactions on Electronic Computers 1960 EC-9 226-231` |
+| 2026-11-08 08:07:58 UTC | Bash | `build/cand800a/mk.sh e2_1010_cinc CSA_REG="4'b1010" ORD="1'b1" GT="1'b1" CPA=1 2>&1 \| tail -4` |
+| 2026-11-08 08:08:02 UTC | Bash | `awk '/^Startpoint/{n++} n==1' build/cand800a/e2_1010_cinc/rep/sta.rpt \| grep -E "\^\|v " \| head -30` |
+| 2026-11-08 08:08:02 UTC | WebSearch | `MacSorley "High-speed arithmetic in binary computers" Proc IRE 1961 49 67-91; Wallace "A suggestion for a fast multiplier" EC-13 14-17 1964` |
+| 2026-11-08 08:08:02 UTC | WebSearch | `Dadda "Some schemes for parallel multipliers" Alta Frequenza 1965 vol 34 pp 349-356` |
+| 2026-11-08 08:08:03 UTC | WebSearch | `Kogge Stone 1973 "parallel algorithm for the efficient solution of a general class of recurrence equations" C-22 786-793; Baugh Wooley 1973 "two's complement parallel array multiplication algorithm" C ...` |
+| 2026-11-08 08:08:18 UTC | Write | `/home/user/elec402-p2-open/notes/REFERENCES_CHECK.md` |
+| 2026-11-08 08:08:29 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800a/src && python3 - <<'EOF' s = open('mult_pipe.sv').read() s = s.replace(""" parameter int PFX = 0 // CPA=2""", """ parameter bit CI1 = 1'b0, // CPA=1: also  ...` |
