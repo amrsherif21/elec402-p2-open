@@ -8,3 +8,4 @@
 | check_c800-e18-89c8d99505 | `89c8d9950535` | [scorecard](results/check_c800-e18-89c8d99505/scorecard.md) |
 | check_c-combo-5de557d5e2 | `5de557d5e2d6` | [scorecard](results/check_c-combo-5de557d5e2/scorecard.md) |
 | check_c-wallace-2a1eae3e25 | `2a1eae3e2568` | [scorecard](results/check_c-wallace-2a1eae3e25/scorecard.md) |
+| check_final-efbfecdf64 | `efbfecdf64f2` | [scorecard](results/check_final-efbfecdf64/scorecard.md) |
