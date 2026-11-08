@@ -602,3 +602,10 @@
 | 2026-11-08 17:47:31 UTC | Bash | `grep -n "Startpoint\\|Endpoint\\|slack" build/r4row/c1_noR6/rep/sta.rpt \| head -20; awk '/Startpoint/{n++} n==1' build/r4row/c1_noR6/rep/sta.rpt \| head -70` |
 | 2026-11-08 17:47:39 UTC | Bash | `grep -E "^== before\|^\s+(final\|[0-9]+)\s+\\|" build/r4row/c1_noR6/rep/resize.log \| tail -8; grep -c RSZ-0075 build/r4row/c1_noR6/rep/resize.log` |
 | 2026-11-08 17:47:58 UTC | Bash | `cat submission/scripts/abc_speed.script; grep -n "ABC_SCRIPT\\|abc" Makefile \| head` |
+| 2026-11-08 17:48:29 UTC | Bash | `D=build/r4row/c1b_noR6mux && mkdir -p $D/rtl && cp build/r4row/c1_noR6/rtl/*.sv $D/rtl/ && python3 - $D/rtl/mult_pipe.sv <<'EOF' import sys f=sys.argv[1]; t=open(f).read() old=""" assign psum[CSW*i +: ...` |
+| 2026-11-08 17:48:36 UTC | Bash | `cd /home/user/elec402-p2-open/build/r4wal && B="--mode wallace --rawlevels 3 --cuts 2,4 --gp gt --k0 8 --k 5 --res-budget 0.66 --extra 0.72" NOEVAL=1 ./run.sh 800 t_base $B >/dev/null && diff <(grep - ...` |
+| 2026-11-08 17:48:41 UTC | Bash | `sed -n 40,64p Makefile` |
+| 2026-11-08 17:48:48 UTC | Bash | `cd /home/user/elec402-p2-open/build/r4wal && cat > gcount.sh <<'EOF' #!/usr/bin/env bash # gcount.sh MULT_PIPE.sv [chparam args] -- generic-gate cell count of mult_pipe alone # (Yosys synth -flatten;  ...` |
+| 2026-11-08 17:48:53 UTC | Bash | `cd /home/user/elec402-p2-open/build/r4wal && time ./gcount.sh submission/rtl_800/mult_pipe.sv "-set PRE_ENC 1 -set SEL_REG 1 -set CSA_REG 10 -set ORD 1 -set CPA 1 -set CI1 1 -set CSW 4" > gc_rowtree_e ...` |
+| 2026-11-08 17:48:59 UTC | Bash | `IMG=openroad/orfs@sha256:d3505fd5f930fcd20d3d25a41f3047230b7db7b7797e3448561c9e556cca3774; docker run --rm -v $PWD:$PWD -w $PWD $IMG /OpenROAD-flow-scripts/tools/install/yosys/bin/yosys -p "read_veril ...` |
+| 2026-11-08 17:49:03 UTC | Bash | `grep -oE "u_mult\.(l4q\|bp_)\[[0-9]+\]" build/r4row/base/map.v \| sort -u \| sed 's/u_mult.//' \| sort -t[ -k2 -n \| tr '\n' ' '; echo; grep -oE "u_mult\.l2q\[[0-9]+\]" build/r4row/base/map.v \| sort -u \| w ...` |
