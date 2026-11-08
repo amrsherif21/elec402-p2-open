@@ -79,3 +79,8 @@
 | 2026-11-08 02:54:06 UTC | Bash | `cat > build/exp/path.sh <<'EOF' #!/bin/bash # compact view of the first (worst) max path in an sta report awk '/^Startpoint/{n++} n==1' $1 \| grep -E "^\s+[0-9]+\s+[0-9.]+\s+[0-9.]+\s+[0-9.]+\s+[0-9.]+ ...` |
 | 2026-11-08 02:54:33 UTC | Bash | `python3 - <<'EOF' p='build/exp/mult_pipe.sv' s=open(p).read() old_hdr=s[s.index('module mult_pipe'):s.index(' // ------------------------------------------------------------------\n // Partial-product ...` |
 | 2026-11-08 02:54:41 UTC | Bash | `mkdir -p build/exp/ft && for cfg in "1 0 0100 0" "0 0 1000 0" "0 1 1010 1" "1 0 1111 1"; do set -- $cfg; sed "s/\'PRE/1'b$1/; s/\'ENC/1'b$2/; s/\'CSA/4'b$3/; s/\'SPL/1'b$4/" build/exp/top.sv > build/e ...` |
+| 2026-11-08 02:54:47 UTC | Bash | `vvp -n build/exp/ft/a.vvp \| tail -30` |
+| 2026-11-08 02:55:02 UTC | Bash | `sed -i 's/@tail -1 $(REP)\/check.log \| grep -q "^ALL PASS"/@grep -q "^ALL PASS" $(REP)\/check.log/; s/@tail -1 $(REP)\/sim.log \| grep -q "^ALL PASS"/@grep -q "^ALL PASS" $(REP)\/sim.log/' Makefile &&  ...` |
+| 2026-11-08 02:55:06 UTC | Bash | `build/exp/path.sh build/exp/p400b/sta.rpt \| head -40; grep -E "before\|^worst\|RSZ-00\|Design area" build/exp/p400b/rsz.log` |
+| 2026-11-08 02:55:39 UTC | Bash | `python3 - <<'EOF' p='submission/scripts/synth.tcl' s=open(p).read() s=s.replace('abc -D $abc_d -liberty $lib -script submission/scripts/abc_speed.script -constr [file rootname $out].abc.constr', '''se ...` |
+| 2026-11-08 02:55:50 UTC | Bash | `(for d in 1500 1800 2300; do PRE=1 build/exp/run.sh r400_$d 2.5 0 1000 0 $d 0 kogge-stone & done; wait) 2>&1 \| grep -v Warning` |
