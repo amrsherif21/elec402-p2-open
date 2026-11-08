@@ -500,3 +500,27 @@ Notes:
 - r4-wal: a4_np + e8rd (no product register);
 - r4-walp: Wallace with product register + rst-digits, f8rdp, 422 flops, our WNS +0.075, timing/F14 PASS;
 - r4-c2a: row tree with product register + DRST only, 442 flops, our WNS +0.145.
+
+**Sign-off of r4-wal, r4-walp, r4-c2a** (all pass SDF simulation). Area in µm², power in µW (vectorless); "A×P" is area × power relative to e18.
+
+| design | flops | sign-off area | power | WNS | A×P |
+|---|---:|---:|---:|---:|---:|
+| 400 current final (Wallace + product reg) | 141 | 2660.8 | 215.2 | 203 | |
+| **400 a4_np (no product reg, 2 ranks)** | 108 | **2427.5 (−8.8 %)** | **177.5 (−17.5 %)** | 158 | |
+| 800 e18 (current final) | 442 | 4416.2 | 829.7 | 158 | 1.000 |
+| 800 r4-walp f8rdp (Wallace, prod reg, DRST) | 422 | 4270.2 | 860.8 | 101 | 1.003 |
+| 800 c-wallace (round 3) | 431 | 4192.6 | 922.4 | 91 | 1.055 |
+| 800 r4-c2a (row, prod reg, DRST) | 442 | 4429.6 | 890.7 | 83 | 1.077 |
+| 800 r4-wal e8rd (Wallace, no prod reg, DRST) | 389 | 4188.8 | 953.1 | 99 | 1.090 |
+| 800 r4-c2 (row, no prod reg, DRST) | 408 | 4320.8 | 988.2 | 109 | 1.165 |
+
+Observations:
+- At 800 MHz, sign-off power falls monotonically as sign-off slack rises. That fits the user's hypothesis: GPDK045 synthesis upsizes cells until it has its own internal margin.
+- DRST costs sign-off slack (row tree 158 → 83 ps, +7 % power): it puts an AND in front of the selection logic. DRST is dropped.
+- Dropping the product register at 800 MHz puts the adder → port path under the same pressure. At 400 MHz it is a large win, because slack is ample.
+- **Decision for 400 MHz: a4_np.**
+
+**800 MHz, Wallace rebalanced without DRST:**
+- f8p, product register kept, gp gt, pair-late 2, lvl-limit: 422 flops, our WNS **+0.124 ns** (all ranks ≥ 0.124), 3864 µm², vectorless 2113.7 µW, timing ALL PASS, F14 422/422.
+- f8pc (gp cpa) moves the critical path into stage A (+0.017 ns) and was rejected.
+- f8p was submitted as `check/r4-f8p` (5bad848) for the fair comparison with e18 that the user asked for: Wallace with comparable slack.
