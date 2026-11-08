@@ -415,3 +415,11 @@
 | 2026-11-08 08:10:54 UTC | Bash | `build/cand800a/mk.sh e6_nodup CSA_REG="4'b1010" ORD="1'b1" GT="1'b1" GP4="1'b0" CPA=1 CI1="1'b1" DUP="1'b0" 2>&1 \| tail -4` |
 | 2026-11-08 08:10:57 UTC | Bash | `awk '/^Startpoint/{n++} n<=3' build/cand800a/e6_nodup/rep/sta.rpt \| grep -E "Startpoint\|Endpoint\|\^\|v \|slack" \| head -60` |
 | 2026-11-08 08:11:03 UTC | Bash | `W=build/cand800a/e6_nodup; for c in _4285_ _4253_ _4254_; do grep -A6 "DFF_X[12] $c " $W/map.v \| grep -o "\.Q([^)]*)"; done; awk '/^Startpoint/{n++} n>=1' $W/rep/sta.rpt \| grep -E "^Startpoint" \| sort ...` |
+| 2026-11-08 08:11:12 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800a/src && python3 - <<'EOF' s = open('mkMultBuff.sv').read() s = s.replace(" localparam bit DUP = 1'b1;", " localparam bit [4:0] DUP = 5'b11111; // {rp, wp, w ...` |
+| 2026-11-08 08:11:23 UTC | Bash | `S=build/cg/scripts; sed 's#^source submission/scripts/constraints.tcl#source submission/scripts/constraints.tcl\nset_propagated_clock [all_clocks]#' submission/scripts/sta.tcl > $S/sta_prop.tcl; sed ' ...` |
+| 2026-11-08 08:11:36 UTC | Bash | `S=build/cg/scripts; python3 - <<'PY' p='submission/scripts/resize.tcl'; t=open(p).read() old="set margin [" new='''# --- clock gating experiment: real clock tree (TritonCTS) on the throw-away # placem ...` |
+| 2026-11-08 08:11:37 UTC | Bash | `build/cand800a/mk.sh e7_dup_rd CSA_REG="4'b1010" ORD="1'b1" GT="1'b1" GP4="1'b0" CPA=1 CI1="1'b1" DUP="5'b00010" 2>&1 \| tail -4` |
+| 2026-11-08 08:11:40 UTC | Bash | `W=build/cand800a/e7_dup_rd; awk '/^Startpoint/{n++} n<=2' $W/rep/sta.rpt \| grep -E "Startpoint\|Endpoint\|\^\|v \|slack" \| head -40; grep -v Warning $W/rep/ranks.rpt \| awk '$3<0.15'` |
+| 2026-11-08 08:11:58 UTC | Bash | `cat build/cg/scripts/hold_prop.tcl \| head -20; export ABC_DRIVER=BUF_X1 ABC_LOAD=1.0 DONT_USE="OAI33_* NOR3_* NOR4_* OR3_* OR4_* AND4_* NAND4_* AOI211_* AOI221_* AOI222_* OAI211_* OAI221_* OAI222_* MU ...` |
+| 2026-11-08 08:12:01 UTC | Bash | `W=build/cg/b; grep -A12 "report_clock_skew\\|Clock clk" $W/rep/resize.log \| grep -v "^\[INFO CTS" \| head -60; grep "RSZ-00\\|worst slack\\|Design area" $W/rep/resize.log; grep -E "^cell (CLKBUF\|BUF\|DLL\|A ...` |
+| 2026-11-08 08:12:09 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800a/src && sed -n 64,105p mkMultBuff.sv` |
