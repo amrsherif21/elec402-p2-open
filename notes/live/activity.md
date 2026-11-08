@@ -126,3 +126,12 @@
 | 2026-11-08 03:06:36 UTC | Bash | `IMG=openroad/orfs@sha256:d3505fd5f930fcd20d3d25a41f3047230b7db7b7797e3448561c9e556cca3774; docker run --rm $IMG bash -c 'A=/OpenROAD-flow-scripts/tools/install/yosys/bin/yosys-abc; ls /OpenROAD-flow-s ...` |
 | 2026-11-08 03:06:47 UTC | Bash | `python3 - <<'EOF' p='build/exp/mult_pipe.sv' s=open(p).read() s=s.replace(" parameter bit CPA_SPLIT = 1'b0\n"," parameter bit SEL_REG = 1'b0,\n parameter bit CPA_SPLIT = 1'b0,\n parameter bit CPA_CSEL ...` |
 | 2026-11-08 03:07:40 UTC | Bash | `(SEL=1 CSL=1 PRE=1 build/exp/run.sh i800a 1.25 0 1111 0 1000 0 kogge-stone & SEL=0 CSL=1 PRE=1 build/exp/run.sh i800b 1.25 0 1111 0 1000 0 kogge-stone & wait) 2>&1 \| grep -v Warning; SEL=1 CSL=1 PRE=1 ...` |
+| 2026-11-08 03:08:09 UTC | Bash | `sed -n 1,80p submission/testbench/rtl_checker.sv \| head -50; cat submission/scripts/power.sh \| head -30; nproc; uptime` |
+| 2026-11-08 03:08:19 UTC | Bash | `ls tech/ && sed -n 1,80p submission/scripts/sta.tcl && cat submission/scripts/power.sh \| head -40 && ls build/exp \| head` |
+| 2026-11-08 03:08:21 UTC | Bash | `python3 - <<'EOF' p='submission/scripts/synth.tcl' s=open(p).read() s=s.replace('''set abc_script [expr''','''# optional list of cells ABC must not use (slow stacked cells at the slow corner) set dont ...` |
+| 2026-11-08 03:08:26 UTC | Bash | `grep -m3 -i "dont_use\\|abc -D" build/exp/j800a/synth.log build/exp/j400/synth.log \| cut -c1-250; ls -la --time-style=+%T build/exp/j800a/` |
+| 2026-11-08 03:08:28 UTC | Bash | `mkdir -p /home/user/elec402-p2-open/build/cand_retime/src && cd /home/user/elec402-p2-open/build/cand_retime/src && python3 - <<'EOF' src = open('/home/user/elec402-p2-open/submission/rtl_400/mkMultBu ...` |
+| 2026-11-08 03:08:30 UTC | Bash | `date +%T; grep -n "ABC\b\\|Executing ABC\\|ERROR" build/exp/j800a/synth.log \| head -5; grep -c "" build/exp/j800a/synth.log; grep -n "Chip area" build/exp/j800a/synth.log` |
+| 2026-11-08 03:08:36 UTC | Bash | `grep -n "^[0-9.]* Executing ABC\\|abc -D\\|-dont_use" build/exp/j400/synth.log \| head -3; grep -o "dont_use [A-Z0-9_]*" build/exp/j400/synth.log \| head -3; grep -n "OAI33\\|NOR4" build/exp/j400/syn.stat. ...` |
+| 2026-11-08 03:08:41 UTC | Bash | `sed -n 1261,1300p build/exp/j400/synth.log \| cut -c1-200` |
+| 2026-11-08 03:08:50 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand_retime/src && cat > strip_srst.v <<'EOF' // drop the synchronous reset of the rmult ranks before retiming (re-added afterwards) module \$_SDFF_PN0_ (input D, C ...` |

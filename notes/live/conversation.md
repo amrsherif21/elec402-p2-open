@@ -1,6 +1,6 @@
 # Session record
 
-Rendered 2026-11-08 03:07:40 UTC from the Claude Code transcript.
+Rendered 2026-11-08 03:08:50 UTC from the Claude Code transcript.
 
 ### Prompt, 2026-11-08 02:33:34
 
@@ -474,3 +474,24 @@ ABC's `buffer` has a `-p` flag that also buffers primary inputs, which includes 
 All three new configurations pass the RTL checker at 1.25 ns (latencies 8, 7 and 6). Synthesizing them.
 
 - `Bash` (SEL=1 CSL=1 PRE=1 build/exp/run.sh i800a 1.25 0 1111 0 1000 0 kogge-stone & SEL=0 CSL=1 PRE=1 build/exp/run.sh i800b 1.25 0 1111 0 1000 0 kogge-stone & wait) 2>&1 | grep -v Warning; SEL=1 CSL=1 PRE=1 ...
+  - result: i800a P=1.25 enc=0 csa=1111 spl=0 abcD=1000 | yosys_area=5094.698000 rsz_area=5413 wns=-0.610 whs=0.028 pwr_est=2.9950e-03 i800b P=1.25 enc=0 csa=1111 spl=0 abcD=1000 | yosys_area=4254.138000 rsz_area=5072 wns=-0.779 whs=0.028 pwr_est=2.5716e-03 i800c P=1.25 enc=0 csa=0101 spl=0 abcD=1000 | yosys_area=4343.514000 rsz_area=4848 wns=-1.468 whs=0.028 pwr_est=2.5540e-03 == i800a _4513_/Q (DFF_X1) fo=6 ...
+
+#### Reasoning, 2026-11-08 03:07:56
+
+> Still −0.61 ns at best, since ABC keeps choosing slow three- and four-high stacks; I'm now retrying with those cells marked don't-use.
+
+- `Bash` python3 - <<'EOF' p='submission/scripts/synth.tcl' s=open(p).read() s=s.replace('''set abc_script [expr''','''# optional list of cells ABC must not use (slow stacked cells at the slow corner) set dont ...
+  - result: 3 j400 P=2.5 enc=0 csa=0100 spl=0 abcD=2000 | yosys_area=2425.654000 rsz_area=2467 wns=-0.037 whs=0.053 pwr_est=6.6161e-04 j800a P=1.25 enc=0 csa=1111 spl=0 abcD=1000 | yosys_area=5094.698000 rsz_area=5413 wns=-0.610 whs=0.028 pwr_est=2.9950e-03 _4513_/Q (DFF_X1) fo=6 d=0.477 t=0.477 _2860_/ZN (OAI221_X2) fo=1 d=0.109 t=0.587 _2861_/ZN (OAI33_X1) fo=3 d=0.517 t=1.104 _4203_/ZN (NOR4_X1) fo=1 d=0.1 ...
+
+- `Bash` grep -m3 -i "dont_use\|abc -D" build/exp/j800a/synth.log build/exp/j400/synth.log | cut -c1-250; ls -la --time-style=+%T build/exp/j800a/
+  - result: total 2364 drwxr-xr-x 3 root root 4096 03:08:21 . drwxr-xr-x 35 root root 4096 03:08:01 .. -rw-r--r-- 1 root root 71935 03:08:20 rsz.log -rw-r--r-- 1 root root 1639800 03:08:21 rsz.sdf.sta -rw-r--r-- 1 root root 254099 03:08:20 rsz.v drwxr-xr-x 2 root root 4096 03:08:01 rtl -rw-r--r-- 1 root root 12903 03:08:21 sta.rpt -rw-r--r-- 1 root root 1851 03:08:02 syn.stat.rpt -rw-r--r-- 1 root root 278700 ...
+
+- `Bash` date +%T; grep -n "ABC\b\|Executing ABC\|ERROR" build/exp/j800a/synth.log | head -5; grep -c "" build/exp/j800a/synth.log; grep -n "Chip area" build/exp/j800a/synth.log
+  - result: 03:08:30 1491:5.24. Executing ABC pass (technology mapping using ABC). 1495:5.24.1.1. Executed ABC. 1497:Running ABC script: <abc-temp-dir>/abc.script 1498:ABC: UC Berkeley, ABC 1.01 (compiled 0 0) 1499:ABC: abc 01> empty 1907 1898: Chip area for module '\mkMultBuff': 5094.698000
+
+- `Bash` grep -n "^[0-9.]* Executing ABC\|abc -D\|-dont_use" build/exp/j400/synth.log | head -3; grep -o "dont_use [A-Z0-9_]*" build/exp/j400/synth.log | head -3; grep -n "OAI33\|NOR4" build/exp/j400/syn.stat. ...
+  - result: 1011:5.24. Executing ABC pass (technology mapping using ABC). 1261:9. Executing ABC pass (technology mapping using ABC). build/exp/j400/syn.stat.rpt:41: 1 1.33 NOR4_X1 build/exp/j400/syn.stat.rpt:42: 1 4.788 NOR4_X4 build/exp/j400/syn.stat.rpt:49: 2 3.724 OAI33_X1 build/exp/j800a/syn.stat.rpt:44: 5 6.65 NOR4_X1 build/exp/j800a/syn.stat.rpt:55: 1 1.862 OAI33_X1
+
+- `Bash` sed -n 1261,1300p build/exp/j400/synth.log | cut -c1-200
+  - result: 9. Executing ABC pass (technology mapping using ABC). 9.1. Extracting gate netlist of module '\mkMultBuff' to '<abc-temp-dir>/input.blif'.. 9.1.1. Executed ABC. Extracted 1594 gates and 1766 wires to a netlist network with 170 inputs and 166 outputs. Running ABC script: <abc-temp-dir>/abc.script ABC: UC Berkeley, ABC 1.01 (compiled 0 0) ABC: abc 01> empty ABC: abc 01> source <abc-temp-dir>/abc.scr ...
+
