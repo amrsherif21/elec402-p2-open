@@ -304,3 +304,20 @@ Notes on these results:
 - (c) clock-gating feasibility on p1c4.
 
 **References** were checked before citing (`notes/REFERENCES_CHECK.md`). Harris's taxonomy page range could not be confirmed, so it is cited without pages.
+
+**Clock gating (worker c, `build/cg/`): rejected.**
+- *Implementation:* a technology-independent latch-plus-AND gate in RTL. The enable includes `!RST_N`, so F14 still holds: the SAT check passes 149/149, and a separate SAT proof shows the latch input is 1 during reset. Yosys does not map latches with `dfflibmap`, so an extra mapping to DLL_X1 was needed.
+- *Results on p1c4, 400 MHz:*
+
+  | | baseline | gated |
+  |---|---|---|
+  | drain window | 398 µW | 109–196 µW |
+  | whole run | 659 µW | 503–534 µW |
+  | vectorless estimate (the judged metric) | 663 µW | 671–842 µW |
+  | SDF check without a clock tree | pass | fails 384/384 |
+
+- *Why the vectorless estimate rises:* the gated clock net is charged but the port-driven clock is not, and default activities keep the enable mostly on.
+- *Why the SDF check fails:* the gating gate reaches the flops 1.4–2.0 ns after clk. That skew is invisible to ideal-clock STA, so every product is wrong in SDF simulation.
+- *What it would take:* a clock tree (TritonCTS), propagated clocks and hold buffers (variant d3, operand register ungated). Sign-off builds no clock tree, so it would see the failing case.
+- *800 MHz:* the same and worse; a tree delay of 0.35–0.5 ns is 30–40 % of the period.
+- *Decision:* no clock gating. The only gain is activity-based, the judged metric gets worse, and sign-off SDF is at risk.
