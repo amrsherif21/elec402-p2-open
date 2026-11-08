@@ -1,6 +1,6 @@
 # Session record
 
-Rendered 2026-11-08 03:18:20 UTC from the Claude Code transcript.
+Rendered 2026-11-08 03:19:33 UTC from the Claude Code transcript.
 
 ### Prompt, 2026-11-08 02:33:34
 
@@ -646,3 +646,17 @@ Stage A of the adder is now critical, with almost nothing left to trim inside it
 > Timing closes with margin, but 668 flip-flops remain, so I'm merging pairs of carry-save levels to drop register ranks.
 
 - `Bash` for c in 1010 1101 1011; do sed "s/\'PRE/1'b1/; s/\'ENC/1'b0/; s/\'CSA/4'b$c/; s/\'SPL/1'b0/; s/\'SEL/1'b1/; s/\'CSL/1'b1/; s/\'CSWV/4/; s/\'GP4V/1'b1/" build/exp/top.sv > build/exp/ft/top.sv; iverilo ...
+  - result: 1010 ALL PASS 1101 ALL PASS 1011 ALL PASS w800_1101 P=1.25 enc=0 csa=1101 spl=0 abcD=1000 | yosys_area=5369.210000 rsz_area=5586 wns=0.045 whs=0.039 pwr_est=2.9594e-03 w800_1010 P=1.25 enc=0 csa=1010 spl=0 abcD=1000 | yosys_area=4513.488000 rsz_area=4833 wns=-0.030 whs=0.025 pwr_est=2.5482e-03 w800_1011 P=1.25 enc=0 csa=1011 spl=0 abcD=1000 | yosys_area=5177.158000 rsz_area=5412 wns=-0.030 whs=0.0 ...
+
+#### Reasoning, 2026-11-08 03:18:49
+
+> Merging levels helps: CSA registers after levels 2 and 4 cut area to 4,833 µm² and power by about 20%, but WNS slips to −0.030 ns. I'm looking at where that failure comes from.
+
+- `Bash` build/exp/path.sh build/exp/w800_1010/sta.rpt | sed -n '3,22p'; docker run --rm -v $PWD:$PWD -w $PWD -e LIB=tech/NangateOpenCellLibrary_slow.lib -e NETLIST=build/exp/w800_1010/rsz.v -e PERIOD=1.25 --e ...
+  - result: _4415_/Q (DFF_X1) fo=3 d=0.416 t=0.416 _2705_/ZN (XNOR2_X2) fo=1 d=0.138 t=0.555 _2706_/ZN (XNOR2_X2) fo=2 d=0.136 t=0.690 _2707_/ZN (AOI21_X1) fo=1 d=0.057 t=0.748 _2708_/ZN (OR2_X4) fo=2 d=0.159 t=0.907 _2804_/ZN (XNOR2_X2) fo=1 d=0.115 t=1.022 _2805_/ZN (AND2_X4) fo=1 d=0.101 t=1.123 _2806_/Z (BUF_X4) fo=1 d=0.069 t=1.192 1.192 data arrival time -0.087 1.163 library setup time -1.192 data arriv ...
+
+#### Reasoning, 2026-11-08 03:19:06
+
+> The level-4 stage and adder are within ±0.03 ns of zero, and an extra BUF_X4 before the flip-flop D pins comes from ABC applying the 23.5 fF output load to each one. I'm setting that load to a single flip-flop input (about 1 fF) and leaving the real port loads to the Resizer and STA.
+
+- `Bash` grep -n "set_load 23.5" submission/scripts/synth.tcl && sed -i 's/puts $cf "set_driving_cell BUF_X1\\nset_load 23.5"/puts $cf "set_driving_cell BUF_X1\\nset_load [expr {[info exists ::env(ABC_LOAD)] ? ...
