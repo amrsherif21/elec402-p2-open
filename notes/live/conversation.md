@@ -1,6 +1,6 @@
 # Session record
 
-Rendered 2026-11-08 02:46:45 UTC from the Claude Code transcript.
+Rendered 2026-11-08 02:49:42 UTC from the Claude Code transcript.
 
 ### Prompt, 2026-11-08 02:33:34
 
@@ -186,3 +186,10 @@ Using OpenROAD's Resizer (gate sizing + buffering, with wire-load models) after 
   - result: tb_mult.sv:5: syntax error tb_mult.sv:5: error: Invalid module item. m.vvp: Unable to open input file. tb_mult.sv:5: syntax error tb_mult.sv:5: error: Invalid module item. m.vvp: Unable to open input file. tb_mult.sv:5: syntax error tb_mult.sv:5: error: Invalid module item. m.vvp: Unable to open input file. tb_mult.sv:5: syntax error tb_mult.sv:5: error: Invalid module item. m.vvp: Unable to open  ...
 
 - `Bash` sed -i 's/localparam int LAT = .*/localparam int LAT = 'LATM;/' tb_mult.sv && for cfg in "0 4'b1000 0 1" "1 4'b0101 1 4" "0 4'b0011 0 3" "1 4'b1111 1 6"; do set -- $cfg; iverilog -g2012 -DENC=$1 -DCSA ...
+  - result: mult_pipe.sv:55: sorry: constant selects in always_* processes are not currently supported (all bits will be included). mult_pipe.sv:55: sorry: constant selects in always_* processes are not currently supported (all bits will be included). mult_pipe.sv:55: sorry: constant selects in always_* processes are not currently supported (all bits will be included). mult_pipe.sv:55: sorry: constant selects ...
+
+### Agent, 2026-11-08 02:47:33
+
+Icarus 12 mishandles arrays in `always_comb`; rewriting with generate loops and continuous assigns, which also suits the sign-off tool better.
+
+- `Bash` python3 - <<'EOF' p='mult_pipe.sv' s=open(p).read() start=s.index(' // ------------------------------------------------------------------\n // Booth radix-4 recoding') end=s.index(' // --------------- ...
