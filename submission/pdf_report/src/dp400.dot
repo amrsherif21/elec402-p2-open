@@ -6,9 +6,8 @@ digraph dp400 {
   r1 [shape=box, style=filled, fillcolor="#dde8f5", label="Rank 1 (40)\na 16b + digits 24b"];
   tree [shape=box, style=rounded, label="select 8 PP rows,\nWallace bit-level\ncompression, 4 levels\n(low 8 columns resolved)"];
   r2 [shape=box, style=filled, fillcolor="#dde8f5", label="Rank 2 (51)\ntwo rows +\nresolved low bits"];
-  cpa [shape=box, style=rounded, label="carry-propagate\nadder"];
-  r3 [shape=box, style=filled, fillcolor="#dde8f5", label="Rank 3 (32)\nproduct"];
-  out [shape=plaintext, label="writeMem_val, EN_writeMem = v[2]"];
-  in -> enc -> r1 -> tree -> r2 -> cpa -> r3 -> out;
-  {rank=same; enc; r1;} {rank=same; tree; r2;} {rank=same; cpa; r3;}
+  cpa [shape=box, style=rounded, label="carry-propagate\nadder (no register)"];
+  out [shape=plaintext, label="writeMem_val (combinational)\nEN_writeMem = v[1], writeMem_addr"];
+  in -> enc -> r1 -> tree -> r2 -> cpa -> out;
+  {rank=same; enc; r1;} {rank=same; tree; r2;}
 }
