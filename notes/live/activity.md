@@ -588,3 +588,12 @@
 | 2026-11-08 17:44:53 UTC | Bash | `tail -5 /tmp/dockerd.log 2>/dev/null; id; uptime` |
 | 2026-11-08 17:45:07 UTC | Bash | `pgrep -a dockerd \|\| (dockerd >/tmp/dockerd.log 2>&1 &); sleep 8; docker info >/dev/null 2>&1 && echo OK; docker images \| head` |
 | 2026-11-08 17:45:45 UTC | Bash | `time bash submission/scripts/eval_candidate.sh 800 build/r4row/base/rtl build/r4row/base 2>&1 \| tail -30` |
+| 2026-11-08 17:45:46 UTC | Bash | `grep -n "make.*f14\\|^f14" -A 12 Makefile \| head -40; cat submission/scripts/f14_check.sh \| head -40` |
+| 2026-11-08 17:45:50 UTC | Bash | `bash -c 'W=build/r4row/base; S=$W/rep/sta.rpt; grep -E "^(worst slack\|cell area\|Total)" $S; cat $W/rep/power_summary.txt; grep -E "PASS\|FAIL" $W/rep/check.log $W/rep/sim.log \| tail -3'; head -20 build ...` |
+| 2026-11-08 17:45:56 UTC | Bash | `cat submission/scripts/resize.tcl submission/scripts/synth.tcl; grep -c . build/r4row/base/rep/resize.log; grep -iE "insert\|resiz\|repair\|buffer" build/r4row/base/rep/resize.log \| head -20` |
+| 2026-11-08 17:46:00 UTC | Bash | `grep -E "^== before\|final\|worst slack\|Design area" build/r4row/base/rep/resize.log \| head; grep -E "^\s+(final\|[0-9]+)\s+\\|" build/r4row/base/rep/resize.log \| tail -3; grep -E "Chip area\|cells" build/ ...` |
+| 2026-11-08 17:46:06 UTC | Bash | `cd /home/user/elec402-p2-open/build/r4wal && python3 - <<'PY' p='gen_tree.py'; s=open(p).read() def rep(a,b,cnt=1): global s assert s.count(a)==cnt, (a, s.count(a)) s=s.replace(a,b) rep('''ap.add_argu ...` |
+| 2026-11-08 17:46:10 UTC | Bash | `sed -n 1,40p submission/rtl_400/mkMultBuff.sv` |
+| 2026-11-08 17:46:17 UTC | Bash | `cd /home/user/elec402-p2-open/build/r4wal && python3 - <<'PY' import re # 400 template from the submission top t = open('../../submission/rtl_400/mkMultBuff.sv').read() t = re.sub(r"// Datapath: mult_ ...` |
+| 2026-11-08 17:46:31 UTC | Bash | `cd /home/user/elec402-p2-open/build/r4wal && cat > mktop.py <<'PY' #!/usr/bin/env python3 """mktop.py RUN GEN_TXT OUT -- fill top<RUN>.sv.in from the generator summary""" import sys, re, textwrap run, ...` |
+| 2026-11-08 17:46:51 UTC | Bash | `cat submission/testbench/sdf_checker_800.sv \| head -80; grep -n "writeMem_val\\|EN_writeMem" submission/testbench/rtl_checker.sv \| head -20` |
