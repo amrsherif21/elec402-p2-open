@@ -1,6 +1,6 @@
 # Session record
 
-Rendered 2026-11-08 03:11:16 UTC from the Claude Code transcript.
+Rendered 2026-11-08 03:12:19 UTC from the Claude Code transcript.
 
 ### Prompt, 2026-11-08 02:33:34
 
@@ -536,3 +536,22 @@ The custom-script branch of `synth.tcl` was still passing the original library t
   - result: 1 CSW 8: ALL PASS CSW 4: ALL PASS [This command modified 1 file you've previously read: build/exp/mult_pipe.sv. Call Read before editing.]
 
 - `Bash` (MAPLIB=build/exp/lib_du1.lib CSW=8 SEL=1 CSL=1 PRE=1 build/exp/run.sh m800a 1.25 0 1111 0 1000 0 kogge-stone & MAPLIB=build/exp/lib_du1.lib CSW=4 SEL=1 CSL=1 PRE=1 build/exp/run.sh m800b 1.25 0 1111 ...
+  - result: m800b P=1.25 enc=0 csa=1111 spl=0 abcD=1000 | yosys_area=5646.116000 rsz_area=5853 wns=-0.159 whs=0.024 pwr_est=3.1091e-03 m800a P=1.25 enc=0 csa=1111 spl=0 abcD=1000 | yosys_area=5287.548000 rsz_area=5778 wns=-0.197 whs=0.020 pwr_est=3.0653e-03 _4752_/Q (DFF_X1) fo=1 d=0.376 t=0.376 .Q(\u_mult.l4q [17]), _5403_/Q (DFF_X2) fo=5 d=0.663 t=0.663 .Q(readMem_addr[3]),
+
+#### Reasoning, 2026-11-08 03:11:33
+
+> Explicit-prefix carry-select reaches 800 MHz at −0.16 ns with 4-bit blocks and −0.20 ns with 8-bit blocks. With 4-bit blocks the critical path has shifted into control logic, where the shared pointer ptr_q drives both address ports.
+
+- `Bash` build/exp/path.sh build/exp/m800b/sta.rpt | sed -n '3,20p'; echo; build/exp/path.sh build/exp/m800a/sta.rpt | sed -n '3,20p'; grep -A3 "^Endpoint" build/exp/m800a/sta.rpt | head -2
+  - result: _5403_/Q (DFF_X2) fo=5 d=0.663 t=0.663 _3198_/ZN (INV_X1) fo=2 d=0.097 t=0.760 _3202_/ZN (OR3_X4) fo=1 d=0.300 t=1.060 _3203_/Z (XOR2_X2) fo=1 d=0.219 t=1.280 _3204_/ZN (NOR2_X4) fo=1 d=0.078 t=1.358 1.358 data arrival time -0.051 1.199 library setup time -1.358 data arrival time slack (VIOLATED) fo=-0.159 d= t= _4752_/Q (DFF_X1) fo=1 d=0.376 t=0.376 _4243_/Z (BUF_X4) fo=5 d=0.097 t=0.473 _4248_/Z ...
+
+### Agent, 2026-11-08 03:11:42
+
+Two fixes next: separate write and read pointers, so each register drives only one address port, and `OR3` added to the don't-use list.
+
+- `Bash` python3 - <<'EOF' t=open('build/exp/top.sv').read() t=t.replace("logic [5:0] acc_q, ptr_q;","logic [5:0] acc_q, wp_q, rp_q;") t=t.replace("acc_q <= '0; ptr_q <= '0; v_q <= '0;","acc_q <= '0; wp_q <= ' ...
+  - result: lib_dont_use: 37 cells marked dont_use -> build/exp/lib_du2.lib ALL PASS n800c P=1.25 enc=0 csa=1111 spl=0 abcD=1000 | yosys_area=5840.296000 rsz_area=6019 wns=-0.077 whs=0.024 pwr_est=3.1803e-03 n800b P=1.25 enc=0 csa=1111 spl=0 abcD=1000 | yosys_area=5793.214000 rsz_area=5965 wns=-0.090 whs=0.024 pwr_est=3.1634e-03 _5395_/Q (DFF_X2) fo=3 d=0.568 t=0.568 .Q(RDY_blockRead), _5383_/Q (DFF_X2) fo=3  ...
+
+- `Bash` build/exp/path.sh build/exp/n800b/sta.rpt | sed -n '1,20p'; grep -A3 "^Startpoint" build/exp/n800b/sta.rpt | sed -n '1,3p;6,8p'; grep -E "^\s+-?[0-9.]+\s+slack" build/exp/n800b/sta.rpt | head
+  - result: by clk) fo=Startpoint: d=edge-triggered t=flip-flop by clk) fo=Endpoint: d=edge-triggered t=flip-flop _5395_/Q (DFF_X2) fo=3 d=0.568 t=0.568 _2697_/ZN (AND2_X4) fo=1 d=0.139 t=0.707 _2698_/Z (BUF_X16) fo=5 d=0.073 t=0.780 _4141_/ZN (AND3_X4) fo=4 d=0.153 t=0.933 _4145_/ZN (NAND2_X4) fo=1 d=0.045 t=0.979 _4146_/Z (XOR2_X2) fo=1 d=0.228 t=1.207 _4147_/ZN (NOR2_X4) fo=1 d=0.080 t=1.287 1.287 data arr ...
+
