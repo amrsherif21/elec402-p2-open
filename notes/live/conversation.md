@@ -1,6 +1,6 @@
 # Session record
 
-Rendered 2026-11-08 03:06:23 UTC from the Claude Code transcript.
+Rendered 2026-11-08 03:07:40 UTC from the Claude Code transcript.
 
 ### Prompt, 2026-11-08 02:33:34
 
@@ -464,3 +464,13 @@ ABC's `buffer` has a `-p` flag that also buffers primary inputs, which includes 
 > The critical path is now the 16-bit final-adder halves at about 1.45 ns, so I'm adding a register after partial-product selection and a two-stage carry-select final adder with 8-bit blocks to `mult_pipe`.
 
 - `Bash` grep -n "PRE_ENC = \|CPA_SPLIT = \|assign r8\|assign l1 = \|wire \[31:0\] sx\|generate if (CPA_SPLIT)\|end else begin : g_full\|end endgenerate\|endmodule" build/exp/mult_pipe.sv
+  - result: 10: parameter bit PRE_ENC = 1'b1, 13: parameter bit CPA_SPLIT = 1'b0 69: end endgenerate 90: end endgenerate 92: assign r8 = K | ({31'd0, neg_e[7]} << 14); 105: assign l1 = {csa(r6, r7, r8), csa(r3, r4, r5), csa(r0, r1, r2)}; 133: wire [31:0] sx = l4q[31:0], sy = l4q[63:32]; 137: generate if (CPA_SPLIT) begin : g_split 151: end else begin : g_full 156: end endgenerate 157:endmodule : mult_pipe
+
+- `Bash` python3 - <<'EOF' p='build/exp/mult_pipe.sv' s=open(p).read() s=s.replace(" parameter bit CPA_SPLIT = 1'b0\n"," parameter bit SEL_REG = 1'b0,\n parameter bit CPA_SPLIT = 1'b0,\n parameter bit CPA_CSEL ...
+  - result: 7:sed "s/\'PRE/1'b${PRE:-1}/; s/\'ENC/1'b$E/; s/\'CSA/4'b$C/; s/\'SPL/1'b$S/; s/\'SEL/1'b${SEL:-0}/; s/\'CSL/1'b${CSL:-0}/" build/exp/top.sv > $D_DIR/rtl/mkMultBuff.sv 24: localparam bit SEL_REG = 'SEL; 26: localparam bit CPA_CSEL = 'CSL; 27: localparam int LAT_M = 1 + (PRE_ENC ? 0 : ENC_REG) + CSA_REG[0] + CSA_REG[1] + CSA_REG[2] + CSA_REG[3] + 1 + (CPA_SPLIT | CPA_CSEL) + SEL_REG; 58: mult_pipe  ...
+
+### Agent, 2026-11-08 03:06:48
+
+All three new configurations pass the RTL checker at 1.25 ns (latencies 8, 7 and 6). Synthesizing them.
+
+- `Bash` (SEL=1 CSL=1 PRE=1 build/exp/run.sh i800a 1.25 0 1111 0 1000 0 kogge-stone & SEL=0 CSL=1 PRE=1 build/exp/run.sh i800b 1.25 0 1111 0 1000 0 kogge-stone & wait) 2>&1 | grep -v Warning; SEL=1 CSL=1 PRE=1 ...
