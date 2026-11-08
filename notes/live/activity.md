@@ -669,3 +669,13 @@
 | 2026-11-08 17:56:41 UTC | Bash | `cd /home/user/elec402-p2-open/build/r4wal && grep "before\\|worst slack" a4_np/rep/resize.log; grep -v RSZ-0075 a4_np/rep/resize.log \| grep -A6 "Repairing" \| head; grep "before" ../cand800b/w4r3cpa/rep ...` |
 | 2026-11-08 17:56:51 UTC | Bash | `grep -v "^ " /home/user/elec402-p2-open/build/r4wal/batch2.log` |
 | 2026-11-08 17:56:54 UTC | Bash | `cd /home/user/elec402-p2-open/build/r4wal && grep "slack (\\|Endpoint" b8_bp888/rep/sta.rpt \| head -12; awk '/Startpoint/{f=1} f' b8_bp888/rep/sta.rpt \| head -30` |
+| 2026-11-08 17:57:07 UTC | Bash | `D=build/r4row/c4_noenc && mkdir -p $D/rtl && cp build/r4row/c2_drst/rtl/*.sv $D/rtl/ && sed -i "s/.PRE_ENC(1'b1)/.PRE_ENC(1'b0)/" $D/rtl/mkMultBuff.sv && grep -n "PRE_ENC(1'b0)" $D/rtl/mkMultBuff.sv & ...` |
+| 2026-11-08 17:57:10 UTC | Bash | `grep -m3 -E "Endpoint\|Startpoint" build/r4row/c4_noenc/rep/sta.rpt` |
+| 2026-11-08 17:57:14 UTC | Bash | `awk '/Startpoint/{n++} n==1' build/r4row/c4_noenc/rep/sta.rpt \| grep -E "\(\|slack" \| head -30; grep -n "_3874_\\|_3734_ " build/r4row/c4_noenc/map.v \| head; grep -A6 "DFF_X. _3874_ \\|DFF_X. _3734_ " bu ...` |
+| 2026-11-08 17:57:26 UTC | Bash | `sed -n 1,30p build/r4row/c2_drst/rtl/mult_pipe.sv` |
+| 2026-11-08 17:57:28 UTC | Bash | `cd /home/user/elec402-p2-open/build/r4wal && grep -n "def level_wallace" -A 26 gen_tree.py; grep -n "level_wallace(cols, 3 if" gen_tree.py` |
+| 2026-11-08 17:57:42 UTC | Bash | `cd /home/user/elec402-p2-open/build/r4wal && python3 - <<'PY' p='gen_tree.py'; s=open(p).read() def rep(a,b): global s assert s.count(a)==1, a s=s.replace(a,b) rep('''def level_wallace(cols, ha_min=WA ...` |
+| 2026-11-08 17:57:48 UTC | Bash | `python3 - build/r4row/c2_drst/rtl <<'EOF' import sys d=sys.argv[1] f=d+'/mult_pipe.sv'; t=open(f).read() old=t[t.index("// CPA : 1 two-stage"):t.index("module mult_pipe #(")] new="""// CPA : 1 two-sta ...` |
+| 2026-11-08 17:57:50 UTC | Bash | `cd /home/user/elec402-p2-open/build/r4wal && sed -i 's/ lim = args.lvl_limit if (args.lvl_limit > 0 and lv in cuts) else None/ lim = args.lvl_limit if (args.lvl_limit > 0 and lv in cuts and lv != max( ...` |
+| 2026-11-08 17:57:54 UTC | Bash | `cd /home/user/elec402-p2-open/build/r4wal && grep "Endpoint\\|slack (" b8_bp/rep/sta.rpt \| paste - - \| head -8; grep -n "report_checks\\|group_count\\|endpoint" ../../submission/scripts/sta.tcl \| head` |
+| 2026-11-08 17:57:58 UTC | Bash | `cd /home/user/elec402-p2-open/build/r4wal && awk '/Startpoint/{f=1} f' b8_bp/rep/sta.rpt \| sed -n 7,24p; grep -n "prefix over blocks" -A 30 b8_bp/rtl/mult_pipe.sv \| grep "assign prod" \| head -2; grep  ...` |
