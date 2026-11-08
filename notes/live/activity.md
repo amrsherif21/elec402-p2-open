@@ -97,3 +97,13 @@
 | 2026-11-08 02:59:09 UTC | Bash | `mkdir -p submission/testbench/timing_fail/rtl_onestage && sed 's/localparam bit \[3:0\] CSA_REG = 4'"'"'b0100;/localparam bit [3:0] CSA_REG = 4'"'"'b0000; \/\/ TIMING-FAIL VARIANT: no carry-save regis ...` |
 | 2026-11-08 02:59:16 UTC | Bash | `printf "help read_vcd\nhelp report_power\nhelp read_saif\nhelp set_power_activity\n" > build/h.tcl && docker run --rm -v $PWD:$PWD -w $PWD --entrypoint /OpenSTA/build/sta openroad/opensta@sha256:4162b ...` |
 | 2026-11-08 02:59:40 UTC | Write | `/home/user/elec402-p2-open/submission/scripts/power.tcl` |
+| 2026-11-08 02:59:45 UTC | Write | `/home/user/elec402-p2-open/submission/scripts/power_summary.py` |
+| 2026-11-08 02:59:45 UTC | Read | `/home/user/elec402-p2-open/Makefile` |
+| 2026-11-08 02:59:52 UTC | Write | `/home/user/elec402-p2-open/submission/scripts/power.sh` |
+| 2026-11-08 02:59:55 UTC | Edit | `/home/user/elec402-p2-open/Makefile` |
+| 2026-11-08 03:00:00 UTC | Bash | `make power RUN=400 2>&1 \| tail -6; grep -iE "warn\|error" submission/syn_reports/400/power.rpt \| sort \| uniq -c \| head` |
+| 2026-11-08 03:00:07 UTC | Bash | `sed -i '/highest_power_instances/d' submission/scripts/power.tcl && make power RUN=400 2>&1 \| tail -5; grep -iE "warn\|error\|annotated\|vcd" submission/syn_reports/400/power.rpt \| sort \| uniq -c \| head` |
+| 2026-11-08 03:00:27 UTC | Write | `/home/user/elec402-p2-open/submission/scripts/mutate.sh` |
+| 2026-11-08 03:00:35 UTC | Bash | `bash submission/scripts/mutate.sh 400 2>&1 \| tail -13` |
+| 2026-11-08 03:00:42 UTC | Bash | `du -sh submission/outputs/* submission/syn_reports/400/* \| sort -h \| tail -8; git status --short \| head -30` |
+| 2026-11-08 03:01:19 UTC | Write | `/home/user/elec402-p2-open/notes/WORKLOG.md` |
