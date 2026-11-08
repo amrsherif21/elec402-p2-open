@@ -504,3 +504,5 @@
 | 2026-11-08 08:44:02 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800b && grep -n 'm2, n2 = register("r2", pps)' -A 6 gen_tree.py` |
 | 2026-11-08 08:44:15 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800b && python3 - <<'EOF' s = open("gen_tree.py").read() old = '''m2, n2 = register("r2", pps) ppr = [[(m2[f"pp{i}[{j}]"], 0.0) for j in range(17)] for i in ran ...` |
 | 2026-11-08 08:45:09 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800b && for rb in 1.9 2.0; do python3 gen_tree.py /dev/null --mode wallace --rawlevels 3 --nosel --cuts 4 --gp cpa --cpa one --res-budget $rb \| grep "LAT\\|rippl ...` |
+| 2026-11-08 08:45:26 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800b && for kk in "4 4 --bpair" "8 5" "6 6" "8 6" "8 8" "7 5"; do set -- $kk; python3 gen_tree.py /dev/null --mode wallace --rawlevels 3 --cuts 2,4 --gp gt --re ...` |
+| 2026-11-08 08:47:29 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800b && ./run.sh 800 w24r3gt5r --mode wallace --rawlevels 3 --cuts 2,4 --gp gt --k0 8 --k 5 --res-budget 0.66 2>&1 \| grep -v "u_mult.[aont][1enw]" \| tail -14` |
