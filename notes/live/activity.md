@@ -486,3 +486,7 @@
 | 2026-11-08 08:26:08 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800b && python3 - <<'EOF' s = open("gen_tree.py").read() s = s.replace('ap.add_argument("--stats"', 'ap.add_argument("--bpair", action="store_true", help="first ...` |
 | 2026-11-08 08:26:53 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800b && sed -i 's/ rP = \[mA\[BP\[bi\]\] if bi in BP else ZERO for bi in range(nb - 1)\]/ rP = [mA[BP[bi]] if bi in BP and bi >= (2 if args.bpair else 1) else Z ...` |
 | 2026-11-08 08:27:17 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800b && grep -n "last = maxh(cols) <= 2" -B2 -A12 gen_tree.py` |
+| 2026-11-08 08:27:39 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800b && python3 - <<'EOF' s = open("gen_tree.py").read() old = ''' last = maxh(cols) <= 2 if lv in cuts or last:''' new = ''' last = maxh(cols) <= 2 if last and ...` |
+| 2026-11-08 08:28:06 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800b && python3 - <<'EOF' s = open("gen_tree.py").read() a = s.index("def ripple_low(cols, budget):") b = s.index("# ------------------------------------------- ...` |
+| 2026-11-08 08:28:19 UTC | Bash | `for d in w24cpa5 w24gt5; do docker run --rm -v "$PWD:$PWD" -w "$PWD" -e LIB=tech/NangateOpenCellLibrary_slow.lib -e NETLIST=build/cand800b/$d/map.v -e PERIOD=1.25 -e GROUPS="u_mult.r4" --entrypoint /O ...` |
+| 2026-11-08 08:28:56 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800b && sed -n '/# increment: s = s0 + cin/,/cpa_desc = /p' gen_tree.py` |
