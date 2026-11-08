@@ -1,6 +1,6 @@
 # Session record
 
-Rendered 2026-11-08 18:25:54 UTC from the Claude Code transcript.
+Rendered 2026-11-08 18:27:57 UTC from the Claude Code transcript.
 
 ### Prompt, 2026-11-08 02:33:34
 
@@ -3003,3 +3003,26 @@ The 800 MHz adder mutant targeted a line in the old row-tree multiplier, so it n
 The checker now kills all 11 mutants at 400 MHz and all 13 at 800 MHz. Running the full flow on the final designs: all steps, F14, the failing netlists and the waveform figures.
 
 - `Bash` for R in 400 800; do make synth check sim timing power f14 RUN=$R 2>&1 | grep -E "^(worst slack|cell area|ALL PASS|F14CHECK|fill|drain|run:|synthesis)|summary|rror"; make timing_fail RUN=$R 2>&1 | gre ...
+  - result: worst slack max 0.172 worst slack min 0.061 cell area 2183.860 um^2 (sequential 488.376 um^2, 1418 instances) ==== mkMultBuff_tb summary (seed=402, period=2.500 ns, latency=2, cycles=5904) ==== ALL PASS ==== mkMultBuff_tb summary (seed=402, period=2.500 ns, latency=2, cycles=5904) ==== ALL PASS ==== mkMultBuff_sdf_checker_400 summary: period 2.500 ns, seed 402, latency 2, 887 cycles, 384 accepted, ...
+
+#### Reasoning, 2026-11-08 18:26:01
+
+> Both frequency designs pass the checks, with all flip-flops proven reset and both timing-violating netlists still reporting TIMING FAIL. I'm committing and pushing check/final next.
+
+- `Bash` cat >> notes/WORKLOG.md <<'EOF' **Sign-off r4-f8p** (5bad848). 800 MHz: **4240.5 µm² (−4.0 % vs e18), 805.9 µW (−2.9 %)**, WNS 75 ps, SDF pass 1162/1162; A×P 0.933. f8p is better than e18 on both judg ...
+  - result: 6d228d0 Round 4 final RTL: 400 MHz 2-rank Wallace without product register (108 flops), 800 MHz rebalanced Wallace (422 flops); generator options, mutants 0
+
+### Agent, 2026-11-08 18:26:27
+
+`check/final` is submitted. While it runs I'm updating the report, starting with the new critical paths.
+
+- `Bash` for r in 400 800; do echo "== $r"; build/exp/path.sh submission/syn_reports/$r/sta.rpt | sed -n '3,30p' | grep -v "data arrival\|^ *-" | head -16; s=$(build/exp/path.sh submission/syn_reports/$r/sta.r ...
+  - result: == 400 _2681_/Q (DFF_X1) fo=1 d=0.393 t=0.393 _1386_/Z (BUF_X1) fo=5 d=0.143 t=0.537 _1399_/ZN (OAI22_X1) fo=1 d=0.074 t=0.611 _1400_/ZN (OR2_X1) fo=2 d=0.226 t=0.837 _1402_/ZN (OAI22_X4) fo=5 d=0.172 t=1.009 _1422_/ZN (AOI21_X1) fo=2 d=0.101 t=1.109 _1457_/ZN (OAI21_X2) fo=4 d=0.188 t=1.297 _1504_/ZN (AOI21_X1) fo=2 d=0.083 t=1.380 _1522_/ZN (OAI21_X1) fo=2 d=0.086 t=1.467 _1528_/ZN (AND3_X1) fo= ...
+
+#### Reasoning, 2026-11-08 18:26:34
+
+> The 400 MHz critical path ends at the output port with 2.328 ns against 2.5 ns, limited by the final XOR; the 800 MHz path runs from R2 through compression levels 1–2 to R3 at 1.037 ns against 1.161 ns. I'm updating the two datapath diagrams next.
+
+- `Bash` cd /home/user/elec402-p2-open/submission/pdf_report/src && cat > dp400.dot <<'EOF' digraph dp400 { rankdir=TB; newrank=true; bgcolor=white; nodesep=0.25; ranksep=0.3; node [fontname="Helvetica", fonts ...
+  - result: ok
+

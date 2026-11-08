@@ -752,3 +752,7 @@
 | 2026-11-08 18:23:30 UTC | Bash | `sed -n 840,881p submission/rtl_800/mult_pipe.sv \| head -40` |
 | 2026-11-08 18:23:51 UTC | Bash | `python3 - <<'EOF' p='submission/scripts/mutate.sh' s=open(p).read() old=[l for l in s.split('\n') if 'adder carry-in error (mult_pipe)' in l and 'bgg' in l][0] new=' "wire x786 = r5\\[28\\] ^ n785;\|wi ...` |
 | 2026-11-08 18:25:54 UTC | Bash | `for R in 400 800; do make synth check sim timing power f14 RUN=$R 2>&1 \| grep -E "^(worst slack\|cell area\|ALL PASS\|F14CHECK\|fill\|drain\|run:\|synthesis)\|summary\|rror"; make timing_fail RUN=$R 2>&1 \| gre ...` |
+| 2026-11-08 18:26:13 UTC | Bash | `cat >> notes/WORKLOG.md <<'EOF' **Sign-off r4-f8p** (5bad848). 800 MHz: **4240.5 µm² (−4.0 % vs e18), 805.9 µW (−2.9 %)**, WNS 75 ps, SDF pass 1162/1162; A×P 0.933. f8p is better than e18 on both judg ...` |
+| 2026-11-08 18:26:29 UTC | Bash | `for r in 400 800; do echo "== $r"; build/exp/path.sh submission/syn_reports/$r/sta.rpt \| sed -n '3,30p' \| grep -v "data arrival\\|^ *-" \| head -16; s=$(build/exp/path.sh submission/syn_reports/$r/sta.r ...` |
+| 2026-11-08 18:26:43 UTC | Bash | `cd /home/user/elec402-p2-open/submission/pdf_report/src && cat > dp400.dot <<'EOF' digraph dp400 { rankdir=TB; newrank=true; bgcolor=white; nodesep=0.25; ranksep=0.3; node [fontname="Helvetica", fonts ...` |
+| 2026-11-08 18:27:57 UTC | Write | `/home/user/elec402-p2-open/submission/pdf_report/src/report.md` |
