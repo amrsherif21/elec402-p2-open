@@ -1,6 +1,6 @@
 # Session record
 
-Rendered 2026-11-08 18:11:08 UTC from the Claude Code transcript.
+Rendered 2026-11-08 18:11:19 UTC from the Claude Code transcript.
 
 ### Prompt, 2026-11-08 02:33:34
 
@@ -2909,3 +2909,22 @@ While the three checks run, I'm running the F14 and SDF checks on the row-tree c
   - result: ALL PASS F14CHECK: flops 442, reset-gated 442 (of which reset-to-1 2), NOT reset-gated 0:
 
 - `Bash` until git fetch -q origin check-results 2>/dev/null && [ $(git ls-tree --name-only origin/check-results results/ | grep -c "r4-wal\|r4-c2a") -ge 3 ]; do sleep 30; done; for d in $(git ls-tree --name-o ...
+  - result: Command running in background with ID: bwc32ul7v. Output is being written to: /tmp/claude-0/-home-user-elec402-p2-open/6503db16-82a0-5ee1-9a2e-83eb2b44d2ca/tasks/bwc32ul7v.output. You will be notified when it completes. To check interim output, use Read on that file path.
+
+### Agent, 2026-11-08 18:11:17
+
+I've queued three more sign-off checks and committed and pushed the work so far. The final choice waits on those scorecards.
+
+**The first sign-off result changes the picture at 800 MHz.** Dropping the product register on the row tree (c2: 408 flops instead of 442) cut sign-off area by 2.2 %. But power rose 19 %, from 829.7 to 988.2 µW, and slack fell from 158 to 109 ps. The adder's last stage now drives the output port directly. That fits your upsizing explanation: fewer flops and gates, yet more power, because the path is tighter. So dropping the product register at 800 MHz isn't a win on its own.
+
+**Queued checks:**
+- **Wallace pair, no product register:** 400 MHz at 108 flops (+0.172 ns in our flow); 800 MHz at 389 flops (+0.087 ns).
+- **800 MHz Wallace, product register kept:** includes the digit-gated reset and the tree rebalancing; 422 flops, +0.075 ns.
+- **800 MHz row tree, product register kept:** the digit-gated reset only, to isolate that change; 442 flops, +0.145 ns.
+
+All three pass the SDF and F14 checks in our flow. The 800 MHz Wallace designs can't reach the +0.12 ns we wanted in our flow, because the last XOR into the output port caps them near +0.087 ns.
+
+**Generic gate counts support your point.** The Wallace multiplier has 13 % fewer logic gates than the row tree, though 35 % more XORs.
+
+**F14 check fix.** The Wallace worker found that my F14 check crashed when a flip-flop's D pin connects to a named bus bit, which the digit-gated reset produces. I merged the one-line fix and re-verified both current final designs: every flip-flop is still proven reset.
+
