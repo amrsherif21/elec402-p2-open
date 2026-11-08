@@ -321,3 +321,33 @@ Notes on these results:
 - *What it would take:* a clock tree (TritonCTS), propagated clocks and hold buffers (variant d3, operand register ungated). Sign-off builds no clock tree, so it would see the failing case.
 - *800 MHz:* the same and worse; a tree delay of 0.35–0.5 ns is 30–40 % of the period.
 - *Decision:* no clock gating. The only gain is activity-based, the judged metric gets worse, and sign-off SDF is at risk.
+
+**Sign-off of the 400 MHz candidate p1c4** (`check/c400-p1c4`, 0fbf037, checked 08:19 UTC). Against the previous design:
+
+| | previous | p1c4 |
+|---|---|---|
+| WNS | 156 ps | 441 ps |
+| area | 2752.1 µm² | **2648.1 µm² (−3.8 %)** |
+| vectorless power | 224.6 µW | **218.6 µW (−2.7 %)** |
+| SDF simulation | | pass, 1204/1204 |
+
+**800 MHz cut + adder worker (a), `build/cand800a/`**, 19 runs.
+
+| | baseline | e18 |
+|---|---|---|
+| ranks | 7 | 6 |
+| flops | 577 | **442** |
+| flops per rank | | R1 40 / PP 144 / after L2 92 / after L4 60 / adder middle 43 / product 32 / control 31 |
+| WNS | +0.075 ns | +0.129 ns |
+| area (seq/comb) | | 4022 µm² (2001/2022) |
+| vectorless power | | 2189 µW |
+| activity run / fill / drain | | 2493 / 4535 / 1946 µW |
+
+What each change did:
+- *Cuts:* the L1 rank (117 bits) is dropped. That became possible once each 3:2 adds its latest-arriving input last, `(x^y)^z`.
+- *Adder:* the carry-select adder is replaced by a two-stage carry-increment adder with 4-bit blocks. The middle rank holds the block sums for carry-in 0 plus carry-outs for carry-in 0 and 1: 43 flops instead of about 59.
+- *Single-stage adders:* none fits. Han-Carlson −0.164, Sklansky −0.176, Kogge-Stone −0.177, Brent-Kung −0.324, Yosys `+` −0.674 ns.
+- *Control:* 43 → 31 flops. Split 3+3-bit pointers and a drain-start condition taken from the valid register replace the 12 address/EN_writeMem port copies. Both ready-flag copies are still needed.
+- *What did not work:* PRE_ENC=0 saves 8 flops but adds 534 µm² of comb. The 144-bit PP rank cannot be avoided, because select + L1 is about 0.9 ns against a 0.715 ns budget. Five ranks would need 3.73 ns of logic.
+
+e18 passes SDF timing sim (384/384) and F14 (442/442). It was submitted to sign-off as `check/c800-e18` (89c8d99, with rtl_400 = p1c4).
