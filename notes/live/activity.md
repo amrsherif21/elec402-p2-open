@@ -84,3 +84,8 @@
 | 2026-11-08 02:55:06 UTC | Bash | `build/exp/path.sh build/exp/p400b/sta.rpt \| head -40; grep -E "before\|^worst\|RSZ-00\|Design area" build/exp/p400b/rsz.log` |
 | 2026-11-08 02:55:39 UTC | Bash | `python3 - <<'EOF' p='submission/scripts/synth.tcl' s=open(p).read() s=s.replace('abc -D $abc_d -liberty $lib -script submission/scripts/abc_speed.script -constr [file rootname $out].abc.constr', '''se ...` |
 | 2026-11-08 02:55:50 UTC | Bash | `(for d in 1500 1800 2300; do PRE=1 build/exp/run.sh r400_$d 2.5 0 1000 0 $d 0 kogge-stone & done; wait) 2>&1 \| grep -v Warning` |
+| 2026-11-08 02:56:07 UTC | Bash | `sed -i 's/repair_timing -setup -repair_tns 100 -setup_margin 0.0/repair_timing -setup -repair_tns 100 -setup_margin [expr {[info exists ::env(SETUP_MARGIN)] ? $::env(SETUP_MARGIN) : 0.15}]/' submissio ...` |
+| 2026-11-08 02:56:21 UTC | Bash | `(SETUP_MARGIN=0.3 PRE=1 build/exp/run.sh u400a 2.5 0 1000 0 2000 0 kogge-stone & SETUP_MARGIN=0.3 PRE=1 build/exp/run.sh u400b 2.5 0 0100 0 2000 0 kogge-stone & wait) 2>&1 \| grep -v Warning` |
+| 2026-11-08 02:56:29 UTC | Bash | `sed -n 1,20p build/exp/mult_pipe.sv; grep -n "CPA\\|g_split\\|g_full" build/exp/mult_pipe.sv \| head` |
+| 2026-11-08 02:56:45 UTC | Bash | `python3 - <<'EOF' mp=open('build/exp/mult_pipe.sv').read() mp=mp.replace('''// ENC_REG : register the Booth-encoded multiplier digits + multiplicand // CSA_REG : bit k set -> register after carry-save ...` |
+| 2026-11-08 02:57:06 UTC | Bash | `python3 - <<'EOF' p='submission/rtl_400/mkMultBuff.sv' s=open(p).read() s=s.replace(''' localparam int LAT_M = 1 + (PRE_ENC ? 0 : ENC_REG) + CSA_REG[0] + CSA_REG[1] + CSA_REG[2] + CSA_REG[3] + 1 + CPA ...` |

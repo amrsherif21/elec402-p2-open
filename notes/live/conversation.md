@@ -1,6 +1,6 @@
 # Session record
 
-Rendered 2026-11-08 02:55:50 UTC from the Claude Code transcript.
+Rendered 2026-11-08 02:57:06 UTC from the Claude Code transcript.
 
 ### Prompt, 2026-11-08 02:33:34
 
@@ -272,3 +272,30 @@ First 400 MHz candidate (operand register → Booth + full CSA tree → carry-sa
   - result: q400b P=2.5 enc=0 csa=1000 spl=0 abcD=2000 | yosys_area=2242.646000 rsz_area=2281 wns=0.000 whs=0.055 pwr_est=6.2121e-04 q400c P=2.5 enc=0 csa=1000 spl=0 abcD=2000 | yosys_area=2222.696000 rsz_area=2301 wns=-0.273 whs=0.053 pwr_est=6.2153e-04 q400a P=2.5 enc=0 csa=1000 spl=0 abcD=2000 | yosys_area=2107.518000 rsz_area=2322 wns=-1.404 whs=0.024 pwr_est=6.2656e-04 q400d P=2.5 enc=0 csa=1000 spl=0 ab ...
 
 - `Bash` (for d in 1500 1800 2300; do PRE=1 build/exp/run.sh r400_$d 2.5 0 1000 0 $d 0 kogge-stone & done; wait) 2>&1 | grep -v Warning
+  - result: r400_1500 P=2.5 enc=0 csa=1000 spl=0 abcD=1500 | yosys_area=2242.646000 rsz_area=2281 wns=0.000 whs=0.055 pwr_est=6.2121e-04 r400_2300 P=2.5 enc=0 csa=1000 spl=0 abcD=2300 | yosys_area=2242.646000 rsz_area=2281 wns=0.000 whs=0.055 pwr_est=6.2121e-04 r400_1800 P=2.5 enc=0 csa=1000 spl=0 abcD=1800 | yosys_area=2242.646000 rsz_area=2281 wns=0.000 whs=0.055 pwr_est=6.2121e-04
+
+### Agent, 2026-11-08 02:55:55
+
+ABC's delay target has no effect with this script, and the 0.000 slack only reflects Resizer stopping at zero margin. Re-running with a 150 ps repair margin.
+
+- `Bash` sed -i 's/repair_timing -setup -repair_tns 100 -setup_margin 0.0/repair_timing -setup -repair_tns 100 -setup_margin [expr {[info exists ::env(SETUP_MARGIN)] ? $::env(SETUP_MARGIN) : 0.15}]/' submissio ...
+  - result: s400b P=2.5 enc=0 csa=0100 spl=0 abcD=2000 | yosys_area=2381.764000 rsz_area=2387 wns=0.152 whs=0.053 pwr_est=6.5253e-04 s400a P=2.5 enc=0 csa=1000 spl=0 abcD=2000 | yosys_area=2242.646000 rsz_area=2347 wns=0.045 whs=0.055 pwr_est=6.2967e-04 s400c P=2.5 enc=0 csa=1000 spl=0 abcD=2000 | yosys_area=2246.104000 rsz_area=2403 wns=-0.354 whs=0.055 pwr_est=6.3654e-04
+
+#### Reasoning, 2026-11-08 02:56:12
+
+> Cutting after CSA level 2 gives +152 ps WNS against the 125 ps target at 2,387 µm². I'm checking whether the smaller cut after level 4 can still meet timing with more repair margin.
+
+- `Bash` (SETUP_MARGIN=0.3 PRE=1 build/exp/run.sh u400a 2.5 0 1000 0 2000 0 kogge-stone & SETUP_MARGIN=0.3 PRE=1 build/exp/run.sh u400b 2.5 0 0100 0 2000 0 kogge-stone & wait) 2>&1 | grep -v Warning
+  - result: u400b P=2.5 enc=0 csa=0100 spl=0 abcD=2000 | yosys_area=2381.764000 rsz_area=2387 wns=0.152 whs=0.053 pwr_est=6.5253e-04 u400a P=2.5 enc=0 csa=1000 spl=0 abcD=2000 | yosys_area=2242.646000 rsz_area=2347 wns=0.045 whs=0.055 pwr_est=6.2967e-04
+
+#### Reasoning, 2026-11-08 02:56:29
+
+> The Resizer is saturated, so I'm going with the cut-after-level-2 setup for 400 MHz (latency 3, about 2,390 µm², +152 ps WNS) and wiring it into `make synth` next.
+
+- `Bash` sed -n 1,20p build/exp/mult_pipe.sv; grep -n "CPA\|g_split\|g_full" build/exp/mult_pipe.sv | head
+  - result: // mult_pipe.sv -- pipelined signed 16x16 multiplier: radix-4 (modified) Booth // partial products, carry-save (3:2) reduction 9->6->4->3->2 rows and a final // carry-propagate adder. Every pipeline cut is optional (parameters), so the // same source serves the 400 MHz and 800 MHz implementations. // ENC_REG : register the Booth-encoded multiplier digits + multiplicand // CSA_REG : bit k set -> re ...
+
+- `Bash` python3 - <<'EOF' mp=open('build/exp/mult_pipe.sv').read() mp=mp.replace('''// ENC_REG : register the Booth-encoded multiplier digits + multiplicand // CSA_REG : bit k set -> register after carry-save ...
+  - result: 42: localparam bit PRE_ENC = 1'b1; 43: localparam bit ENC_REG = 1'b0; 44: localparam bit [3:0] CSA_REG = 4'b0100; 45: localparam bit CPA_SPLIT = 1'b0; 46: localparam int LAT_M = 1 + (PRE_ENC ? 0 : ENC_REG) + CSA_REG[0] + CSA_REG[1] + CSA_REG[2] + CSA_REG[3] + 1 + CPA_SPLIT; 47: localparam int LAT = LAT_M; // operand register included mkMultBuff.sv mult_pipe.sv
+
+- `Bash` python3 - <<'EOF' p='submission/rtl_400/mkMultBuff.sv' s=open(p).read() s=s.replace(''' localparam int LAT_M = 1 + (PRE_ENC ? 0 : ENC_REG) + CSA_REG[0] + CSA_REG[1] + CSA_REG[2] + CSA_REG[3] + 1 + CPA ...
