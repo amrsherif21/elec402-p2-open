@@ -1,6 +1,6 @@
 # Session record
 
-Rendered 2026-11-08 18:01:16 UTC from the Claude Code transcript.
+Rendered 2026-11-08 18:01:19 UTC from the Claude Code transcript.
 
 ### Prompt, 2026-11-08 02:33:34
 
@@ -2761,4 +2761,15 @@ Sending c2 to sign-off, paired with the unchanged 400 MHz design.
 
 - `Bash` cat >> notes/WORKLOG.md <<'EOF' **Worker (a), row tree at 800 MHz** ('build/r4row/'; Docker had to be restarted after a host reboot). | cand | change | flops (R1/R2/R3/R4/R5/R6/ctrl) | total | area to ...
   - result: 0
+
+### Agent, 2026-11-08 18:01:17
+
+I've submitted c2 to sign-off as `check/r4-c2`, paired with the unchanged 400 MHz design. In our flow it has 408 flops instead of 442, 3896.9 µm² against 4017.9, and WNS +0.111 ns. The Wallace worker is still running.
+
+From the row-tree worker's other results:
+- **Product register:** dropping it alone misses timing by 36 ps. Moving one level of the adder's carry logic into the stage before fixes that.
+- **Reset through the Booth digits:** neutral in our flow, but it cuts about 380 generic gates, which sign-off may reflect.
+- **Rejected:** arrival-sized adder blocks, resolving more low columns early, and `CI1=0` all miss timing in our flow. Recoding after the operand register misses too and adds 524 µm², so I'm not spending a sign-off run on it.
+
+All of this is in the work log, committed and pushed. Next, the Wallace results get their own sign-off runs before I decide.
 
