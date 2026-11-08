@@ -2,13 +2,7 @@
 //
 // Pipelined signed 16x16 multiplier with a 64-entry fill/drain buffer (SPEC.md).
 // Datapath: mult_pipe (radix-4 Booth, carry-save reduction, final adder), with
-// // three register ranks (LAT = 3):
-//   rank 1: operand register; the multiplier mult_input1 is Booth-recoded
-//           before it (one/two/neg digits), the multiplicand is stored as is
-//   rank 2: four carry-save rows after partial-product selection and two
-//           3:2 levels (9 -> 6 -> 4 rows)
-//   rank 3: product, after two more 3:2 levels (4 -> 3 -> 2) and a 32-bit
-//           Kogge-Stone adder; drives writeMem_val directly
+// 3 register ranks (LAT = @LAT@), listed in the header of the generated mult_pipe.sv.
 // Latency (accept -> EN_writeMem) = LAT cycles; a LAT-bit valid shift register
 // runs alongside the datapath and drives EN_writeMem (F4).
 //
@@ -38,13 +32,8 @@ module mkMultBuff #(parameter N = 32) (
     output logic [5:0]   readMem_addr,
     input  logic [N-1:0] readMem_val
 );
-    // multiplier pipeline configuration (see mult_pipe.sv)
-    localparam bit       PRE_ENC   = 1'b1;
-    localparam bit       ENC_REG   = 1'b0;
-    localparam bit [3:0] CSA_REG   = 4'b1000;
-    localparam bit       CPA_SPLIT = 1'b0;
-    localparam int       LAT       = 1 + (PRE_ENC ? 0 : ENC_REG) + CSA_REG[0] + CSA_REG[1]
-                                     + CSA_REG[2] + CSA_REG[3] + CPA_SPLIT + 1;
+    // multiplier pipeline latency (register ranks of the generated mult_pipe.sv)
+    localparam int LAT = 3;
 
     logic       rdy_mult_q, rdy_rd_q, vld_q;
     logic [5:0] acc_q, ptr_q;
@@ -74,8 +63,7 @@ module mkMultBuff #(parameter N = 32) (
         end
     end
 
-    mult_pipe #(.PRE_ENC(PRE_ENC), .ENC_REG(ENC_REG), .CSA_REG(CSA_REG), .CPA_SPLIT(CPA_SPLIT))
-        u_mult (.clk(clk), .RST_N(RST_N), .en(acc), .a(mult_input0), .b(mult_input1), .p(p));
+    mult_pipe u_mult (.clk(clk), .RST_N(RST_N), .en(acc), .a(mult_input0), .b(mult_input1), .p(p));
 
     assign RDY_mult      = rdy_mult_q;
     assign RDY_blockRead = rdy_rd_q;
