@@ -477,3 +477,7 @@
 | 2026-11-08 08:20:57 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800b && sed -n 1,38p w24gt5/rep/sta.rpt \| grep -v "^ *0\.[0-9]* *0.000"` |
 | 2026-11-08 08:21:04 UTC | Bash | `cat >> notes/WORKLOG.md <<'EOF' **Sign-off of the 400 MHz candidate p1c4** ('check/c400-p1c4', 0fbf037, checked 08:19 UTC). Against the previous design: \| \| previous \| p1c4 \| \|---\|---\|---\| \| WNS \| 156 ...` |
 | 2026-11-08 08:23:22 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800b && ./run.sh 800 w24cpa5 --mode wallace --cuts 2,4 --gp cpa --k0 8 --k 5 2>&1 \| tail -21 \| grep -v "u_mult.[aont][1enw]"` |
+| 2026-11-08 08:23:34 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800b && awk '/^Startpoint/{n++} n>=1 && n<=3' w24cpa5/rep/sta.rpt \| grep -v "^ *0\.[0-9]* *0.000\\|Path\\|^$\\|clock\\|----\\|required\\|library"` |
+| 2026-11-08 08:24:01 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800b && grep -n 'if args.mode == "dadda":' gen_tree.py; grep -n 'choices=\["dadda", "wallace", "fill"\]' gen_tree.py; grep -n 'if args.mode in ("dadda", "wallac ...` |
+| 2026-11-08 08:24:06 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800b && python3 - <<'EOF' s = open("gen_tree.py").read() s = s.replace('choices=["dadda", "wallace", "fill"])', 'choices=["dadda", "wallace", "fill"])\nap.add_a ...` |
+| 2026-11-08 08:24:52 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800b && cat > /tmp/claude-0/path.tcl <<'EOF' read_liberty $::env(LIB) read_verilog $::env(NETLIST) link_design mkMultBuff source submission/scripts/constraints. ...` |
