@@ -1,6 +1,6 @@
 # Session record
 
-Rendered 2026-11-08 18:30:44 UTC from the Claude Code transcript.
+Rendered 2026-11-08 18:31:39 UTC from the Claude Code transcript.
 
 ### Prompt, 2026-11-08 02:33:34
 
@@ -3053,4 +3053,66 @@ The checker now kills all 11 mutants at 400 MHz and all 13 at 800 MHz. Running t
 - `Bash` cat >> notes/WORKLOG.md <<'EOF' **Final sign-off, round 4** ('check/final', 6d228d0, checked 18:28 UTC). Identical to the candidate checks. | | area | vectorless power | WNS | SDF simulation | |---|-- ...
 - `Bash` bash submission/scripts/fresh_clone_rerun.sh > /tmp/claude-0/-home-user-elec402-p2-open/6503db16-82a0-5ee1-9a2e-83eb2b44d2ca/scratchpad/fresh4.log 2>&1; grep -v "^+ \|^$" /tmp/claude-0/-home-user-elec ...
   - result: d4a2c26 Round 4: report updated for the final designs, final sign-off logged
+
+  - result: d4a2c26 Round 4: report updated for the final designs, final sign-off logged 18:28:50 install complete worst slack max 0.172 worst slack min 0.061 tns max 0.000 cell area 2183.860 um^2 (sequential 488.376 um^2, 1418 instances) ALL PASS ALL PASS ALL PASS synthesis estimate (vectorless, activity 0.1) 352.98 165.50 32.37 550.85 run: window whole run 349.80 164.73 32.29 546.82 fill: window 571250..731 ...
+
+#### Reasoning, 2026-11-08 18:30:50
+
+> The fresh clone reproduces the netlists, delay files and reports byte-identically in under 2 minutes, with all checks passing and both failing netlists still failing. I'm saving the log, doing the final PDF build with the final token count, and then committing.
+
+- `Bash` cp /tmp/claude-0/-home-user-elec402-p2-open/6503db16-82a0-5ee1-9a2e-83eb2b44d2ca/scratchpad/fresh4.log submission/syn_reports/fresh_clone_rerun.log && cat >> notes/WORKLOG.md <<'EOF' **Fresh-clone rer ...
+  - result: report written: submission/pdf_report/report.pdf (Pages: 79) prose words 2758 Total cost at API prices: **USD 82.36** (9 transcripts, 757 API responses).
+
+- `Read` /home/user/elec402-p2-open/build/report/pages4/a.png
+  - result: 
+
+#### Reasoning, 2026-11-08 18:31:18
+
+> The PDF renders correctly at 79 pages, since both generated multipliers sit in the source appendix. I'm committing and pushing now.
+
+- `Bash` git add -A submission notes && git commit -q -m "Round 4 final: fresh-clone rerun log, report PDF rebuilt, work log and token usage Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com> Claude-Sessi ...
+  - result: 0 4e57985 Round 4 final: fresh-clone rerun log, report PDF rebuilt, work log and token usage
+
+### Agent, 2026-11-08 18:31:37
+
+Both designs are smaller and lower-power again in sign-off, and both meet the slack target in both flows. The final RTL is on `check/final`, everything is committed and pushed (`4e57985`), and a rerun from a fresh clone reproduced every netlist, delay file and report byte for byte.
+
+| | 400 MHz, round 3 | 400 MHz now | 800 MHz, round 3 | 800 MHz now |
+|---|---|---|---|---|
+| Register stages / flip-flops | 3 / 141 | **2 / 108** | 6 / 442 | 6 / **422** |
+| Sign-off area | 2660.8 µm² | **2427.5 µm² (−8.8 %)** | 4416.2 µm² | **4240.5 µm² (−4.0 %)** |
+| Sign-off power (vectorless) | 215.2 µW | **177.5 µW (−17.5 %)** | 829.7 µW | **805.9 µW (−2.9 %)** |
+| Sign-off slack (target) | 203 ps | 158 ps (125) | 158 ps | 75 ps (62) |
+| Our-flow slack / area | +0.263 ns / 2449.6 µm² | +0.172 ns / 2183.9 µm² | +0.140 ns / 4017.9 µm² | +0.124 ns / 3864.2 µm² |
+
+Every check passes at both frequencies:
+- RTL, zero-delay gate-level and SDF checkers;
+- the netlists that violate timing fail as they should;
+- every flip-flop is proven reset (108/108 and 422/422);
+- the RTL checker catches all injected faults (11/11 and 13/13).
+
+Since the first designs, sign-off area is down 11.8 % at 400 MHz and 25.3 % at 800 MHz, and power is down 21.0 % and 28.2 %.
+
+**How each suggestion turned out:**
+- **Dropping the product register** worked at 400 MHz and is the main gain there. At 800 MHz it backfired: on the row tree it cut area 2.2 % but raised sign-off power 19 % (slack 158 → 109 ps). The adder now drives the port directly and sign-off upsized that path, so the 800 MHz design keeps the register.
+- **Resetting through the 24 Booth digits** removed about 380 generic gates but put a gate in front of the selection logic. On its own it dropped sign-off slack from 158 to 83 ps and added 7 % power, so I didn't use it.
+- **Wallace versus row tree:** you were right that the Wallace tree has less logic, 13 % fewer generic gates though 35 % more XORs. Rebalanced, with the product register and without the digit reset, it reached +0.124 ns in our flow and beats the row tree on both area and power. I couldn't get the ≥120 ps sign-off slack you asked for: sign-off reports 75 ps. Because it wins on both judged metrics anyway, the choice doesn't depend on that margin.
+- **Adder and low columns:** arrival-sized blocks, larger blocks, resolving more low columns early and `CI1=0` all missed timing in our flow. Recoding after the operand register missed too (−27 ps, plus about 520 µm²), so it didn't earn a sign-off run.
+- **Control:** left alone, as you suggested.
+
+The Wallace worker also found that my F14 check crashed on designs with the digit-gated reset; I merged the one-line fix. The generator, with all new options and the final command lines, is in `submission/scripts/gen_tree.py`.
+
+**Report corrections:**
+- **Binding flow:** the report now says the two flows were equally tight register to register only for the earlier designs. In this round individual candidates differed by up to about 60 ps in either direction.
+- **Decision metric:** it now says candidates were ranked by the relative change in area × power.
+- **Citations:** I verified Oklobdzija/Villeger/Liu (1996) and Zimmermann (1997) before citing them.
+
+While checking my own draft I removed two claims the data didn't support. One said sign-off power rises as slack shrinks almost without exception, but the final 800 MHz design has the least slack and the lowest power. The other said the flows agree within 20 ps when the product register is kept.
+
+The main prose is 2,758 words, about the same as last round. The PDF is now 79 pages because both generated multipliers are in the source appendix.
+
+**Token usage:** 757 API responses across 9 transcripts (main session and eight subagents), about **$82.36** at Claude Opus 5.5 API rates, measured just before the final build.
+
+Files are in `submission/pdf_report`:
+- report.pdf
 
