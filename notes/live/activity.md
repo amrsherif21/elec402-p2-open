@@ -750,3 +750,5 @@
 | 2026-11-08 18:23:25 UTC | Bash | `grep -n "cin\\|incr\\|blk" submission/rtl_800/mult_pipe.sv \| head -20` |
 | 2026-11-08 18:23:28 UTC | Bash | `grep -n "assign" submission/rtl_800/mult_pipe.sv \| tail -30 \| head -30` |
 | 2026-11-08 18:23:30 UTC | Bash | `sed -n 840,881p submission/rtl_800/mult_pipe.sv \| head -40` |
+| 2026-11-08 18:23:51 UTC | Bash | `python3 - <<'EOF' p='submission/scripts/mutate.sh' s=open(p).read() old=[l for l in s.split('\n') if 'adder carry-in error (mult_pipe)' in l and 'bgg' in l][0] new=' "wire x786 = r5\\[28\\] ^ n785;\|wi ...` |
+| 2026-11-08 18:25:54 UTC | Bash | `for R in 400 800; do make synth check sim timing power f14 RUN=$R 2>&1 \| grep -E "^(worst slack\|cell area\|ALL PASS\|F14CHECK\|fill\|drain\|run:\|synthesis)\|summary\|rror"; make timing_fail RUN=$R 2>&1 \| gre ...` |

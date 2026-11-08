@@ -1,6 +1,6 @@
 # Session record
 
-Rendered 2026-11-08 18:23:30 UTC from the Claude Code transcript.
+Rendered 2026-11-08 18:25:54 UTC from the Claude Code transcript.
 
 ### Prompt, 2026-11-08 02:33:34
 
@@ -2993,3 +2993,13 @@ The 800 MHz adder mutant targeted a line in the old row-tree multiplier, so it n
   - result: 882: assign prod = {x804, x802, x800, x798, x792, x790, x788, x786, x784, x775, x773, x771, x769, x767, x758, x756, x754, x752, x750, r5[12], r5[11], r5[10], r5[9], r5[8], r5[7], r5[6], r5[5], r5[4], r5[3], r5[2], r5[1], r5[0]};
 
 - `Bash` sed -n 840,881p submission/rtl_800/mult_pipe.sv | head -40
+  - result: wire n763 = n760 & r5[20]; wire n764 = n761 & n759; wire n765 = n762 & n760; wire n766 = n765 & r5[20]; wire x767 = r5[20] ^ r5[19]; wire n768 = r5[19] & r5[20]; wire x769 = r5[21] ^ n768; wire n770 = r5[19] & n759; wire x771 = r5[22] ^ n770; wire n772 = r5[19] & n763; wire x773 = r5[23] ^ n772; wire n774 = r5[19] & n764; wire x775 = r5[24] ^ n774; wire n776 = r5[28] & r5[27]; wire n777 = r5[29] & ...
+
+- `Bash` python3 - <<'EOF' p='submission/scripts/mutate.sh' s=open(p).read() old=[l for l in s.split('\n') if 'adder carry-in error (mult_pipe)' in l and 'bgg' in l][0] new=' "wire x786 = r5\\[28\\] ^ n785;|wi ...
+  - result: mutant 13 (carry-increment error in the generated adder (mult_pipe)): FAIL 340 check(s) failed killed 13 of 13 mutants
+
+### Agent, 2026-11-08 18:23:53
+
+The checker now kills all 11 mutants at 400 MHz and all 13 at 800 MHz. Running the full flow on the final designs: all steps, F14, the failing netlists and the waveform figures.
+
+- `Bash` for R in 400 800; do make synth check sim timing power f14 RUN=$R 2>&1 | grep -E "^(worst slack|cell area|ALL PASS|F14CHECK|fill|drain|run:|synthesis)|summary|rror"; make timing_fail RUN=$R 2>&1 | gre ...
