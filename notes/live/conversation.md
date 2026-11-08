@@ -1,6 +1,6 @@
 # Session record
 
-Rendered 2026-11-08 03:19:33 UTC from the Claude Code transcript.
+Rendered 2026-11-08 03:20:41 UTC from the Claude Code transcript.
 
 ### Prompt, 2026-11-08 02:33:34
 
@@ -660,3 +660,13 @@ Stage A of the adder is now critical, with almost nothing left to trim inside it
 > The level-4 stage and adder are within ±0.03 ns of zero, and an extra BUF_X4 before the flip-flop D pins comes from ABC applying the 23.5 fF output load to each one. I'm setting that load to a single flip-flop input (about 1 fF) and leaving the real port loads to the Resizer and STA.
 
 - `Bash` grep -n "set_load 23.5" submission/scripts/synth.tcl && sed -i 's/puts $cf "set_driving_cell BUF_X1\\nset_load 23.5"/puts $cf "set_driving_cell BUF_X1\\nset_load [expr {[info exists ::env(ABC_LOAD)] ? ...
+  - result: 38:puts $cf "set_driving_cell BUF_X1\nset_load 23.5" # constraint file gives ABC the input drive and the output load of SPEC Section 6 set cf [open [file rootname $out].abc.constr w] puts $cf "set_driving_cell BUF_X1\nset_load [expr {[info exists ::env(ABC_LOAD)] ? $::env(ABC_LOAD) : 1.0}]" close $cf set abc_script [expr {[info exists ::env(ABC_SCRIPT)] ? $::env(ABC_SCRIPT) : "submission/scripts/a ...
+
+#### Reasoning, 2026-11-08 03:19:44
+
+> Cutting ABC's flip-flop load saves about 600 µm² at 800 MHz, and the two-rank CSA version (4,431 µm² at −0.004 ns) is now the one I'm tuning to hit the slack target.
+
+- `Bash` (GP4=0 MAPLIB=build/exp/lib_du3.lib CSW=4 SEL=1 CSL=1 PRE=1 build/exp/run.sh y800_a 1.25 0 1010 0 1000 0 kogge-stone & GP4=1 MAPLIB=build/exp/lib_du3.lib CSW=8 SEL=1 CSL=1 PRE=1 build/exp/run.sh y800_ ...
+  - result: y800_a P=1.25 enc=0 csa=1010 spl=0 abcD=1000 | yosys_area=4249.616000 rsz_area=4465 wns=0.023 whs=0.028 pwr_est=2.4188e-03 y800_b P=1.25 enc=0 csa=1010 spl=0 abcD=1000 | yosys_area=4187.106000 rsz_area=4508 wns=-0.004 whs=0.020 pwr_est=2.4171e-03 y800_c P=1.25 enc=0 csa=1010 spl=0 abcD=1000 | yosys_area=4165.560000 rsz_area=4382 wns=-0.078 whs=0.020 pwr_est=2.4115e-03
+
+- `Bash` (GP4=1 MAPLIB=build/exp/lib_du3.lib CSW=4 SEL=1 CSL=1 PRE=1 build/exp/run.sh z800_1101 1.25 0 1101 0 1000 0 kogge-stone & GP4=1 MAPLIB=build/exp/lib_du3.lib CSW=4 SEL=1 CSL=1 PRE=1 build/exp/run.sh z8 ...
