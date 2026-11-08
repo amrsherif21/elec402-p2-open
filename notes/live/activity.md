@@ -526,3 +526,8 @@
 | 2026-11-08 08:54:28 UTC | Write | `/home/user/elec402-p2-open/build/final800/rtl/mkMultBuff.sv` |
 | 2026-11-08 08:54:31 UTC | Bash | `cp build/cand800b/gen_tree.py submission/scripts/gen_tree.py && sed -i 's\|build/cand800b/gen_tree.py\|submission/scripts/gen_tree.py\|g; s\|Written for this project (build/cand800b).\|Written for this pro ...` |
 | 2026-11-08 08:55:42 UTC | Bash | `export ABC_DRIVER=BUF_X1 ABC_LOAD=1.0 DONT_USE="OAI33_* NOR3_* NOR4_* OR3_* OR4_* AND4_* NAND4_* AOI211_* AOI221_* AOI222_* OAI211_* OAI221_* OAI222_* MUX2_*"; d=build/final800; bash submission/script ...` |
+| 2026-11-08 08:55:50 UTC | Bash | `git fetch -q origin check-results && for d in $(git ls-tree --name-only origin/check-results results/ \| grep -E "wallace\|combo"); do echo "== $d"; git show origin/check-results:$d/scorecard.md \| sed - ...` |
+| 2026-11-08 08:55:55 UTC | ToolSearch | `select:Monitor` |
+| 2026-11-08 08:56:00 UTC | Bash | `until git fetch -q origin check-results 2>/dev/null && git ls-tree --name-only origin/check-results results/ \| grep -q "combo"; do sleep 30; done; git ls-tree --name-only origin/check-results results/` |
+| 2026-11-08 08:56:07 UTC | Bash | `d=build/final400 && mkdir -p $d/rtl && python3 -I submission/scripts/gen_tree.py $d/rtl/mult_pipe.sv --mode wallace --rawlevels 3 --nosel --cuts 4 --gp cpa --cpa one --res-budget 1.9 \| tail -1 && diff ...` |
+| 2026-11-08 08:56:32 UTC | Bash | `d=build/final400 && python3 - <<'EOF' p='build/final400/rtl/mkMultBuff.sv' s=open(p).read() s=s.replace("""// Datapath: mult_pipe (radix-4 Booth, carry-save reduction, final adder), with // 3 register ...` |

@@ -1,6 +1,6 @@
 # Session record
 
-Rendered 2026-11-08 08:55:42 UTC from the Claude Code transcript.
+Rendered 2026-11-08 08:56:40 UTC from the Claude Code transcript.
 
 ### Prompt, 2026-11-08 02:33:34
 
@@ -2353,3 +2353,41 @@ Sign-off hasn't published either result yet. Meanwhile I'm writing the cleaned 8
 Regenerating from the in-repo generator reproduces the Wallace multiplier exactly. Evaluating the cleaned 800 MHz design, including the SDF and F14 checks.
 
 - `Bash` export ABC_DRIVER=BUF_X1 ABC_LOAD=1.0 DONT_USE="OAI33_* NOR3_* NOR4_* OR3_* OR4_* AND4_* NAND4_* AOI211_* AOI221_* AOI222_* OAI211_* OAI221_* OAI222_* MUX2_*"; d=build/final800; bash submission/script ...
+  - result: check=PASS sim=PASS wns=0.085 whs=0.041 area=3848.754 seq=1901.368 comb=1947.4 flops=420 vectorless_uW=2104.4 activity_uW: run:=2392.70 fill:=4409.70 drain:=1852.40 ==== mkMultBuff_sdf_checker_800 summary: period 1.250 ns, seed 402, latency 6, 912 cycles, 384 accepted, 384 returned, 0 failure(s) ==== ALL PASS F14CHECK: flops 420, reset-gated 420 (of which reset-to-1 2), NOT reset-gated 0:
+
+### Agent, 2026-11-08 08:55:47
+
+The cleaned 800 MHz design matches the combination exactly: 420 flops, WNS +0.085 ns, SDF check passing (384/384) and all 420 flops proven reset. Checking the sign-off queue.
+
+- `Bash` git fetch -q origin check-results && for d in $(git ls-tree --name-only origin/check-results results/ | grep -E "wallace|combo"); do echo "== $d"; git show origin/check-results:$d/scorecard.md | sed - ...
+  - result: 08:55
+
+#### Reasoning, 2026-11-08 08:55:55
+
+> Neither scorecard has shown up yet, though both were pushed 25–30 minutes ago. I'm switching to a polling monitor on the `check-results` branch rather than checking by hand.
+
+- `ToolSearch` select:Monitor
+  - result: 
+
+- `Bash` until git fetch -q origin check-results 2>/dev/null && git ls-tree --name-only origin/check-results results/ | grep -q "combo"; do sleep 30; done; git ls-tree --name-only origin/check-results results/
+  - result: Command running in background with ID: brv4kwld7. Output is being written to: /tmp/claude-0/-home-user-elec402-p2-open/6503db16-82a0-5ee1-9a2e-83eb2b44d2ca/tasks/brv4kwld7.output. You will be notified when it completes. To check interim output, use Read on that file path.
+
+### Agent, 2026-11-08 08:56:03
+
+The wait is running in the background. Meanwhile I'm checking the 400 MHz Wallace candidate (141 flops) the same way: regenerating it from the in-repo generator, then running the SDF and F14 checks.
+
+- `Bash` d=build/final400 && mkdir -p $d/rtl && python3 -I submission/scripts/gen_tree.py $d/rtl/mult_pipe.sv --mode wallace --rawlevels 3 --nosel --cuts 4 --gp cpa --cpa one --res-budget 1.9 | tail -1 && diff ...
+  - result: R3 product: 32 flops IDENTICAL_BODY // mkMultBuff.sv -- 400 MHz implementation (2.5 ns clock), Nangate45 slow corner. // // Pipelined signed 16x16 multiplier with a 64-entry fill/drain buffer (SPEC.md). // Datapath: mult_pipe (radix-4 Booth, carry-save reduction, final adder), with // 3 register ranks (LAT = @LAT@), listed in the header of the generated mult_pipe.sv. // Latency (accept -> EN_write ...
+
+- `Bash` d=build/final400 && python3 - <<'EOF' p='build/final400/rtl/mkMultBuff.sv' s=open(p).read() s=s.replace("""// Datapath: mult_pipe (radix-4 Booth, carry-save reduction, final adder), with // 3 register ...
+  - result: check=PASS sim=PASS wns=0.263 whs=0.061 area=2449.594 seq=637.602 comb=1812.0 flops=141 vectorless_uW=633.4 activity_uW: run:=644.71 fill:=1599.60 drain:=379.96 ALL PASS F14CHECK: flops 141, reset-gated 141 (of which reset-to-1 1), NOT reset-gated 0:
+
+### Agent, 2026-11-08 08:56:39
+
+The 400 MHz Wallace design checks out: 141 flops, WNS +0.263 ns with the 800 MHz mapping settings, SDF check passing and all 141 flops proven reset. Now waiting for the two sign-off scorecards before choosing the final designs.
+
+### Prompt, 2026-11-08 08:56:40
+
+Stop hook feedback:
+[command hook 2]: There are untracked files in the repository. Please commit and push these changes to the remote branch.
+
