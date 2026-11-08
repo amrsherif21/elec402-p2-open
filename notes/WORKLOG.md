@@ -428,3 +428,11 @@ Against the previous designs this is −3.3 % area and −4.2 % power at 400 MHz
 - new datapath figures.
 
 New references (Parhi, Leiserson-Saxe, Touati-Brayton, Townsend et al., Harris, Han-Carlson, Sklansky, Brent-Kung) were checked first (`notes/REFERENCES_CHECK.md`).
+
+**Fresh-clone rerun of the final designs** (8067f90, 09:06:48–09:08:26 UTC, `syn_reports/fresh_clone_rerun.log`).
+- *400 MHz:* +0.263 ns, 2449.594 µm²; power 633.36 / 644.71 / 1599.60 / 379.96 µW.
+- *800 MHz:* +0.140 ns, 4017.930 µm²; power 2186.60 / 2491.90 / 4530.00 / 1945.60 µW.
+- *Checks:* check, sim and timing ALL PASS; F14 141/141 and 442/442; timing_fail TIMING FAIL for both; mutants 11/11 and 13/13.
+- *`git status` after the run:* only logs and the tool_versions date changed. Netlists, SDF and reports are byte-identical.
+
+**Final build** of the report and token usage follows (`submission/syn_reports/token_usage.md`).

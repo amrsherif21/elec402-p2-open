@@ -4,9 +4,9 @@
 + cd /tmp/claude-0/-home-user-elec402-p2-open/6503db16-82a0-5ee1-9a2e-83eb2b44d2ca/scratchpad/fresh
 + git log --oneline
 + head -1
-8f205c3 Checkpoint 5 (draft): report sources, figures, report build and token-usage scripts; work-log times corrected
+8067f90 Report: final sign-off numbers and comparison
 + date -u +%T
-03:34:16
+09:06:48
 + bash submission/scripts/install.sh
 + tail -3
 opensta: 3.1.0
@@ -15,24 +15,24 @@ install complete
 + for R in 400 800
 + make synth check sim timing power f14 RUN=400
 + grep -E '^(worst slack|tns|cell area|ALL PASS|FAIL|TIMING FAIL|F14CHECK|fill|drain|run:|synthesis)|summary|Error|error'
-worst slack max 0.152
-worst slack min 0.053
+worst slack max 0.263
+worst slack min 0.061
 tns max 0.000
-cell area 2386.552 um^2 (sequential 753.844 um^2, 1501 instances)
+cell area 2449.594 um^2 (sequential 637.602 um^2, 1518 instances)
 ==== mkMultBuff_tb summary (seed=402, period=2.500 ns, latency=3, cycles=5856) ====
 ALL PASS
 ==== mkMultBuff_tb summary (seed=402, period=2.500 ns, latency=3, cycles=5856) ====
 ALL PASS
 ==== mkMultBuff_sdf_checker_400 summary: period 2.500 ns, seed 402, latency 3, 894 cycles, 384 accepted, 384 returned, 0 failure(s) ====
 ALL PASS
-synthesis estimate (vectorless, activity 0.1)         459.65    160.37     32.51    652.53
-run: window whole run                                 455.01    155.25     32.55    642.80
-fill: window 521250..681250 ps                        815.82    629.82     34.50   1480.10
-drain: window 688750..848750 ps                       372.57     25.83     31.96    430.37
-F14CHECK: flops 166, reset-gated 166 (of which reset-to-1 1), NOT reset-gated 0: 
+synthesis estimate (vectorless, activity 0.1)         433.89    162.91     36.55    633.36
+run: window whole run                                 433.69    174.52     36.50    644.71
+fill: window 521250..681250 ps                        876.45    684.23     38.93   1599.60
+drain: window 688750..848750 ps                       317.23     26.92     35.81    379.96
+F14CHECK: flops 141, reset-gated 141 (of which reset-to-1 1), NOT reset-gated 0: 
 + make timing_fail RUN=400
 + grep -E '^worst slack max|timing_fail:'
-worst slack max -1.469
+worst slack max -0.675
 timing_fail: checker reported TIMING FAIL as expected
 + bash submission/scripts/mutate.sh 400
 + grep killed
@@ -40,30 +40,30 @@ killed 11 of 11 mutants
 + for R in 400 800
 + make synth check sim timing power f14 RUN=800
 + grep -E '^(worst slack|tns|cell area|ALL PASS|FAIL|TIMING FAIL|F14CHECK|fill|drain|run:|synthesis)|summary|Error|error'
-worst slack max 0.075
+worst slack max 0.140
 worst slack min 0.041
 tns max 0.000
-cell area 4755.016 um^2 (sequential 2609.194 um^2, 2429 instances)
-==== mkMultBuff_tb summary (seed=402, period=1.250 ns, latency=7, cycles=5897) ====
+cell area 4017.930 um^2 (sequential 2000.852 um^2, 2167 instances)
+==== mkMultBuff_tb summary (seed=402, period=1.250 ns, latency=6, cycles=5894) ====
 ALL PASS
-==== mkMultBuff_tb summary (seed=402, period=1.250 ns, latency=7, cycles=5897) ====
+==== mkMultBuff_tb summary (seed=402, period=1.250 ns, latency=6, cycles=5894) ====
 ALL PASS
-==== mkMultBuff_sdf_checker_800 summary: period 1.250 ns, seed 402, latency 7, 918 cycles, 384 accepted, 384 returned, 0 failure(s) ====
+==== mkMultBuff_sdf_checker_800 summary: period 1.250 ns, seed 402, latency 6, 912 cycles, 384 accepted, 384 returned, 0 failure(s) ====
 ALL PASS
-synthesis estimate (vectorless, activity 0.1)        2450.40    214.21     63.03   2727.60
-run: window whole run                                2643.50    365.58     63.96   3073.10
-fill: window 270625..350625 ps                       3752.90   1389.30     67.26   5209.50
-drain: window 359375..439375 ps                      2427.50     45.37     62.81   2535.60
-F14CHECK: flops 577, reset-gated 577 (of which reset-to-1 15), NOT reset-gated 0: 
+synthesis estimate (vectorless, activity 0.1)        1913.60    218.31     54.67   2186.60
+run: window whole run                                2082.50    354.08     55.33   2491.90
+fill: window 268125..348125 ps                       3099.50   1372.30     58.25   4530.00
+drain: window 355625..435625 ps                      1857.40     33.65     54.50   1945.60
+F14CHECK: flops 442, reset-gated 442 (of which reset-to-1 2), NOT reset-gated 0: 
 + make timing_fail RUN=800
 + grep -E '^worst slack max|timing_fail:'
-worst slack max -1.091
+worst slack max -0.951
 timing_fail: checker reported TIMING FAIL as expected
 + bash submission/scripts/mutate.sh 800
 + grep killed
 killed 13 of 13 mutants
 + date -u +%T
-03:36:14
+09:08:26
 + git status --short
 + head -40
  M submission/syn_reports/400/resize.log
@@ -73,5 +73,5 @@ killed 13 of 13 mutants
  M submission/syn_reports/800/resize.log
  M submission/syn_reports/800/synth.log
  M submission/syn_reports/tool_versions.txt
-+ git diff --stat -- submission/outputs
 + tail -3
++ git diff --stat -- submission/outputs
