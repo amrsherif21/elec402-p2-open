@@ -14,3 +14,4 @@
 | check_r4-c2a-08822e6028 | `08822e60289a` | [scorecard](results/check_r4-c2a-08822e6028/scorecard.md) |
 | check_r4-walp-3f78efaa8a | `3f78efaa8a51` | [scorecard](results/check_r4-walp-3f78efaa8a/scorecard.md) |
 | check_r4-f8p-5bad848787 | `5bad8487876e` | [scorecard](results/check_r4-f8p-5bad848787/scorecard.md) |
+| check_final-6d228d0e28 | `6d228d0e2843` | [scorecard](results/check_final-6d228d0e28/scorecard.md) |
