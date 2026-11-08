@@ -265,3 +265,6 @@
 | 2026-11-08 03:26:00 UTC | Bash | `bash submission/scripts/waves/waves.sh 400 2>&1 \| tail -10` |
 | 2026-11-08 03:26:02 UTC | Read | `/home/user/elec402-p2-open/submission/pdf_report/fig/wave_400_zoom_gate.png` |
 | 2026-11-08 03:26:20 UTC | Bash | `sed -i 's\| convert $2 -crop +0+105 +repage $2 # drop the window title and toolbar\| convert $2 -crop +0+105 +repage -gravity south -chop 0x40 +repage $2 # drop title bar, toolbar, empty strip\|' submiss ...` |
+| 2026-11-08 03:26:41 UTC | Bash | `cat >> notes/WORKLOG.md <<'EOF' **04:35 Candidate (C), Baugh-Wooley + Dadda (subagent, 'build/cand_dadda/').** - *Best version (v6):* WNS +0.150 ns, hold +0.076 ns, 5278 µm², 616 flops, latency 8, che ...` |
+| 2026-11-08 03:27:12 UTC | Bash | `D=build/noiso400 && mkdir -p $D/rtl && cp submission/rtl_400/*.sv $D/rtl/ && grep -n "!RST_N \|\| !en" $D/rtl/mult_pipe.sv \| head -3 && sed -i 's/if (!RST_N \|\| !en) begin/if (!RST_N) begin/' $D/rtl/mult ...` |
+| 2026-11-08 03:27:27 UTC | Bash | `mkdir -p submission/syn_reports/400/experiments && cp build/noiso400/rep/power_summary.txt submission/syn_reports/400/experiments/no_operand_isolation_power.txt && cp build/noiso400/rep/power.rpt subm ...` |

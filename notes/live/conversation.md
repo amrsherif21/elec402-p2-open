@@ -1,6 +1,6 @@
 # Session record
 
-Rendered 2026-11-08 03:26:20 UTC from the Claude Code transcript.
+Rendered 2026-11-08 03:27:27 UTC from the Claude Code transcript.
 
 ### Prompt, 2026-11-08 02:33:34
 
@@ -791,3 +791,24 @@ Both waveform sims pass under the gate-level checker. Next I need the event time
 > The gate-level capture gives clock-to-output delays of about 0.45–0.7 ns, with a brief intermediate value on writeMem_val. I'm trimming the black strip at the bottom and then rendering both frequencies.
 
 - `Bash` sed -i 's| convert $2 -crop +0+105 +repage $2 # drop the window title and toolbar| convert $2 -crop +0+105 +repage -gravity south -chop 0x40 +repage $2 # drop title bar, toolbar, empty strip|' submiss ...
+  - result: waves 400: first write 21250 ps, drain start 181250 ps, drain end 341250 ps waves 800: first write 15625 ps, drain start 95625 ps, drain end 175625 ps [This command modified 1 file you've previously read: submission/scripts/waves/waves.sh. Call Read before editing.]
+
+### Agent, 2026-11-08 03:26:25
+
+Figures are done for both frequencies. Recording the candidate comparison and decision, then committing checkpoint 3 and pushing `check/800`.
+
+- `Bash` cat >> notes/WORKLOG.md <<'EOF' **04:35 Candidate (C), Baugh-Wooley + Dadda (subagent, 'build/cand_dadda/').** - *Best version (v6):* WNS +0.150 ns, hold +0.076 ns, 5278 µm², 616 flops, latency 8, che ...
+  - result: remote: b6917e9 Checkpoint 3: 800 MHz implementation (Booth/CSA, 7 ranks), flow knobs per frequency, F14 SAT check, mutation tests, waveform figures 60ed005 Checkpoint 2: 400 MHz implementation, checkers, synthesis, timing, gate-level checks fatal: couldn't find remote ref check-results
+
+#### Reasoning, 2026-11-08 03:26:48
+
+> Checkpoint 3 is pushed and check/800 is submitted, but the sign-off service hasn't published to check-results yet. I'm now adding an experiment that removes the zero-loading of idle operands to isolate operand isolation for the power report.
+
+- `Bash` D=build/noiso400 && mkdir -p $D/rtl && cp submission/rtl_400/*.sv $D/rtl/ && grep -n "!RST_N || !en" $D/rtl/mult_pipe.sv | head -3 && sed -i 's/if (!RST_N || !en) begin/if (!RST_N) begin/' $D/rtl/mult ...
+  - result: 49: if (!RST_N || !en) begin 60: if (!RST_N || !en) begin a_q <= '0; b_q <= '0; end 49: if (!RST_N) begin 149: if (!RST_N) begin worst slack max -0.146 cell area 2337.874 um^2 (sequential 751.716 um^2, 1478 instances) ALL PASS ALL PASS synthesis estimate (vectorless, activity 0.1) 500.68 223.19 32.01 755.88 run: window whole run 774.85 593.91 33.27 1402.00 fill: window 521250..681250 ps 809.52 628 ...
+
+#### Reasoning, 2026-11-08 03:27:16
+
+> Operand isolation cuts whole-run power at 400 MHz from 1,402 µW to 643 µW for about 49 µm² of gating logic, with the windowed figures barely moving. I'm committing checkpoint 4 now.
+
+- `Bash` mkdir -p submission/syn_reports/400/experiments && cp build/noiso400/rep/power_summary.txt submission/syn_reports/400/experiments/no_operand_isolation_power.txt && cp build/noiso400/rep/power.rpt subm ...
