@@ -1,6 +1,6 @@
 # Session record
 
-Rendered 2026-11-08 18:08:35 UTC from the Claude Code transcript.
+Rendered 2026-11-08 18:10:02 UTC from the Claude Code transcript.
 
 ### Prompt, 2026-11-08 02:33:34
 
@@ -2889,3 +2889,6 @@ The fix is one line in the D-net parser. I'm applying it to the repository's F14
 > The row-tree c2 variant came in at 4320.8 µm² and 988.2 µW with 109 ps slack, so removing the product register pushes power up 19% at 800 MHz. I'm now building two variants that keep the product register to separate the reset change from the Wallace comparison.
 
 - `Bash` ls build/r4row/ build/r4wal/ | head -60; sed -n 1,40p build/r4wal/run.sh
+  - result: build/r4row/: base c1_noR6 c1b_noR6mux c1c_bpa c1d_nodrst c2_drst c2a_drst_only c3a c3b_lr8 c3c_ci0 c4_noenc build/r4wal/: a4_np a8_base a8_np a8_rd b4_rc23 b4_rc27 b8_999 b8_bp b8_bp888 batch1.log batch2.log batch3.log batch3.sh batch4.log batch4.sh batch5.log batch5.sh c8_bs c8_pl d4_raw d4_rc21 e8 e8rd f14_check_fix.sh gc_rowtree_e18.txt gc_w24r3gt5re.txt gcount.sh gen_tree.py mktop.py run.sh t ...
+
+- `Bash` bash build/r4wal/run.sh 800 f8rdp --mode wallace --rawlevels 3 --cuts 2,4 --gp gt --res-budget 0.66 --bpair --k0 8 --k 5 --pair-late 2 --lvl-limit 0.66 --rst-digits 2>&1 | tail -6; M="RUN=800 RTL_DIR= ...
