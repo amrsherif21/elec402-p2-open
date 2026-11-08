@@ -32,7 +32,12 @@ seen = set()
 tot = defaultdict(lambda: defaultdict(int))
 per_file = defaultdict(lambda: defaultdict(int))
 for f in files:
-    who = 'main session' if '/subagents/' not in f else 'subagent ' + os.path.basename(f)[6:-6]
+    who = 'main session'
+    if '/subagents/' in f:
+        try:
+            who = 'subagent: ' + json.load(open(f[:-6] + '.meta.json'))['description']
+        except (OSError, ValueError, KeyError):
+            who = 'subagent ' + os.path.basename(f)[6:-6]
     for line in open(f, errors='replace'):
         try:
             d = json.loads(line)
@@ -64,14 +69,19 @@ def cost(model, r):
 
 
 cols = ['requests', 'input', 'output', 'cache_write_5m', 'cache_write_1h', 'cache_read']
-print('| model / source | ' + ' | '.join(cols) + ' | cost USD |')
-print('|---|' + '---:|' * (len(cols) + 1))
+heads = ['responses', 'input', 'output', 'cache write 5 min', 'cache write 1 h', 'cache read']
+models = sorted(tot)
+print(f"All responses were served by {', '.join(models)}. Token counts:\n")
+print('| source | ' + ' | '.join(heads) + ' | cost (USD) |')
+print('|' + '-' * 34 + '|' + '------:|' * (len(cols) + 1))
 grand = 0.0
 for (who, model), r in sorted(per_file.items()):
-    print(f'| {model}, {who} | ' + ' | '.join(f'{r[c]:,}' for c in cols) + f' | {cost(model, r):.2f} |')
+    label = who if len(models) == 1 else f'{who} ({model})'
+    print(f'| {label} | ' + ' | '.join(f'{r[c]:,}' for c in cols) + f' | {cost(model, r):.2f} |')
 for model, r in sorted(tot.items()):
     c = cost(model, r)
     grand += c
-    print(f'| **{model}, total** | ' + ' | '.join(f'**{r[c2]:,}**' for c2 in cols) + f' | **{c:.2f}** |')
+    label = 'total' if len(models) == 1 else f'total {model}'
+    print(f'| **{label}** | ' + ' | '.join(f'**{r[c2]:,}**' for c2 in cols) + f' | **{c:.2f}** |')
 print(f'\nTotal cost at API prices: **USD {grand:.2f}** '
       f'({len(files)} transcripts, {len(seen)} API responses).')

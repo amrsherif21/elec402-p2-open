@@ -218,3 +218,42 @@ At the first measurement (03:40) the total was 279 responses and $24.72. The fin
   - 800 MHz: +0.075 ns, 4755.016 µm², 2727.60 / 3073.10 / 5209.50 / 2535.60 µW;
   - check, sim and timing all ALL PASS; F14 166/166 and 577/577; timing_fail TIMING FAIL for both; mutants 11/11 and 13/13.
 - *`git status` after the run:* only logs changed (synth.log, resize.log and the tool_versions.txt date). Netlists, SDF and reports are byte-identical.
+
+## Report revision after sign-off (07:00–07:15 UTC)
+
+**Sign-off scorecards** (`git fetch origin check-results`, `results/check_{400-60ed005585,800-b6917e9eb1}/scorecard.md`).
+- *Correction:* the user reports that the service was online throughout the session. It did not trigger because the session environment had not been set up for it. The report's earlier wording ("probably offline") was wrong and has been corrected.
+- *Checked:* both commits at 06:37 / 06:48 UTC, after the environment fix.
+- *GPDK045 results:*
+
+  | | 400 MHz | 800 MHz |
+  |---|---|---|
+  | WNS (target) | 156 ps (125) | 148 ps (62) |
+  | Area | 2752.1 µm² | 5674.5 µm² |
+  | Vectorless power | 224.6 µW | 1121.9 µW |
+  | SDF simulation | pass, 1204/1204 products, 0 timing-check messages | pass, 1249/1249 products |
+
+  Informational check: the 400 MHz netlist at 1.25 ns fails, with 0 products, 4058 timing-check messages, and F1 F4 F5 F6 F8 F9 STALL violated. This matches our own `make timing_fail RUN=800` (same netlist, same period, no product returned).
+- *Comparison with the open-source results:*
+  - functional results agree;
+  - GPDK045 area is 15–19 % larger;
+  - GPDK045 vectorless power is 2.4–2.9× lower (different library, voltage and default activity);
+  - the 800 MHz design draws 4.2× the power of the 400 MHz design in our flow and 5.0× in GPDK045;
+  - 400 MHz slack is nearly equal in both flows; at 800 MHz GPDK045 has 2× the margin (corner not stated; commercial tools spend slack on area recovery).
+
+**Report rewritten for concision.** The user asked for a results summary first, then design decisions, at about half the length. Main-text prose went from 5,650 to 2,728 words (3,805 with tables), and all ten SPEC Section 9 items are kept. Section order:
+1. summary;
+2. design decisions (control, arithmetic, 400 MHz, 800 MHz with change table and candidates);
+3. verification;
+4. area/power;
+5. optimisation;
+6. tool flow and departures;
+7. GPDK045 comparison;
+8. metrics;
+9. references, with the appendix after them.
+
+RTL untouched.
+
+**Build fixes.**
+- The first rebuild failed silently. LaTeX could not render "≈" (U+2248), and `| tail -1` hid the error, so the old PDF stayed in place. "≈" and "…" are now declared in the header.
+- `token_usage.py` now labels subagents by their task description from `*.meta.json` and states the model once.

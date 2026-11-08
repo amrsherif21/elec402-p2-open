@@ -35,6 +35,8 @@ cat > $B/header.tex <<'EOF'
 \DeclareUnicodeCharacter{2212}{\ensuremath{-}}
 \DeclareUnicodeCharacter{2265}{\ensuremath{\geq}}
 \DeclareUnicodeCharacter{2264}{\ensuremath{\leq}}
+\DeclareUnicodeCharacter{2248}{\ensuremath{\approx}}
+\DeclareUnicodeCharacter{2026}{\ldots}
 \DeclareUnicodeCharacter{00B1}{\ensuremath{\pm}}
 \DeclareUnicodeCharacter{00B0}{\ensuremath{^\circ}}
 \lstset{basicstyle=\ttfamily\scriptsize, breaklines=true, columns=fullflexible,
