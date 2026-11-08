@@ -1,6 +1,6 @@
 # Session record
 
-Rendered 2026-11-08 03:13:24 UTC from the Claude Code transcript.
+Rendered 2026-11-08 03:14:36 UTC from the Claude Code transcript.
 
 ### Prompt, 2026-11-08 02:33:34
 
@@ -572,3 +572,15 @@ Two fixes next: separate write and read pointers, so each register drives only o
 - `Bash` sed -i 's/^repair_timing -setup -repair_tns 100 -setup_margin $margin$/repair_timing -setup -repair_tns 100 -setup_margin $margin -effort high/' submission/scripts/resize.tcl && grep -n "repair_timing ...
   - result: 30:repair_timing -setup -repair_tns 100 -setup_margin $margin -effort high p400 P=2.5 enc=0 csa=0100 spl=0 abcD=2000 | yosys_area=2519.286000 rsz_area=2548 wns=-0.432 whs=0.053 pwr_est=6.7171e-04 p800b P=1.25 enc=0 csa=1111 spl=0 abcD=1000 | yosys_area=5670.588000 rsz_area=5826 wns=-0.076 whs=0.024 pwr_est=3.1306e-03 [This command modified 1 file you've previously read: submission/scripts/resize.t ...
 
+### Agent, 2026-11-08 03:13:32
+
+Higher Resizer effort changes nothing at 800 MHz. Duplicating the address and write-enable registers as port-only copies (13 flops) instead.
+
+- `Bash` python3 - <<'EOF' t=open('build/exp/top.sv').read() t=t.replace(""" (* keep *) logic rdy_mult_o, rdy_rd_o; """,""" (* keep *) logic rdy_mult_o, rdy_rd_o; // likewise port-only copies of the memory add ...
+  - result: ALL PASS q800c P=1.25 enc=0 csa=1111 spl=0 abcD=1000 | yosys_area=5654.096000 rsz_area=5815 wns=-0.076 whs=0.020 pwr_est=3.1322e-03 q800b P=1.25 enc=0 csa=1111 spl=0 abcD=1000 | yosys_area=5656.490000 rsz_area=5817 wns=-0.076 whs=0.024 pwr_est=3.1280e-03 _5322_/Q (DFF_X1) fo=4 d=0.575 t=0.575 .Q(readMem_addr[0]), _5292_/Q (DFF_X1) fo=4 d=0.575 t=0.575 .Q(readMem_addr[0]),
+
+#### Reasoning, 2026-11-08 03:14:14
+
+> Yosys merged the duplicate enable flip-flops anyway, since `keep` on the wire doesn't stop it. I'm storing the port copies inverted so they're structurally different and survive.
+
+- `Bash` python3 - <<'EOF' t=open('build/exp/top.sv').read() t=t.replace(""" // likewise port-only copies of the memory addresses and write enable (* keep *) logic [5:0] wp_o, rp_o; (* keep *) logic wr_o; """, ...

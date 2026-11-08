@@ -183,3 +183,6 @@
 | 2026-11-08 03:13:01 UTC | Bash | `grep -E "RSZ-\|worst\|Design area\|^\s+final" build/exp/o800b/rsz.log \| grep -v "RSZ-0075" \| head -20; docker run --rm openroad/orfs:26Q4-365-g898576f04 bash -c 'echo "help repair_timing" > /tmp/h.tcl; / ...` |
 | 2026-11-08 03:13:22 UTC | Bash | `sed -i 's/^repair_timing -setup -repair_tns 100 -setup_margin $margin$/repair_timing -setup -repair_tns 100 -setup_margin $margin -effort high/' submission/scripts/resize.tcl && grep -n "repair_timing ...` |
 | 2026-11-08 03:13:24 UTC | Bash | `mkdir -p /home/user/elec402-p2-open/build/cand_dadda && cat > /home/user/elec402-p2-open/build/cand_dadda/top2.sv.in <<'EOF' // mkMultBuff.sv -- 800 MHz candidate (1.25 ns clock), Nangate45 slow corne ...` |
+| 2026-11-08 03:13:58 UTC | Bash | `python3 - <<'EOF' t=open('build/exp/top.sv').read() t=t.replace(""" (* keep *) logic rdy_mult_o, rdy_rd_o; """,""" (* keep *) logic rdy_mult_o, rdy_rd_o; // likewise port-only copies of the memory add ...` |
+| 2026-11-08 03:14:25 UTC | Write | `/home/user/elec402-p2-open/build/cand_dadda/gen2.py` |
+| 2026-11-08 03:14:36 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand_dadda && python3 - <<'EOF' s = open('gen2.py').read() old = s[s.index("# column c is final if no generate"):s.index("# columns 0..lo-1 are final")] s = s.repla ...` |
