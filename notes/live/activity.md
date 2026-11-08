@@ -344,3 +344,14 @@
 | 2026-11-08 08:01:28 UTC | Bash | `sed -n '170,400p' notes/WORKLOG.md \| head -120; ls build/cand800a 2>/dev/null; git log --oneline \| head -5; cat submission/scripts/ranks.tcl \| head -40` |
 | 2026-11-08 08:01:42 UTC | Bash | `docker run --rm -v $PWD:$PWD -w $PWD -e LIB=tech/NangateOpenCellLibrary_slow.lib -e NETLIST=submission/outputs/mkMultBuff_400_map.v -e PERIOD=2.5 --entrypoint /OpenSTA/build/sta openroad/opensta@sha25 ...` |
 | 2026-11-08 08:02:44 UTC | Bash | `export ABC_DRIVER=BUF_X1 ABC_LOAD=1.0 DONT_USE="OAI33_* NOR3_* NOR4_* OR3_* OR4_* AND4_* NAND4_* AOI211_* AOI221_* AOI222_* OAI211_* OAI221_* OAI222_* MUX2_*"; for n in p1c2 p1c4 p0c4; do bash submiss ...` |
+| 2026-11-08 08:02:45 UTC | Bash | `ls build/exp \| head -50; ls build/cand \| head; grep -n "ABC\\|DONT_USE\\|800" Makefile \| head -40; nproc; uptime` |
+| 2026-11-08 08:02:50 UTC | Bash | `sed -n 1,60p Makefile; ls submission/scripts/; cat submission/scripts/synth.tcl 2>/dev/null \| head -60 \|\| ls submission/scripts/*.ys` |
+| 2026-11-08 08:02:59 UTC | Bash | `for n in p1c4 p0c4; do cp -r build/cand400/$n/rtl build/cand400/${n}k; done; mv build/cand400/p1c4k build/cand400/p1c4_k4 2>/dev/null; mv build/cand400/p0c4k build/cand400/p0c4_k4; mkdir -p build/cand ...` |
+| 2026-11-08 08:03:02 UTC | Bash | `ls build/cand400/ build/cand400/p0c4_k4 build/cand400/p1c4_k4; tail -5 build/cand400/p0c4_k4/synth.out` |
+| 2026-11-08 08:03:15 UTC | Bash | `mkdir -p build/cand800a/base/rtl && cp submission/rtl_800/*.sv build/cand800a/base/rtl/ && time bash submission/scripts/eval_candidate.sh 800 build/cand800a/base/rtl build/cand800a/base 2>&1 \| tail -4 ...` |
+| 2026-11-08 08:03:29 UTC | Bash | `sed -n 200,549p build/cand_dadda/gen2.py` |
+| 2026-11-08 08:03:32 UTC | Bash | `ls build/800 build/cand \| head -50; find build -name ranks.rpt \| head -30; nproc; uptime` |
+| 2026-11-08 08:03:34 UTC | Bash | `cat build/cand/base800/rep/ranks.rpt \| grep -v ^Warning; cat submission/scripts/ranks.tcl; ls build/cand800a/ build/cand800a/base; cat build/cand800a/base/*.out 2>/dev/null \| tail -5` |
+| 2026-11-08 08:03:40 UTC | Bash | `bash -c 'W=build/cand800a/base; head -5 <(bash submission/scripts/eval_candidate.sh 800 $W/rtl $W 2>&1)'; cat build/cand800a/base/rep/ranks.rpt \| grep -v Warning \| head -30; cat submission/scripts/sta ...` |
+| 2026-11-08 08:03:43 UTC | Bash | `awk '/^Startpoint/{n++} n==1' build/cand800a/base/rep/sta.rpt \| head -80` |
+| 2026-11-08 08:03:53 UTC | Bash | `for n in p1c4_k4 p0c4_k4; do mkdir -p build/cand400/$n/rtl; mv build/cand400/$n/*.sv build/cand400/$n/rtl/; bash submission/scripts/eval_candidate.sh 400 build/cand400/$n/rtl build/cand400/$n 2>&1 \| s ...` |
