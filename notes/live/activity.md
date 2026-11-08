@@ -724,3 +724,5 @@
 | 2026-11-08 18:03:29 UTC | Bash | `cd /home/user/elec402-p2-open; cat submission/scripts/f14_check.tcl \| head -40` |
 | 2026-11-08 18:03:35 UTC | Bash | `cd /home/user/elec402-p2-open; sed "s/nets = \[re.search(r'\\\\.D\\\\(\\\\s\*(\[^)\\\\s\]+)\\\\s\*\\\\)', d).group(1) for d in ds\]/nets = [re.sub(r'\\\\s+', '', re.search(r'\\\\.D\\\\(([^)]*)\\\\)',  ...` |
 | 2026-11-08 18:04:00 UTC | Bash | `cd /home/user/elec402-p2-open; bash build/r4wal/f14_check_fix.sh build/r4wal/e8rd/map.v build/r4wal/e8rd/f14 \| tee build/r4wal/e8rd/rep/f14.log; bash build/r4wal/f14_check_fix.sh build/r4wal/a4_np/map ...` |
+| 2026-11-08 18:04:31 UTC | Bash | `cd /home/user/elec402-p2-open; grep "summary\\|ALL PASS\\|FAIL" build/r4wal/e8rd/timing_f14.out \| head -3; make -s timing f14 RUN=800 RTL_DIR=build/r4wal/e8/rtl BUILD=build/r4wal/e8 REP=build/r4wal/e8/r ...` |
+| 2026-11-08 18:06:20 UTC | Bash | `cd /home/user/elec402-p2-open/build/r4wal; for c in "5 e8rd" "2 a4_np"; do set -- $c; iverilog -g2012 -Ptb_mult.LAT=$1 -o $2/unit200k.vvp tb_mult.sv $2/rtl/mult_pipe.sv && vvp -n $2/unit200k.vvp \| tai ...` |
