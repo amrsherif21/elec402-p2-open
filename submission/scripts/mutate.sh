@@ -25,19 +25,19 @@ mutants=(
 )
 else
 mutants=(
-  "if (acc_q == 6'd63) begin|if (acc_q == 6'd62) begin|RDY_mult drops one pair early"
-  "if (wr \&\& wp_q == 6'd63) begin|if (wr \&\& wp_q == 6'd62) begin|drain starts before the last write"
-  "if (rd \&\& rp_q == 6'd63) begin|if (rd \&\& rp_q == 6'd62) begin|drain ends one read early"
+  "if (acc_q == 6'd63) begin rdy_mult_q|if (acc_q == 6'd62) begin rdy_mult_q|RDY_mult drops one pair early"
+  "wire wr_last = wr \&\& !rdy_mult_q \&\& v_q\[LAT-2:0\] == '0;|wire wr_last = wr \&\& !rdy_mult_q;|drain starts before the last write"
+  "wire rp_last = rc_q \&\& rp_q\[5:3\] == 3'd7;|wire rp_last = rc_q \&\& rp_q[5:3] == 3'd6;|drain ends early"
   "vld_q <= rd;|vld_q <= EN_blockRead;|VALID_memVal ignores RDY_blockRead"
-  "wire acc = EN_mult \& rdy_mult_q;|wire acc = EN_mult;|EN_mult accepted while not ready"
-  "wire rd  = EN_blockRead \& rdy_rd_q;|wire rd  = rdy_rd_q;|reads without EN_blockRead"
-  "wp_on <= '1; rp_on <= '1; wr_on <= 1'b1;|wp_on <= '1; rp_on <= '1;|EN_writeMem copy not reset"
-  "acc_q <= '0; wp_q <= '0; rp_q <= '0; v_q <= '0;|acc_q <= '0; wp_q <= '0; rp_q <= '0;|valid pipeline not reset"
+  "wire acc     = EN_mult \& rdy_mult_q;|wire acc     = EN_mult;|EN_mult accepted while not ready"
+  "wire rd      = EN_blockRead \& rdy_rd_q;|wire rd      = rdy_rd_q;|reads without EN_blockRead"
+  "rdy_rd_q   <= 1'b0; rdy_rd_on   <= 1'b1;|rdy_rd_q   <= 1'b0;|RDY_blockRead port copy not reset"
+  "v_q <= '0; vld_q <= 1'b0;|vld_q <= 1'b0;|valid pipeline not reset"
   "v_q <= {v_q\[LAT-2:0\], acc};|v_q <= {v_q[LAT-2:0], EN_mult};|valid bit set by unaccepted pairs"
   "assign memVal_data   = readMem_val;|assign memVal_data   = writeMem_val;|wrong data source"
   "assign EN_readMem    = rd;|assign EN_readMem    = rdy_rd_q;|EN_readMem held during drain"
-  "wr_on <= ~v_q\[LAT-2\];|wr_on <= ~v_q[LAT-3];|EN_writeMem one cycle early"
-  "assign cin = {bg\[NB-2:0\], 1'b0};|assign cin = {bg[NB-2:0], 1'b1};|adder carry-in error (mult_pipe)"
+  "wc_q <= (wp_q\[2:0\] == 3'd6);|wc_q <= (wp_q[2:0] == 3'd5);|write-pointer carry one step early"
+  "assign cin = {bgg\[NB-2:0\], 1'b0};|assign cin = {bgg[NB-2:0], 1'b1};|adder carry-in error (mult_pipe)"
 )
 fi
 ok=0; tot=0

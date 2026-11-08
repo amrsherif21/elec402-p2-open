@@ -1,43 +1,43 @@
 WARNING: submission/testbench/sdf_checker_400.sv:82: $sdf_annotate currently only uses the first two argument.
 INFO t=20000 ps: latency measured from the first write = 2 cycles
-TIMING FAIL t=187500 ps cycle=75: memVal_data=fe5f6000 expected 00000000, product #2 (0 * 32767), xor=fe5f6000
-TIMING FAIL t=190000 ps cycle=76: memVal_data=041f0001 expected 3fff0001, product #3 (32767 * 32767), xor=3be00000
-TIMING FAIL t=192500 ps cycle=77: memVal_data=41980001 expected 00000001, product #4 (-1 * -1), xor=41980000
-TIMING FAIL t=195000 ps cycle=78: memVal_data=81808000 expected c0008000, product #5 (32767 * -32768), xor=41800000
-TIMING FAIL t=207500 ps cycle=83: memVal_data=0000e000 expected 00008000, product #10 (-32768 * -1), xor=00006000
-TIMING FAIL t=210000 ps cycle=84: memVal_data=1c94605c expected 1c94805c, product #11 (-15254 * -31434), xor=0000e000
-TIMING FAIL t=212500 ps cycle=85: memVal_data=ff8080ef expected ff8880ef, product #12 (32767 * -239), xor=00080000
-TIMING FAIL t=222500 ps cycle=89: memVal_data=03f2612a expected fff2612a, product #16 (-115 * 7762), xor=fc000000
-TIMING FAIL t=225000 ps cycle=90: memVal_data=06042ced expected 06842ced, product #17 (5107 * 21407), xor=00800000
-TIMING FAIL t=227500 ps cycle=91: memVal_data=fc351220 expected fff51220, product #18 (4974 * -144), xor=03c00000
-TIMING FAIL t=232500 ps cycle=93: memVal_data=e1983f30 expected e1783f30, product #20 (31376 * -16325), xor=00e00000
-TIMING FAIL t=235000 ps cycle=94: memVal_data=e2eb1a2a expected e2eb3a2a, product #21 (-14890 * 32767), xor=00002000
-TIMING FAIL t=247500 ps cycle=99: memVal_data=08fc6e87 expected 08bc6e87, product #26 (4473 * 32767), xor=00400000
-TIMING FAIL t=255000 ps cycle=102: memVal_data=001fc1d4 expected ffffc1d4, product #29 (15916 * -1), xor=ffe00000
-TIMING FAIL t=260000 ps cycle=104: memVal_data=03ecd2ad expected ffecd2ad, product #31 (-63 * 19949), xor=fc000000
-TIMING FAIL t=262500 ps cycle=105: memVal_data=43ffb3c5 expected ffffb3c5, product #32 (-1 * 19515), xor=bc000000
-TIMING FAIL t=265000 ps cycle=106: memVal_data=3c3e2001 expected 3fff0001, product #33 (32767 * 32767), xor=03c12000
-TIMING FAIL t=267500 ps cycle=107: memVal_data=c43ad2c0 expected fffad2c0, product #34 (-12 * 28272), xor=3bc00000
-TIMING FAIL t=272500 ps cycle=109: memVal_data=f1789d4f expected f1589d4f, product #36 (32767 * -7503), xor=00200000
-TIMING FAIL t=277500 ps cycle=111: memVal_data=ffdc2285 expected ffdd2285, product #38 (22623 * -101), xor=00010000
-TIMING FAIL t=287500 ps cycle=115: memVal_data=2e002000 expected 2e010000, product #42 (-32768 * -23554), xor=00012000
-TIMING FAIL t=290000 ps cycle=116: memVal_data=43ad79e4 expected 03ad79e4, product #43 (-14220 * -4339), xor=40000000
-TIMING FAIL t=292500 ps cycle=117: memVal_data=fe34b82c expected fff4b82c, product #44 (-156 * 4739), xor=01c00000
-TIMING FAIL t=300000 ps cycle=120: memVal_data=ff5c032a expected 0000032a, product #47 (-27 * -30), xor=ff5c0000
-TIMING FAIL t=327500 ps cycle=131: memVal_data=fd7b5338 expected fcff5338, product #58 (-1640 * 30717), xor=01840000
-TIMING FAIL t=330000 ps cycle=132: memVal_data=fa02e48c expected 0002e48c, product #59 (-20 * -9479), xor=fa000000
-TIMING FAIL t=332500 ps cycle=133: memVal_data=003bfc08 expected 01fbfc08, product #60 (1016 * 32767), xor=01c00000
-TIMING FAIL t=335000 ps cycle=134: memVal_data=fffd9e40 expected fffdde40, product #61 (-148 * 944), xor=00004000
-TIMING FAIL t=337500 ps cycle=135: memVal_data=c0180788 expected 00000788, product #62 (-1928 * -1), xor=c0180000
+TIMING FAIL t=187500 ps cycle=75: memVal_data=fbb00000 expected 00000000, product #2 (0 * 32767), xor=fbb00000
+TIMING FAIL t=192500 ps cycle=77: memVal_data=40000001 expected 00000001, product #4 (-1 * -1), xor=40000000
+TIMING FAIL t=240000 ps cycle=96: memVal_data=08385e80 expected 00385e80, product #23 (-16492 * -224), xor=08000000
+TIMING FAIL t=245000 ps cycle=98: memVal_data=40520000 expected 00520000, product #25 (-164 * -32768), xor=40000000
+TIMING FAIL t=300000 ps cycle=120: memVal_data=fffc032a expected 0000032a, product #47 (-27 * -30), xor=fffc0000
+TIMING FAIL t=320000 ps cycle=128: memVal_data=0ffedb6f expected 1ffedb6f, product #55 (-29071 * -18465), xor=10000000
+TIMING FAIL t=337500 ps cycle=135: memVal_data=fbb00788 expected 00000788, product #62 (-1928 * -1), xor=fbb00000
 INFO t=337500 ps: phase 0 complete (64 accepted, 63 returned)
-TIMING FAIL t=507500 ps cycle=203: memVal_data=87fc0013 expected 00000013, product #64 (-1 * -19), xor=87fc0000
-TIMING FAIL ... further messages suppressed
+TIMING FAIL t=507500 ps cycle=203: memVal_data=fbf40013 expected 00000013, product #64 (-1 * -19), xor=fbf40000
+TIMING FAIL t=532500 ps cycle=213: memVal_data=400005fe expected 000005fe, product #74 (-1 * -1534), xor=40000000
+TIMING FAIL t=537500 ps cycle=215: memVal_data=07ff93b4 expected ffff93b4, product #76 (-1 * 27724), xor=f8000000
+TIMING FAIL t=567500 ps cycle=227: memVal_data=40045386 expected 00045386, product #88 (-17 * -16678), xor=40000000
+TIMING FAIL t=572500 ps cycle=229: memVal_data=0000accd expected 0040accd, product #90 (-179 * -23679), xor=00400000
+TIMING FAIL t=575000 ps cycle=230: memVal_data=fba04972 expected 00004972, product #91 (-18802 * -1), xor=fba00000
+TIMING FAIL t=585000 ps cycle=234: memVal_data=02892ece expected 03092ece, product #95 (12441 * 4094), xor=01800000
+TIMING FAIL t=595000 ps cycle=238: memVal_data=001000f2 expected 000000f2, product #99 (-1 * -242), xor=00100000
+TIMING FAIL t=610000 ps cycle=244: memVal_data=c0807330 expected 00807330, product #105 (-3309 * -2544), xor=c0000000
+TIMING FAIL t=625000 ps cycle=250: memVal_data=48101af4 expected 00001af4, product #111 (-75 * -92), xor=48100000
+TIMING FAIL t=635000 ps cycle=254: memVal_data=02000679 expected 00000679, product #115 (-1657 * -1), xor=02000000
 INFO t=662500 ps: phase 1 complete (128 accepted, 127 returned)
+TIMING FAIL t=857500 ps cycle=343: memVal_data=fbb00001 expected 00000001, product #128 (-1 * -1), xor=fbb00000
+TIMING FAIL t=860000 ps cycle=344: memVal_data=40002a60 expected 00002a60, product #129 (-96 * -113), xor=40000000
+TIMING FAIL t=867500 ps cycle=347: memVal_data=fba0619a expected 0000619a, product #131 (-24986 * -1), xor=fba00000
+TIMING FAIL t=900000 ps cycle=360: memVal_data=400015b4 expected 000015b4, product #143 (-5556 * -1), xor=40000000
+TIMING FAIL t=905000 ps cycle=362: memVal_data=40000001 expected 00000001, product #145 (-1 * -1), xor=40000000
+TIMING FAIL t=925000 ps cycle=370: memVal_data=03fb7891 expected fffb7891, product #153 (-115 * 2581), xor=fc000000
+TIMING FAIL t=945000 ps cycle=378: memVal_data=ff6880ef expected ff8880ef, product #161 (32767 * -239), xor=00e00000
+TIMING FAIL t=960000 ps cycle=384: memVal_data=07ffcf00 expected ffffcf00, product #167 (-1 * 12544), xor=f8000000
 INFO t=1020000 ps: phase 2 complete (192 accepted, 191 returned)
+TIMING FAIL t=1237500 ps cycle=495: memVal_data=fb0588f5 expected fb8588f5, product #207 (32767 * -2293), xor=00800000
+TIMING FAIL t=1242500 ps cycle=497: memVal_data=40000093 expected 00000093, product #209 (-1 * -147), xor=40000000
+TIMING FAIL t=1250000 ps cycle=500: memVal_data=40008000 expected 00008000, product #210 (-32768 * -1), xor=40000000
+TIMING FAIL t=1290000 ps cycle=516: memVal_data=02006fd4 expected 00006fd4, product #217 (-28628 * -1), xor=02000000
+TIMING FAIL ... further messages suppressed
 INFO t=1447500 ps: phase 3 complete (256 accepted, 255 returned)
 INFO t=1872500 ps: phase 4 complete (320 accepted, 319 returned)
 INFO t=2197500 ps: phase 5 complete (384 accepted, 383 returned)
 
-==== mkMultBuff_sdf_checker_400 summary: period 2.500 ns, seed 402, latency 2, 887 cycles, 384 accepted, 384 returned, 172 failure(s) ====
-TIMING FAIL: 172 failure(s)
+==== mkMultBuff_sdf_checker_400 summary: period 2.500 ns, seed 402, latency 2, 887 cycles, 384 accepted, 384 returned, 53 failure(s) ====
+TIMING FAIL: 53 failure(s)
 submission/testbench/sdf_checker_400.sv:289: $finish called at 2217500 (1ps)

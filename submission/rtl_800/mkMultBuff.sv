@@ -1,31 +1,30 @@
 // mkMultBuff.sv -- 800 MHz implementation (1.25 ns clock), Nangate45 slow corner.
 //
 // Pipelined signed 16x16 multiplier with a 64-entry fill/drain buffer (SPEC.md).
-// Datapath: mult_pipe (radix-4 Booth, carry-save reduction, carry-select adder),
-// with
-// seven register ranks (LAT = 7):
-//   rank 1: operand register; mult_input1 is Booth-recoded before it
-//   rank 2: selected partial products (8 rows of 17 bits + 8 "+1" bits)
-//   rank 3: carry-save level 1 (9 -> 6 rows)
-//   rank 4: carry-save levels 2 and 3 (6 -> 4 -> 3 rows)
-//   rank 5: carry-save level 4 (3 -> 2 rows), stored as generate/propagate
-//   rank 6: carry-select adder stage A (4-bit blocks: sums for carry-in 0/1,
-//           block carry-outs)
-//   rank 7: product, after the block-carry prefix and the sum selection;
-//           drives writeMem_val directly
-// A LAT-bit valid shift register runs alongside the datapath and drives
+// Datapath: mult_pipe.sv: radix-4 Booth partial products, row-wise 3:2
+// carry-save reduction 9 -> 6 -> 4 -> 3 -> 2 rows with each 3:2 adding its
+// latest input last, and a two-stage carry-increment adder with 4-bit blocks.
+// Six register ranks (latency 6):
+//   R1 operand a + Booth digits of b (40)   R2 selected partial products (144)
+//   R3 four rows after levels 1-2 (92)      R4 two rows after levels 3-4 (60)
+//   R5 adder stage A: block sums for carry-in 0, block carry-outs for carry-in
+//      0 and 1 (43)                         R6 product (32), drives writeMem_val
+// A LAT-bit valid shift register runs alongside the datapath; its last bit is
 // EN_writeMem (F4).
 //
-// Control: the registered ready flags rdy_mult_q / rdy_rd_q are the fill /
-// drain state machine (FILL = {1,0}, WAIT = {0,0}, DRAIN = {0,1}); acc_q counts
-// pairs accepted in the fill phase, so pairs in flight count against the
-// capacity (F5); wp_q / rp_q are the write and read pointers. Changes from the
-// 400 MHz control for timing at 1.25 ns: separate write and read pointers, and
-// port-only copies of RDY_mult, RDY_blockRead, writeMem_addr, readMem_addr and
-// EN_writeMem, so the output load does not slow the internal handshake logic.
-// All outputs come from registers except EN_readMem (= EN_blockRead &
-// RDY_blockRead, F7) and memVal_data (= readMem_val, F8).
-// Every register has a synchronous active-low reset (F14, F15).
+// Control (31 flops): the registered ready flags rdy_mult_q / rdy_rd_q are the
+// fill / drain state machine (FILL = {1,0}, WAIT = {0,0}, DRAIN = {0,1}).
+// acc_q counts pairs accepted in the fill phase, so pairs in flight count
+// against the capacity (F5). The drain starts in the cycle after the last write
+// of the fill: the write made when the fill is closed (rdy_mult_q = 0) and no
+// other product is in flight, which is the write to address 63 (F6). The write
+// and read pointers are split 3+3 bits with a registered "low half = 7" flag, so
+// their increment and the "= 63" test are short. RDY_mult and RDY_blockRead are
+// driven by port-only copies of the ready flags, stored inverted so synthesis
+// does not merge them with the internal flags; the 23.5 fF port load then does
+// not slow the handshake logic. All outputs come from registers except
+// EN_readMem (= EN_blockRead & RDY_blockRead, F7) and memVal_data (= readMem_val,
+// F8). Every register has a synchronous active-low reset (F14, F15).
 module mkMultBuff #(parameter N = 32) (
     input  logic         clk,
     input  logic         RST_N,
@@ -44,68 +43,65 @@ module mkMultBuff #(parameter N = 32) (
     output logic [5:0]   readMem_addr,
     input  logic [N-1:0] readMem_val
 );
-    // multiplier pipeline configuration (see mult_pipe.sv)
-    localparam bit       PRE_ENC   = 1'b1;
-    localparam bit       ENC_REG   = 1'b0;
-    localparam bit [3:0] CSA_REG   = 4'b1101;
-    localparam bit       SEL_REG   = 1'b1;
-    localparam bit       CPA_SPLIT = 1'b0;
-    localparam bit       CPA_CSEL  = 1'b1;
-    localparam int       LAT       = 1 + (PRE_ENC ? 0 : ENC_REG) + SEL_REG + CSA_REG[0] + CSA_REG[1]
-                                     + CSA_REG[2] + CSA_REG[3] + (CPA_SPLIT | CPA_CSEL) + 1;
+    // multiplier configuration (see mult_pipe.sv); LAT = register ranks
+    localparam int LAT = 6;
 
-    logic       rdy_mult_q, rdy_rd_q, vld_q;
-    // copies of the two ready flags that drive only the output ports, so the
-    // port load does not slow the internal handshake logic (stored inverted,
-    // see below)
-    logic rdy_mult_on, rdy_rd_on;
-    // likewise port-only copies of the memory addresses and write enable; they
-    // are stored inverted (reset value all ones) so that synthesis does not
-    // merge them with the internal registers, which have the same next state
-    logic [5:0] wp_on, rp_on;
-    logic       wr_on;
-    logic [5:0] acc_q, wp_q, rp_q;
-    logic [LAT-1:0] v_q;                 // valid bit of each pipeline rank
+    logic           rdy_mult_q, rdy_rd_q;     // state (internal copies)
+    logic           rdy_mult_on, rdy_rd_on;   // port copies, stored inverted
+    logic [5:0]     acc_q, wp_q, rp_q;
+    logic           wc_q, rc_q;               // wp_q[2:0] == 7, rp_q[2:0] == 7
+    logic [LAT-1:0] v_q;                      // valid bit of each pipeline rank
+    logic           vld_q;                    // VALID_memVal
     logic signed [31:0] p;
 
-    wire acc = EN_mult & rdy_mult_q;
-    wire rd  = EN_blockRead & rdy_rd_q;
-    wire wr  = v_q[LAT-1];
+    wire acc     = EN_mult & rdy_mult_q;           // accepted operand pair
+    wire rd      = EN_blockRead & rdy_rd_q;        // accepted read
+    wire wr      = v_q[LAT-1];                     // memory write this cycle
+    wire wr_last = wr && !rdy_mult_q && v_q[LAT-2:0] == '0;   // write to address 63
+    wire rp_last = rc_q && rp_q[5:3] == 3'd7;                 // read of address 63
 
     always_ff @(posedge clk) begin
         if (!RST_N) begin
-            rdy_mult_q <= 1'b1; rdy_rd_q <= 1'b0; vld_q <= 1'b0;
-            rdy_mult_on <= 1'b0; rdy_rd_on <= 1'b1;
-            wp_on <= '1; rp_on <= '1; wr_on <= 1'b1;
-            acc_q <= '0; wp_q <= '0; rp_q <= '0; v_q <= '0;
+            rdy_mult_q <= 1'b1; rdy_mult_on <= 1'b0;
+            rdy_rd_q   <= 1'b0; rdy_rd_on   <= 1'b1;
+            acc_q <= '0; wp_q <= '0; rp_q <= '0; wc_q <= 1'b0; rc_q <= 1'b0;
+            v_q <= '0; vld_q <= 1'b0;
         end else begin
             v_q <= {v_q[LAT-2:0], acc};
             if (acc) begin
                 acc_q <= acc_q + 6'd1;
                 if (acc_q == 6'd63) begin rdy_mult_q <= 1'b0; rdy_mult_on <= 1'b1; end
             end
-            if (wr) begin wp_q <= wp_q + 6'd1; wp_on <= ~(wp_q + 6'd1); end
-            if (rd) begin rp_q <= rp_q + 6'd1; rp_on <= ~(rp_q + 6'd1); end
-            wr_on <= ~v_q[LAT-2];
-            if (wr && wp_q == 6'd63) begin rdy_rd_q <= 1'b1; rdy_rd_on <= 1'b0; end
-            if (rd && rp_q == 6'd63) begin
-                rdy_rd_q <= 1'b0; rdy_mult_q <= 1'b1;
-                rdy_rd_on <= 1'b1; rdy_mult_on <= 1'b0;
+            if (wr) begin
+                wp_q[2:0] <= wp_q[2:0] + 3'd1;
+                if (wc_q) wp_q[5:3] <= wp_q[5:3] + 3'd1;
+                wc_q <= (wp_q[2:0] == 3'd6);
             end
-            vld_q <= rd;
+            if (rd) begin
+                rp_q[2:0] <= rp_q[2:0] + 3'd1;
+                if (rc_q) rp_q[5:3] <= rp_q[5:3] + 3'd1;
+                rc_q <= (rp_q[2:0] == 3'd6);
+            end
+            if (wr_last) begin rdy_rd_q <= 1'b1; rdy_rd_on <= 1'b0; end      // F6
+            if (rd && rp_last) begin                                          // F10
+                rdy_rd_q <= 1'b0; rdy_rd_on <= 1'b1;
+                rdy_mult_q <= 1'b1; rdy_mult_on <= 1'b0;
+            end
+            vld_q <= rd;                                                      // F8
         end
     end
 
-    mult_pipe #(.PRE_ENC(PRE_ENC), .ENC_REG(ENC_REG), .CSA_REG(CSA_REG), .SEL_REG(SEL_REG), .CPA_SPLIT(CPA_SPLIT), .CPA_CSEL(CPA_CSEL), .CSW(4), .GP4(1'b1))
+    mult_pipe #(.PRE_ENC(1'b1), .SEL_REG(1'b1), .CSA_REG(4'b1010), .ORD(1'b1),
+                .CPA(1), .CI1(1'b1), .CSW(4))
         u_mult (.clk(clk), .RST_N(RST_N), .en(acc), .a(mult_input0), .b(mult_input1), .p(p));
 
     assign RDY_mult      = ~rdy_mult_on;
     assign RDY_blockRead = ~rdy_rd_on;
-    assign EN_writeMem   = ~wr_on;
-    assign writeMem_addr = ~wp_on;
+    assign EN_writeMem   = wr;
+    assign writeMem_addr = wp_q;
     assign writeMem_val  = p;
     assign EN_readMem    = rd;
-    assign readMem_addr  = ~rp_on;
+    assign readMem_addr  = rp_q;
     assign VALID_memVal  = vld_q;
-    assign memVal_data   = readMem_val;
+    assign memVal_data   = readMem_val;       // not registered again (F8)
 endmodule : mkMultBuff

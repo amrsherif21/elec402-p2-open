@@ -1,14 +1,14 @@
-mutant 1 (RDY_mult drops one pair early): FAIL 10618 check(s) failed
-mutant 2 (drain starts before the last write): FAIL 5152 check(s) failed
-mutant 3 (drain ends one read early): FAIL 4085 check(s) failed
+mutant 1 (RDY_mult drops one pair early): FAIL 5900 check(s) failed
+mutant 2 (drain starts before the last write): FAIL 6491 check(s) failed
+mutant 3 (drain ends early): FAIL 6405 check(s) failed
 mutant 4 (VALID_memVal ignores RDY_blockRead): FAIL 1464 check(s) failed
-mutant 5 (EN_mult accepted while not ready): FAIL 9269 check(s) failed
-mutant 6 (reads without EN_blockRead): FAIL 12580 check(s) failed
-mutant 7 (EN_writeMem copy not reset): FAIL 7 check(s) failed
-mutant 8 (valid pipeline not reset): FAIL 5865 check(s) failed
-mutant 9 (valid bit set by unaccepted pairs): FAIL 9793 check(s) failed
+mutant 5 (EN_mult accepted while not ready): FAIL 11272 check(s) failed
+mutant 6 (reads without EN_blockRead): FAIL 12678 check(s) failed
+mutant 7 (RDY_blockRead port copy not reset): FAIL 388 check(s) failed
+mutant 8 (valid pipeline not reset): FAIL 1399 check(s) failed
+mutant 9 (valid bit set by unaccepted pairs): FAIL 11023 check(s) failed
 mutant 10 (wrong data source): FAIL 1818 check(s) failed
-mutant 11 (EN_readMem held during drain): FAIL 2236 check(s) failed
-mutant 12 (EN_writeMem one cycle early): FAIL 3339 check(s) failed
-mutant 13 (adder carry-in error (mult_pipe)): FAIL 1979 check(s) failed
+mutant 11 (EN_readMem held during drain): FAIL 2240 check(s) failed
+mutant 12 (write-pointer carry one step early): FAIL 259 check(s) failed
+mutant 13 (adder carry-in error (mult_pipe)): FAIL 1981 check(s) failed
 killed 13 of 13 mutants

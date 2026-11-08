@@ -9,11 +9,10 @@ ifeq ($(RUN),400)
   ABC_D   ?= 2200
   BOOTH   ?= 1
   ADDER   ?= kogge-stone
-  # ABC mapping knobs (see notes/WORKLOG.md): no input-driver model, the SPEC
-  # output load on every ABC output, full cell library
-  ABC_DRIVER ?= none
-  ABC_LOAD   ?= 23.5
-  DONT_USE   ?=
+  # ABC mapping knobs: as for 800 MHz (round 3 measurements, notes/WORKLOG.md)
+  ABC_DRIVER ?= BUF_X1
+  ABC_LOAD   ?= 1.0
+  DONT_USE   ?= OAI33_* NOR3_* NOR4_* OR3_* OR4_* AND4_* NAND4_* AOI211_* AOI221_* AOI222_* OAI211_* OAI221_* OAI222_* MUX2_*
 else ifeq ($(RUN),800)
   PERIOD  ?= 1.25
   HALF    := 0.625

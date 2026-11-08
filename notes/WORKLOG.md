@@ -351,3 +351,59 @@ What each change did:
 - *What did not work:* PRE_ENC=0 saves 8 flops but adds 534 µm² of comb. The 144-bit PP rank cannot be avoided, because select + L1 is about 0.9 ns against a 0.715 ns budget. Five ranks would need 3.73 ns of logic.
 
 e18 passes SDF timing sim (384/384) and F14 (442/442). It was submitted to sign-off as `check/c800-e18` (89c8d99, with rtl_400 = p1c4).
+
+**Bit-level tree worker (b), `build/cand800b/`.** The generator `gen_tree.py`, now `submission/scripts/gen_tree.py`, emits a drop-in mult_pipe with Booth PPs and a Dadda or Wallace bit-level tree.
+
+*Booth matrix (144 bits, height 9, 4 levels):*
+
+| tree | FA/HA | cutsets after L1/L2/L3/L4 |
+|---|---|---|
+| Dadda | 91/22 | 132/104/84/60 |
+| Wallace | 92/55 | 112/86/69/59 |
+| Wallace, no HA on short columns | 100/20 | 112/84/65/52 |
+
+Wallace reduces bits earlier, so its mid-tree cutsets are narrower, which is what pipelining needs.
+
+*Best results in our flow:*
+- 800 MHz, w24r3gt5re: 6 ranks, 431 flops, +0.096 ns, 3951 µm², vectorless 2155 µW.
+- 400 MHz, w4r3cpa: 3 ranks, 141 flops, +0.151 ns.
+- 800 MHz combined with e18's control (build/cand800c/combo): 420 flops, +0.085 ns.
+
+**Sign-off of the candidates** (all meet timing, all pass SDF simulation):
+
+| check | 400 area / power / WNS | 800 area / power / WNS |
+|---|---|---|
+| previous designs | 2752.1 / 224.6 / 156 | 5674.5 / 1121.9 / 148 |
+| c400-p1c4 | 2648.1 / 218.6 / 441 | (old 800) |
+| c800-e18 | (p1c4) | **4416.2 / 829.7 / 158** |
+| c-wallace (w4r3cpa + w24r3gt5re) | **2660.8 / 215.2 / 203** | 4192.6 / 922.4 / 91 |
+| c-combo (w4r3cpa + Wallace tree, e18 control) | 2660.8 / 215.2 / 203 | 4192.9 / 929.8 / 90 |
+
+Units: area µm², power µW, WNS ps.
+
+**Decision.** Area and power disagree, so I took the sum of the relative changes in area and power:
+- 800 MHz: Wallace is −5.1 % area but +11.2 % power against e18, so **e18** wins.
+- 400 MHz: Wallace is +0.5 % area and −1.6 % power against p1c4, so **w4r3cpa** wins, with 8 fewer flops.
+
+The Wallace 800 MHz design probably loses on vectorless power because its bit-level XOR network is larger: 100 FA + 26 HA against e18's row tree, and vectorless analysis charges every cell at default activity. The control simplification (−11 flops) did not change the sign-off area at all (the commercial flow probably merges the duplicates itself).
+
+**Final RTL.**
+- *rtl_400:* w4r3cpa, regenerated from `submission/scripts/gen_tree.py --mode wallace --rawlevels 3 --nosel --cuts 4 --gp cpa --cpa one --res-budget 1.9` (identical body); top unchanged except the header.
+- *rtl_800:* e18's parameterised mult_pipe (header documents the new options) under a cleaned top with only the chosen control (31 flops, same function as e18).
+- *Makefile:* the 400 knobs become the 800 knobs.
+- *Mutation test:* new 800 MHz mutant set, 13/13 killed; 400 still 11/11.
+
+**Full flow on the final designs:**
+
+| | 400 MHz | 800 MHz |
+|---|---|---|
+| WNS | +0.263 ns | +0.140 ns |
+| area (seq) | 2449.6 µm² (637.6) | 4017.9 µm² (2000.9) |
+| flops | 141 | 442 |
+| vectorless | 633.4 µW | 2186.6 µW |
+| run / fill / drain | 644.7 / 1599.6 / 380.0 µW | 2491.9 / 4530.0 / 1945.6 µW |
+| check / sim / timing | ALL PASS | ALL PASS |
+| F14 | 141/141 | 442/442 |
+| timing_fail | TIMING FAIL (−0.675 ns) | TIMING FAIL (−0.951 ns) |
+
+Waveforms were regenerated.

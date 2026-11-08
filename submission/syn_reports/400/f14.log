@@ -1,1 +1,1 @@
-F14CHECK: flops 166, reset-gated 166 (of which reset-to-1 1), NOT reset-gated 0: 
+F14CHECK: flops 141, reset-gated 141 (of which reset-to-1 1), NOT reset-gated 0: 
