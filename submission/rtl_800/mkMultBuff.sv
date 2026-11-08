@@ -4,15 +4,20 @@
 // Datapath: mult_pipe.sv: radix-4 Booth partial products, row-wise 3:2
 // carry-save reduction 9 -> 6 -> 4 -> 3 -> 2 rows with each 3:2 adding its
 // latest input last, and a two-stage carry-increment adder with 4-bit blocks.
-// Six register ranks (latency 6):
+// Five register ranks (latency 5):
 //   R1 operand a + Booth digits of b (40)   R2 selected partial products (144)
 //   R3 four rows after levels 1-2 (92)      R4 two rows after levels 3-4 (60)
-//   R5 adder stage A: block sums for carry-in 0, block carry-outs for carry-in
-//      0 and 1 (43)                         R6 product (32), drives writeMem_val
+//   R5 adder stage A: block sums for carry-in 0 and the block carry-outs for
+//      carry-in 0 and 1 after the first level of the block-carry prefix (42)
+// Adder stage B (the rest of the block-carry prefix and the block increments)
+// is combinational and drives writeMem_val directly: the memory captures
+// writeMem_val at the rising edge, so it only has to settle within the cycle
+// (output delay 0 ns, F4). The PP register is reset through the Booth digits
+// (one/two/neg AND RST_N), so it needs no reset gate of its own.
 // A LAT-bit valid shift register runs alongside the datapath; its last bit is
-// EN_writeMem (F4).
+// EN_writeMem, aligned with the product on writeMem_val (F4).
 //
-// Control (31 flops): the registered ready flags rdy_mult_q / rdy_rd_q are the
+// Control (30 flops): the registered ready flags rdy_mult_q / rdy_rd_q are the
 // fill / drain state machine (FILL = {1,0}, WAIT = {0,0}, DRAIN = {0,1}).
 // acc_q counts pairs accepted in the fill phase, so pairs in flight count
 // against the capacity (F5). The drain starts in the cycle after the last write
@@ -22,9 +27,11 @@
 // their increment and the "= 63" test are short. RDY_mult and RDY_blockRead are
 // driven by port-only copies of the ready flags, stored inverted so synthesis
 // does not merge them with the internal flags; the 23.5 fF port load then does
-// not slow the handshake logic. All outputs come from registers except
-// EN_readMem (= EN_blockRead & RDY_blockRead, F7) and memVal_data (= readMem_val,
-// F8). Every register has a synchronous active-low reset (F14, F15).
+// not slow the handshake logic. EN_writeMem, writeMem_addr, RDY_mult,
+// RDY_blockRead, readMem_addr and VALID_memVal come from registers;
+// writeMem_val is the combinational output of adder stage B (from R5),
+// EN_readMem = EN_blockRead & RDY_blockRead (F7) and memVal_data = readMem_val
+// (F8). Every register has a synchronous active-low reset (F14, F15).
 module mkMultBuff #(parameter N = 32) (
     input  logic         clk,
     input  logic         RST_N,
@@ -44,7 +51,7 @@ module mkMultBuff #(parameter N = 32) (
     input  logic [N-1:0] readMem_val
 );
     // multiplier configuration (see mult_pipe.sv); LAT = register ranks
-    localparam int LAT = 6;
+    localparam int LAT = 5;
 
     logic           rdy_mult_q, rdy_rd_q;     // state (internal copies)
     logic           rdy_mult_on, rdy_rd_on;   // port copies, stored inverted
@@ -91,8 +98,8 @@ module mkMultBuff #(parameter N = 32) (
         end
     end
 
-    mult_pipe #(.PRE_ENC(1'b1), .SEL_REG(1'b1), .CSA_REG(4'b1010), .ORD(1'b1),
-                .CPA(1), .CI1(1'b1), .CSW(4))
+    mult_pipe #(.PRE_ENC(1'b1), .SEL_REG(1'b1), .DRST(1'b1), .CSA_REG(4'b1010), .ORD(1'b1),
+                .CPA(4), .BSM(32'h1111_1111), .CI1(1'b1), .BPA(1'b1), .OREG(1'b0))
         u_mult (.clk(clk), .RST_N(RST_N), .en(acc), .a(mult_input0), .b(mult_input1), .p(p));
 
     assign RDY_mult      = ~rdy_mult_on;

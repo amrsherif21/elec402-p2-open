@@ -14,15 +14,28 @@
 //              registers the block sums for carry-in 0 and the block carry-outs,
 //              with CI1 also those for carry-in 1), 2 one-stage prefix adder
 //              (PFX selects Kogge-Stone, Sklansky, Brent-Kung, Han-Carlson),
-//              3 one-stage '+'; 0 uses CPA_CSEL / CPA_SPLIT
+//              3 one-stage '+', 4 as 1 with blocks of any size (start-column
+//              mask BSM) and optionally (BPA, needs CI1) the first level of the
+//              block-carry prefix in stage A; 0 uses CPA_CSEL / CPA_SPLIT
+//   OREG     : CPA = 1 / 4: register the product; with OREG = 0 the product is
+//              the combinational output of adder stage B
 //   ORD      : each 3:2 compressor adds its latest-arriving input last
 //   GT       : with GP4, store generate/transmit instead of generate/propagate
-// The 800 MHz design uses PRE_ENC, SEL_REG, CSA_REG = 4'b1010, ORD, CPA = 1,
-// CI1, CSW = 4. The alternatives were measured during design (notes/WORKLOG.md).
+//   DRST     : with SEL_REG, the partial-product register is reset through the
+//              Booth digits: one/two/neg are ANDed with RST_N before selection,
+//              so every selected PP and "+1" bit is 0 while RST_N = 0
+//              (24 gates instead of a reset gate on each of the 144 bits)
+//   LR       : add the lowest LR columns before the level-4 register (not used)
+// The 800 MHz design uses PRE_ENC, SEL_REG, DRST, CSA_REG = 4'b1010, ORD,
+// CPA = 4 with 4-bit blocks, CI1, BPA and OREG = 0. The alternatives were
+// measured during design (notes/WORKLOG.md).
 // Register ranks (= latency from 'en' to 'p'): 1 (operand) + (PRE_ENC ? 0 : ENC_REG)
-//   + SEL_REG + popcount(CSA_REG) + (CPA_CSEL | CPA_SPLIT) + 1 (product)
-// Every register has a synchronous active-low reset. When 'en' is 0 the operand
-// register loads zeros (operand isolation), so an idle multiplier does not toggle.
+//   + SEL_REG + popcount(CSA_REG) + (CPA_CSEL | CPA_SPLIT | CPA = 1 | CPA = 4)
+//   + (CPA = 1 | CPA = 4 ? OREG : 1) (product)
+// Every register has a synchronous active-low reset (SPEC F14): its D input is
+// constant whenever RST_N = 0 (for the PP register through the gated digits).
+// When 'en' is 0 the operand register loads zeros (operand isolation), so an
+// idle multiplier does not toggle.
 // Written for this project; the Booth recoding, the sign-extension constant and
 // the prefix adders follow textbook schemes (see the report's references).
 module mult_pipe #(
@@ -38,14 +51,18 @@ module mult_pipe #(
     parameter bit       ORD       = 1'b0,  // arrival-aware 3:2 input order
     parameter int       CPA       = 0,     // 0: per CPA_CSEL/CPA_SPLIT, 1: 2-stage carry-increment, 2: 1-stage prefix, 3: 1-stage '+'
     parameter bit       CI1       = 1'b0,  // CPA=1: also register block carry-outs for carry-in 1
-    parameter int       PFX       = 0      // CPA=2: 0 Kogge-Stone, 1 Sklansky, 2 Brent-Kung, 3 Han-Carlson
+    parameter int       PFX       = 0,     // CPA=2: 0 Kogge-Stone, 1 Sklansky, 2 Brent-Kung, 3 Han-Carlson
+    parameter bit       OREG      = 1'b1,  // CPA=1/4: register the product (0: p is the combinational output of stage B)
+    parameter logic [31:0] BSM    = 32'h1111_1111, // CPA=4: bit j set -> a carry-increment block starts at column j (bit 0 set)
+    parameter bit       BPA       = 1'b0,  // CPA=4, CI1: first level of the block-carry prefix in stage A
+    parameter bit       DRST      = 1'b0   // SEL_REG: reset the PP register through the Booth digits (one/two/neg & RST_N)
 ) (
     input  logic               clk,
     input  logic               RST_N,
     input  logic               en,     // accept: load operands, else load zeros
     input  logic signed [15:0] a,      // multiplicand (unregistered input)
     input  logic signed [15:0] b,      // multiplier   (unregistered input)
-    output logic signed [31:0] p       // product, registered
+    output logic signed [31:0] p       // product (registered unless CPA = 1 / 4 and OREG = 0)
 );
     // Booth radix-4 recoding of y: digit_i = -2 y[2i+1] + y[2i] + y[2i-1]
     function automatic logic [23:0] booth_enc(input logic [15:0] y);
@@ -96,6 +113,50 @@ module mult_pipe #(
         end
     end endgenerate
     genvar i, k;
+
+    // ---- CPA = 4: two-stage carry-increment adder with blocks of any size,
+    // given by the start-column mask BSM. Constant helper functions:
+    function automatic int bstart(input int j);      // first column of the block of column j
+        bstart = 0;
+        for (int c = 0; c < 32; c++) if (BSM[c] && c <= j) bstart = c;
+    endfunction
+    function automatic int nblk();                    // number of blocks
+        nblk = 0;
+        for (int c = 0; c < 32; c++) if (BSM[c]) nblk = nblk + 1;
+    endfunction
+    function automatic int bfirst(input int b);      // first column of block b
+        int n;
+        n = 0; bfirst = 0;
+        for (int c = 0; c < 32; c++) if (BSM[c]) begin if (n == b) bfirst = c; n = n + 1; end
+    endfunction
+    function automatic int blast(input int b);       // last column of block b
+        blast = (b + 1 < nblk()) ? bfirst(b + 1) - 1 : 31;
+    endfunction
+    localparam int NBV = nblk();
+    // Kogge-Stone prefix segmented at the block starts: G[j] / T[j] = generate /
+    // transmit of columns bstart(j)..j
+    function automatic logic [63:0] segpfx(input logic [31:0] g, input logic [31:0] t);
+        logic [31:0] G, T;
+        G = g; T = t;
+        for (int d = 1; d < 32; d = 2 * d)
+            for (int j = 31; j >= d; j--)
+                if (j - d >= bstart(j)) begin
+                    G[j] = G[j] | (T[j] & G[j-d]);
+                    T[j] = T[j] & T[j-d];
+                end
+        segpfx = {G, T};
+    endfunction
+    // Kogge-Stone prefix over the NBV block carries (generate, transmit)
+    function automatic logic [NBV-1:0] vprefix(input logic [NBV-1:0] g, input logic [NBV-1:0] t, input int d0);
+        logic [NBV-1:0] G, T;
+        G = g; T = t;
+        for (int d = d0; d < NBV; d = 2 * d)
+            for (int j = NBV - 1; j >= d; j--) begin
+                G[j] = G[j] | (T[j] & G[j-d]);
+                T[j] = T[j] & T[j-d];
+            end
+        vprefix = G;
+    endfunction
 
     localparam int NB = 32 / CSW;     // carry-select blocks
 
@@ -164,10 +225,23 @@ module mult_pipe #(
     generate if (SEL_REG) begin : g_sel
         logic [16:0] ppq [0:7];
         logic [7:0]  negq;
-        for (i = 0; i < 8; i++) begin : g_q
-            always_ff @(posedge clk) ppq[i] <= RST_N ? pp[i] : 17'd0;
+        if (DRST) begin : g_drst
+            // synchronous reset of the 144 PP bits through the 24 digit bits:
+            // with one = two = neg = 0 every selected PP and +1 bit is 0
+            // (the gated digits are written inline, not as named wires, so the
+            // negq flip-flops are driven by unnamed nets in the netlist)
+            for (i = 0; i < 8; i++) begin : g_q
+                always_ff @(posedge clk)
+                    ppq[i] <= (({17{one_e[i] & RST_N}} & a17) | ({17{two_e[i] & RST_N}} & a2))
+                              ^ {17{neg_e[i] & RST_N}};
+            end
+            always_ff @(posedge clk) negq <= neg_e & {8{RST_N}};
+        end else begin : g_prst
+            for (i = 0; i < 8; i++) begin : g_q
+                always_ff @(posedge clk) ppq[i] <= RST_N ? pp[i] : 17'd0;
+            end
+            always_ff @(posedge clk) negq <= RST_N ? neg_e : 8'd0;
         end
-        always_ff @(posedge clk) negq <= RST_N ? neg_e : 8'd0;
         assign q0 = {15'd0, ~ppq[0][16], ppq[0][15:0]};
         assign q1 = {13'd0, ~ppq[1][16], ppq[1][15:0], 1'b0, negq[0]} << 0;
         assign q2 = {13'd0, ~ppq[2][16], ppq[2][15:0], 1'b0, negq[1]} << 2;
@@ -233,7 +307,7 @@ module mult_pipe #(
     wire [31:0] sx = l4q[31:0], sy = l4q[63:32];
 
     // ------------------------------------------------------------------
-    // final carry-propagate adder, registered product
+    // final carry-propagate adder (product registered unless CPA = 1 / 4 and OREG = 0)
     // bitwise generate, carry-transmit (for the carry network) and propagate (for the sum)
     logic [31:0] bg_, bt_, bp_;
     assign bg_ = GP4 ? sy : (sx & sy);
@@ -281,7 +355,65 @@ module mult_pipe #(
         pfx32 = G;
     endfunction
 
-    generate if (CPA == 2) begin : g_pfx
+    generate if (CPA == 4) begin : g_vci
+        // stage A: per block, segmented prefix -> block sum for carry-in 0
+        // and block carry-outs for carry-in 0 (co0) and 1 (co1)
+        logic [31:0] Ga, Ta, s0, s0q;
+        assign {Ga, Ta} = segpfx(bg_, bt_);
+        for (i = 0; i < 32; i++) begin : g_s
+            if (bstart(i) == i) begin : g_f
+                assign s0[i] = bp_[i];
+            end else begin : g_n
+                assign s0[i] = bp_[i] ^ Ga[i-1];
+            end
+        end
+        logic [NBV-1:0] co0, co1, co0q, co1q, bt, cin, bgv;
+        logic [NBV-1:0] cg, ct;   // block carry-out for carry-in 0 / 1
+        for (i = 0; i < NBV; i++) begin : g_co
+            assign cg[i] = Ga[blast(i)];
+            assign ct[i] = Ga[blast(i)] | Ta[blast(i)];
+        end
+        if (BPA) begin : g_bpa
+            // first Kogge-Stone level of the block-carry prefix (blocks i-1..i)
+            assign co0 = cg | (ct & {cg[NBV-2:0], 1'b0});
+            assign co1 = ct & {ct[NBV-2:0], 1'b1};
+        end else begin : g_nbpa
+            assign co0 = cg;
+            assign co1 = ct;
+        end
+        always_ff @(posedge clk) begin
+            if (!RST_N) begin s0q <= '0; co0q <= '0; end
+            else        begin s0q <= s0; co0q <= co0; end
+        end
+        if (CI1) begin : g_ci1
+            always_ff @(posedge clk) co1q <= RST_N ? co1 : '0;
+            assign bt = co1q;
+        end else begin : g_ci0
+            // block transmit = block sum for carry-in 0 all ones
+            for (i = 0; i < NBV; i++) begin : g_bt
+                assign bt[i] = &s0q[blast(i):bfirst(i)];
+            end
+        end
+        // stage B: block carries, then increment the blocks that receive one
+        assign bgv = vprefix(co0q, bt, BPA ? 2 : 1);
+        assign cin = {bgv[NBV-2:0], 1'b0};
+        logic [31:0] inc, psum;
+        for (i = 0; i < NBV; i++) begin : g_b
+            for (k = bfirst(i); k <= blast(i); k++) begin : g_k
+                if (k == bfirst(i)) begin : g_k0
+                    assign inc[k] = 1'b1;
+                end else begin : g_kn
+                    assign inc[k] = &s0q[k-1:bfirst(i)];
+                end
+                assign psum[k] = s0q[k] ^ (cin[i] & inc[k]);
+            end
+        end
+        if (OREG) begin : g_oreg
+            always_ff @(posedge clk) p <= RST_N ? psum : 32'd0;
+        end else begin : g_ocomb
+            assign p = psum;   // product = stage B output, not registered
+        end
+    end else if (CPA == 2) begin : g_pfx
         logic [31:0] Gc;
         assign Gc = pfx32(bg_, bt_, PFX);
         always_ff @(posedge clk) p <= RST_N ? (bp_ ^ {Gc[30:0], 1'b0}) : 32'd0;
@@ -327,15 +459,23 @@ module mult_pipe #(
         // block carry: CI1 -> prefix over (co0, co1) as generate / transmit
         assign bgg = bprefix(co0q, bpq);
         assign cin = {bgg[NB-2:0], 1'b0};
-        // incremented block sums, reset folded into the early operands; the
-        // late block carry only selects
         assign s0i = s0q ^ inc;
         logic [31:0] psum;
-        for (i = 0; i < NB; i++) begin : g_inc
-            assign psum[CSW*i +: CSW] = ({CSW{cin[i]}} & s0i[CSW*i +: CSW] & {CSW{RST_N}})
-                                      | ({CSW{~cin[i]}} & s0q[CSW*i +: CSW] & {CSW{RST_N}});
+        if (OREG) begin : g_oreg
+            // incremented block sums, reset folded into the early operands; the
+            // late block carry only selects
+            for (i = 0; i < NB; i++) begin : g_inc
+                assign psum[CSW*i +: CSW] = ({CSW{cin[i]}} & s0i[CSW*i +: CSW] & {CSW{RST_N}})
+                                          | ({CSW{~cin[i]}} & s0q[CSW*i +: CSW] & {CSW{RST_N}});
+            end
+            always_ff @(posedge clk) p <= RST_N ? psum : 32'd0;
+        end else begin : g_ocomb
+            // product = stage B output, not registered (one rank less latency)
+            for (i = 0; i < NB; i++) begin : g_inc
+                assign psum[CSW*i +: CSW] = s0q[CSW*i +: CSW] ^ ({CSW{cin[i]}} & inc[CSW*i +: CSW]);
+            end
+            assign p = psum;
         end
-        always_ff @(posedge clk) p <= RST_N ? psum : 32'd0;
     end else if (CPA_CSEL) begin : g_csel
         // two-stage carry-select adder with CSW-bit blocks. Stage A: per block,
         // bit generate/propagate and an in-block Kogge-Stone prefix give the
