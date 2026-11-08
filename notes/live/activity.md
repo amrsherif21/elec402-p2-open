@@ -115,3 +115,11 @@
 | 2026-11-08 03:03:48 UTC | Bash | `(PRE=1 build/exp/run.sh g800b 1.25 0 0101 1 1000 0 kogge-stone & PRE=1 build/exp/run.sh g400 2.5 0 0100 0 2000 0 kogge-stone & wait) 2>&1 \| grep -v Warning; grep -E "ERROR\|before\|^worst\|RSZ-00(45\|51)" ...` |
 | 2026-11-08 03:05:08 UTC | Agent | `800MHz candidate: Dadda tree` |
 | 2026-11-08 03:05:08 UTC | Agent | `800MHz candidate: retimed behavioral` |
+| 2026-11-08 03:05:10 UTC | Bash | `sed -n 1,400p SPEC.md \| head -c 30000; ls submission/rtl_400 submission/scripts; cat Makefile` |
+| 2026-11-08 03:05:10 UTC | Bash | `sed -n 1,400p SPEC.md \| head -c 30000; ls; ls submission/rtl_400 build 2>/dev/null` |
+| 2026-11-08 03:05:12 UTC | Bash | `cat submission/rtl_400/*.sv; cat submission/scripts/synth.tcl submission/scripts/abc_speed.script submission/scripts/resize.tcl; ls build; nproc; uptime` |
+| 2026-11-08 03:05:13 UTC | Bash | `cat Makefile; cat submission/rtl_400/mkMultBuff.sv submission/rtl_400/mult_pipe.sv; ls build/exp build/400` |
+| 2026-11-08 03:05:16 UTC | Bash | `cat submission/scripts/synth.tcl submission/scripts/resize.tcl submission/scripts/abc_speed.script; cat submission/scripts/constraints.tcl; head -60 submission/scripts/sta.tcl` |
+| 2026-11-08 03:05:47 UTC | Bash | `PRE=1 build/exp/run.sh h800a 1.25 0 1111 1 1000 0 kogge-stone 2>&1 \| grep -v Warning; build/exp/path.sh build/exp/h800a/sta.rpt \| head -30; grep -A40 "^Startpoint" build/exp/h800a/sta.rpt \| grep -m3 - ...` |
+| 2026-11-08 03:05:50 UTC | Bash | `for d in e800a f800b g800b; do grep -E "^(worst slack\|cell area)" build/exp/$d/sta.rpt; done; bash build/exp/path.sh build/exp/g800b/sta.rpt \| head -40` |
+| 2026-11-08 03:06:23 UTC | Bash | `grep -n "PRE_ENC = \\|CPA_SPLIT = \\|assign r8\\|assign l1 = \\|wire \[31:0\] sx\\|generate if (CPA_SPLIT)\\|end else begin : g_full\\|end endgenerate\\|endmodule" build/exp/mult_pipe.sv` |
