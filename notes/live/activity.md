@@ -355,3 +355,5 @@
 | 2026-11-08 08:03:40 UTC | Bash | `bash -c 'W=build/cand800a/base; head -5 <(bash submission/scripts/eval_candidate.sh 800 $W/rtl $W 2>&1)'; cat build/cand800a/base/rep/ranks.rpt \| grep -v Warning \| head -30; cat submission/scripts/sta ...` |
 | 2026-11-08 08:03:43 UTC | Bash | `awk '/^Startpoint/{n++} n==1' build/cand800a/base/rep/sta.rpt \| head -80` |
 | 2026-11-08 08:03:53 UTC | Bash | `for n in p1c4_k4 p0c4_k4; do mkdir -p build/cand400/$n/rtl; mv build/cand400/$n/*.sv build/cand400/$n/rtl/; bash submission/scripts/eval_candidate.sh 400 build/cand400/$n/rtl build/cand400/$n 2>&1 \| s ...` |
+| 2026-11-08 08:04:02 UTC | Bash | `grep -n "PRE_ENC\\|g_pre\\|g_post\\|a_q <= \\|always_ff @(posedge clk) begin$" submission/rtl_800/mult_pipe.sv \| head -20; sed -n 55,75p submission/rtl_800/mult_pipe.sv` |
+| 2026-11-08 08:05:01 UTC | Bash | `mkdir -p /home/user/elec402-p2-open/build/cand800a/src && cd /home/user/elec402-p2-open/build/cand800a/src && cp ../base/rtl/*.sv . && ls` |

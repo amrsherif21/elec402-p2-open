@@ -1,6 +1,6 @@
 # Session record
 
-Rendered 2026-11-08 08:03:53 UTC from the Claude Code transcript.
+Rendered 2026-11-08 08:05:01 UTC from the Claude Code transcript.
 
 ### Prompt, 2026-11-08 02:33:34
 
@@ -1937,3 +1937,13 @@ Both subagents are running. I'm taking 400 MHz myself, starting with its per-ran
 My copy put the RTL files one directory too high. Moving them into `rtl/` and rerunning.
 
 - `Bash` for n in p1c4_k4 p0c4_k4; do mkdir -p build/cand400/$n/rtl; mv build/cand400/$n/*.sv build/cand400/$n/rtl/; bash submission/scripts/eval_candidate.sh 400 build/cand400/$n/rtl build/cand400/$n 2>&1 | s ...
+  - result: check=PASS sim=PASS wns=-0.035 whs=0.055 area=2341.066 seq=695.058 comb=1646.0 flops=149 vectorless_uW=635.5 activity_uW: run:=614.53 fill:=1465.30 drain:=393.45 check=PASS sim=PASS wns=-0.269 whs=0.053 area=3550.036 seq=651.966 comb=2898.1 flops=141 vectorless_uW=836.0 activity_uW: run:=845.16 fill:=2434.00 drain:=404.18
+
+#### Reasoning, 2026-11-08 08:04:01
+
+> The 400 MHz settings do worse on both counts, so the 800 MHz mapping will be used at both frequencies. I'm adding an option to mult_pipe to drop the operand register for the two-rank variant next.
+
+- `Bash` grep -n "PRE_ENC\|g_pre\|g_post\|a_q <= \|always_ff @(posedge clk) begin$" submission/rtl_800/mult_pipe.sv | head -20; sed -n 55,75p submission/rtl_800/mult_pipe.sv
+  - result: 4:// PRE_ENC : Booth-recode the multiplier before the operand register 5:// ENC_REG : (PRE_ENC = 0 only) extra rank after the Booth recoding 13:// Register ranks (= latency from 'en' to 'p'): 1 (operand) + (PRE_ENC ? 0 : ENC_REG) 20: parameter bit PRE_ENC = 1'b1, 52: generate if (PRE_ENC) begin : g_pre 56: always_ff @(posedge clk) begin 58: a_q <= '0; one_q <= '0; two_q <= '0; neg_q <= '0; 60: a_q ...
+
+- `Bash` d=build/cand400/r2c2; mkdir -p $d/rtl && python3 - <<'EOF' src='submission/rtl_800/mult_pipe.sv' s=open(src).read() s=s.replace(" parameter bit PRE_ENC = 1'b1,"," parameter bit OPREG = 1'b1, // 0: no ...
