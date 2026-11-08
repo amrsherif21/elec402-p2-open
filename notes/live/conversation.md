@@ -1,6 +1,6 @@
 # Session record
 
-Rendered 2026-11-08 09:09:08 UTC from the Claude Code transcript.
+Rendered 2026-11-08 17:43:49 UTC from the Claude Code transcript.
 
 ### Prompt, 2026-11-08 02:33:34
 
@@ -2633,3 +2633,27 @@ A rerun from a fresh clone reproduced every netlist, delay file and report byte 
 Files are in `submission/pdf_report`:
 - report.pdf
 
+### Prompt, 2026-11-08 17:42:31
+
+Nice work! Both designs came down and 400 is in a really good spot now. Theres still more to take out at 800 though. I went through your reports and RTL and here’s what a couple of things I think we can improve
+
+The biggest one is dropping the product register at both frequencies (R6 at 800, R3 at 400). F4 doesnt require registered outputs since output delay is 0 and the memory captures writeMem_val on the rising edge, meaning it only has to settle within the cycle. For some reason, you imposed that “all outputs from registers” in the mkMultBuff header and your Dadda worker actually tried this but it got rejected without ever going through sign-off. This is about 32 flops at 800 and 33 at 400 (around 8% area at 400). keep EN_writeMem and the address lined up with it and make sure the SDF checkers still pass.
+
+The F14 reset on R2 is also costing you as it gates all 144 partial product bits with RST_N. If you gate the 24 Booth digit bits (one/two/neg) feeding the select logic instead the selected PPs come out zero anyway and you save around 120 gates. watch the sign-extension bits and make sure your f14 SAT check still passes.
+
+I’d also redo the Wallace vs row tree comparison at 800. c-wallace only had 91 ps of sign-off slack vs 158 for e18, I'm pretty confident that Genus synthesizes against a tighter internal clock, which means it was upsizing cells to close timing. thats most likely where the +11% power came from instead of the XOR network. a generic synth (abc -g) of both trees could give us about 12% fewer cells for Wallace. rebalance the ranks using per-rank slack and put it through sign-off again with at least 120 ps before you decide.
+
+At 800 you can also resolve the low columns to one bit before R4 like gen_tree already does at 400 with --res-budget. it narrows R4 and drops block 0’s carries in R5 for maybe 5-8 flops. For the final adder try sizing the blocks to the arrival profile (small blocks on the late middle columns, big ones on the early bits) instead of uniform ones. CI1=0 saves another 5 flops but stage B is the critical stage in your flow, making this one riskier. The +534 micro m^2 you measured for PRE_ENC=0 also looks more like ABC upsizing than actual logic (generic synth only shows +12 cells). It might be worth one sign-off run if your flow still meets 62 ps but its low priority. At 400 you still have 263 ps spare in stage 2 and pushing --res-budget up should use some of it.
+
+Dont bother with more control flop tweaks, c-wallace and c-combo came out identical in sign-off because Genus already merges duplicate registers.
+
+There are a couple report fixes too. The report says your flow is binding because Nangate slow is two to three times slower but the slack pairs dont really show that (140/158, 96/91, 263/203). register to register both flows are about equally tight and yours is only harder on the port paths (the DFF_X1 input driver and the output load) and the one-stage adder. Also mention that your combined metric is basically the relative change in area x power, and cite Oklobdzija, Villeger and Liu (IEEE Trans. Computers 1996) for the latest-input-last assignment and Zimmermann’s ETH thesis (1997) for the carry-increment adder.
+
+Otherwise I think let's proceed with the same process as last round. use subagents with low concurrency, log every candidate and only send the shortlist through sign-off. once its final push check/final, update the report (keep it concise) and do the fresh clone rerun, PDF, work log and token usage before you commit and push.
+
+### Agent, 2026-11-08 17:43:11
+
+Starting this round. Four items need work at the RTL level: dropping the product register, gating the Booth digits instead of the 144 partial-product bits, a fair Wallace-versus-row-tree rerun, and the adder and low-column refinements. Two independent lines can run in parallel: the row-tree 800 MHz design and the generated Wallace design (800 MHz and 400 MHz). I'm giving one subagent to each, one flow at a time, while I handle sign-off, references and the report.
+
+- `Agent` 800MHz row tree: next reductions
+- `Agent` Wallace generator: 800 rebalance + 400

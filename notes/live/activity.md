@@ -559,3 +559,7 @@
 | 2026-11-08 09:07:05 UTC | Read | `/home/user/elec402-p2-open/build/report/pages3/b.png` |
 | 2026-11-08 09:08:27 UTC | Bash | `until grep -q "submission/outputs\\|files changed\\|^ M\\|fatal" /tmp/claude-0/-home-user-elec402-p2-open/6503db16-82a0-5ee1-9a2e-83eb2b44d2ca/scratchpad/fresh3.log 2>/dev/null && ! pgrep -f fresh_clone_ ...` |
 | 2026-11-08 09:08:50 UTC | Bash | `cp /tmp/claude-0/-home-user-elec402-p2-open/6503db16-82a0-5ee1-9a2e-83eb2b44d2ca/scratchpad/fresh3.log submission/syn_reports/fresh_clone_rerun.log && cat >> notes/WORKLOG.md <<'EOF' **Fresh-clone rer ...` |
+| 2026-11-08 17:43:46 UTC | Agent | `Wallace generator: 800 rebalance + 400` |
+| 2026-11-08 17:43:46 UTC | Agent | `800MHz row tree: next reductions` |
+| 2026-11-08 17:43:49 UTC | Bash | `ls && ls submission submission/rtl_800 submission/scripts build/r4row 2>/dev/null \| head -50 && wc -l submission/rtl_800/* SPEC.md notes/WORKLOG.md` |
+| 2026-11-08 17:43:49 UTC | Bash | `ls && ls build/ && ls build/cand800b \| head -50 && wc -l submission/scripts/gen_tree.py SPEC.md notes/WORKLOG.md && ls submission/scripts submission/rtl_400 submission/rtl_800` |
