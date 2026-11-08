@@ -260,3 +260,8 @@
 | 2026-11-08 03:25:03 UTC | Bash | `cat > submission/scripts/waves/vcd_events.py <<'EOF' #!/usr/bin/env python3 """vcd_events.py VCD SIGNAL -- print the times (ps) at which a 1-bit signal rises/falls.""" import sys vcd, sig = sys.argv[1 ...` |
 | 2026-11-08 03:25:03 UTC | SubagentHandback | `{"message": "The Dadda/Wallace candidate closes timing. The best version (v6) gets WNS +0.150 ns at 1.25 ns, hold WNS +0.076 ns and 5278 um^2. RTL 'check' and gate-level 'sim' both end in ALL PASS.\n\ ...` |
 | 2026-11-08 03:25:17 UTC | Bash | `cat > build/400/g.tcl <<'EOF' set sigs [list mkMultBuff_sdf_checker_400.DUT.clk mkMultBuff_sdf_checker_400.DUT.RDY_mult mkMultBuff_sdf_checker_400.DUT.EN_writeMem mkMultBuff_sdf_checker_400.DUT.writeM ...` |
+| 2026-11-08 03:25:27 UTC | Read | `/home/user/elec402-p2-open/build/400/test.png` |
+| 2026-11-08 03:25:54 UTC | Write | `/home/user/elec402-p2-open/submission/scripts/waves/waves.sh` |
+| 2026-11-08 03:26:00 UTC | Bash | `bash submission/scripts/waves/waves.sh 400 2>&1 \| tail -10` |
+| 2026-11-08 03:26:02 UTC | Read | `/home/user/elec402-p2-open/submission/pdf_report/fig/wave_400_zoom_gate.png` |
+| 2026-11-08 03:26:20 UTC | Bash | `sed -i 's\| convert $2 -crop +0+105 +repage $2 # drop the window title and toolbar\| convert $2 -crop +0+105 +repage -gravity south -chop 0x40 +repage $2 # drop title bar, toolbar, empty strip\|' submiss ...` |

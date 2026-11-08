@@ -1,6 +1,6 @@
 # Session record
 
-Rendered 2026-11-08 03:25:17 UTC from the Claude Code transcript.
+Rendered 2026-11-08 03:26:20 UTC from the Claude Code transcript.
 
 ### Prompt, 2026-11-08 02:33:34
 
@@ -764,3 +764,30 @@ Both waveform sims pass under the gate-level checker. Next I need the event time
   - result: 0 x 1250 0 181250 1 341250 0 Traceback (most recent call last): File "/home/user/elec402-p2-open/submission/scripts/waves/vcd_events.py", line 15, in <module> print(t, v) ~~~~~^^^^^^ BrokenPipeError: [Errno 32] Broken pipe 0 x 1250 1 173750 0 341250 1 Traceback (most recent call last): File "/home/user/elec402-p2-open/submission/scripts/waves/vcd_events.py", line 15, in <module> print(t, v) ~~~~~^ ...
 
 - `Bash` cat > build/400/g.tcl <<'EOF' set sigs [list mkMultBuff_sdf_checker_400.DUT.clk mkMultBuff_sdf_checker_400.DUT.RDY_mult mkMultBuff_sdf_checker_400.DUT.EN_writeMem mkMultBuff_sdf_checker_400.DUT.writeM ...
+  - result: [0] start time. [2235000] end time. GTKWAVE | Executing Tcl script 'build/400/g.tcl' GTKWAVE | Filename 'build/400/test.png' Exiting. -rw-r--r-- 1 root root 36467 Nov 8 03:25 build/400/test.png
+
+#### Reasoning, 2026-11-08 03:25:27
+
+> The Dadda design also closes timing, but my Booth/CSA design beats it on area and power, so I'm keeping it. Next I'll check the GTKWave test image before generating the figures.
+
+- `Read` /home/user/elec402-p2-open/build/400/test.png
+  - result: 
+
+#### Reasoning, 2026-11-08 03:25:40
+
+> The pipeline works but the default window is dark, cramped, and truncates signal names. I'm writing a figure script next that renders light-themed waveform captures from the RTL and gate-level sims.
+
+- `Write` /home/user/elec402-p2-open/submission/scripts/waves/waves.sh
+  - result: File created successfully at: /home/user/elec402-p2-open/submission/scripts/waves/waves.sh (file state is current in your context — no need to Read it back)
+
+- `Bash` bash submission/scripts/waves/waves.sh 400 2>&1 | tail -10
+  - result: submission/testbench/sdf_checker_400.sv:82: warning: Omitting $sdf_annotate() since specify blocks are being omitted. waves 400: first write 21250 ps, drain start 181250 ps, drain end 341250 ps submission/pdf_report/fig/wave_400_drainend_gate.png submission/pdf_report/fig/wave_400_drainend_rtl.png submission/pdf_report/fig/wave_400_fill_gate.png submission/pdf_report/fig/wave_400_fill_rtl.png subm ...
+
+- `Read` /home/user/elec402-p2-open/submission/pdf_report/fig/wave_400_zoom_gate.png
+  - result: 
+
+#### Reasoning, 2026-11-08 03:26:08
+
+> The gate-level capture gives clock-to-output delays of about 0.45–0.7 ns, with a brief intermediate value on writeMem_val. I'm trimming the black strip at the bottom and then rendering both frequencies.
+
+- `Bash` sed -i 's| convert $2 -crop +0+105 +repage $2 # drop the window title and toolbar| convert $2 -crop +0+105 +repage -gravity south -chop 0x40 +repage $2 # drop title bar, toolbar, empty strip|' submiss ...
