@@ -1,6 +1,6 @@
 # Session record
 
-Rendered 2026-11-08 09:08:27 UTC from the Claude Code transcript.
+Rendered 2026-11-08 09:09:08 UTC from the Claude Code transcript.
 
 ### Prompt, 2026-11-08 02:33:34
 
@@ -2585,3 +2585,51 @@ While the fresh-clone rerun works, I'm doing a trial build of the report to chec
 > The layout looks good, and the main prose is 2,676 words, roughly unchanged. The PDF has grown to 67 pages because of the generated 400 MHz multiplier's source appendix, and I'm waiting on the fresh-clone run.
 
 - `Bash` until grep -q "submission/outputs\|files changed\|^ M\|fatal" /tmp/claude-0/-home-user-elec402-p2-open/6503db16-82a0-5ee1-9a2e-83eb2b44d2ca/scratchpad/fresh3.log 2>/dev/null && ! pgrep -f fresh_clone_ ...
+  - result: 8067f90 Report: final sign-off numbers and comparison 09:06:48 install complete worst slack max 0.263 worst slack min 0.061 tns max 0.000 cell area 2449.594 um^2 (sequential 637.602 um^2, 1518 instances) ALL PASS ALL PASS ALL PASS synthesis estimate (vectorless, activity 0.1) 433.89 162.91 36.55 633.36 run: window whole run 433.69 174.52 36.50 644.71 fill: window 521250..681250 ps 876.45 684.23 38 ...
+
+#### Reasoning, 2026-11-08 09:08:33
+
+> The fresh clone reproduces all results exactly in 1 min 38 s, with byte-identical outputs, passing checks and mutation tests. I'm saving the log, updating the work log, and running the final build.
+
+- `Bash` cp /tmp/claude-0/-home-user-elec402-p2-open/6503db16-82a0-5ee1-9a2e-83eb2b44d2ca/scratchpad/fresh3.log submission/syn_reports/fresh_clone_rerun.log && cat >> notes/WORKLOG.md <<'EOF' **Fresh-clone rer ...
+  - result: report written: submission/pdf_report/report.pdf (Pages: 67) | **total** | **554** | **1,098** | **794,258** | **1,041,246** | **1,054,262** | **147,577,561** | **59.05** | Total cost at API prices: **USD 59.05** (7 transcripts, 554 API responses). 0 36c97e9 Round 3 final: fresh-clone rerun log, report PDF rebuilt, work log and token usage
+
+### Agent, 2026-11-08 09:09:05
+
+Both designs are smaller and lower-power in sign-off and still meet the slack target in both flows. The 800 MHz design improved most. Everything is committed and pushed (`36c97e9`), with the final RTL on `check/final`.
+
+| | 400 MHz before | 400 MHz now | 800 MHz before | 800 MHz now |
+|---|---|---|---|---|
+| Register stages / flip-flops | 3 / 166 | 3 / 141 | 7 / 577 | 6 / 442 |
+| **Sign-off area** | 2752.1 µm² | **2660.8 µm² (−3.3 %)** | 5674.5 µm² | **4416.2 µm² (−22.2 %)** |
+| **Sign-off power (vectorless)** | 224.6 µW | **215.2 µW (−4.2 %)** | 1121.9 µW | **829.7 µW (−26.0 %)** |
+| Sign-off slack (target) | 156 ps | 203 ps (125) | 148 ps | 158 ps (62) |
+| Sign-off SDF simulation | pass | pass, 1204 of 1204 | pass | pass, 1162 of 1162 |
+| Our flow: slack / area | | +0.263 ns / 2449.6 µm² | | +0.140 ns / 4017.9 µm² |
+| Our flow: power, whole run / drain window | | 644.7 / 380.0 µW | | 2491.9 / 1945.6 µW |
+
+All checks pass at both frequencies:
+- the RTL, gate-level and SDF checkers pass;
+- the netlists that violate timing are still caught (TIMING FAIL);
+- every flip-flop is proven to have the synchronous reset (141/141 and 442/442);
+- the RTL checker catches every injected fault (11 of 11 and 13 of 13).
+
+A rerun from a fresh clone reproduced every netlist, delay file and report byte for byte.
+
+**What changed, in your order:**
+1. **Pipeline cuts.**
+   - *400 MHz, two stages:* not possible in our flow. Operands plus product misses by 1.47 ns. Moving logic in front of the first register misses by 0.31 ns, because the spec's weak input driver feeding 37 gates costs 0.83 ns. The single internal cut therefore went to the narrowest point, the two carry-save rows at the end of the tree.
+   - *800 MHz:* one stage is gone. Feeding each compressor's latest-arriving input last lets two compression levels fit per stage, which removes the 117-bit rank.
+   - *Recoding after the operand register:* saves 8 flops but missed 125 ps at 400 MHz and cost 534 µm² of logic at 800 MHz, so I kept recoding before it.
+2. **Final adder.** No single-stage 32-bit adder fits in 1.25 ns at this corner: Han-Carlson, Sklansky, Kogge-Stone and Brent-Kung all miss by 0.16–0.32 ns. A two-stage carry-increment adder replaced carry-select, shrinking the middle stage from about 64 to 43 flops.
+3. **Reduction tree.** The bit-level Wallace tree gives narrower cuts than Dadda, and it is the final 400 MHz design (141 flops). At 800 MHz it had fewer flops (431) and 5 % less area, but 11 % more sign-off power, so I kept the row-based tree there. Where area and power disagreed I added the two relative changes.
+4. **800 MHz control.** Split pointers and starting the drain from the valid bits took the control from 43 to 31 flops. In sign-off this changed nothing, apparently because the commercial tool already merged the duplicate registers.
+5. **Clock gating, rejected.** It cut the drain-window power by 51–73 % in our measurement, but raised the vectorless estimate that sign-off judges. Without a clock tree, which neither flow builds, every product failed the SDF check.
+
+**Report.** It now covers the new designs and decisions, with an updated candidate table and comparison against sign-off. The prose is 2,676 words, about the same as last time. I checked every new reference against its bibliographic record first. One page range, for Harris's prefix-network taxonomy, couldn't be confirmed, so that paper is cited by DOI. The PDF is now 67 pages, because the generated 400 MHz multiplier adds about 1,200 lines to the source appendix.
+
+**Token usage.** 554 API responses across 7 transcripts (the main session and six subagents), about **$59.05** at Claude Opus 5.5 API rates. It was measured just before the final build.
+
+Files are in `submission/pdf_report`:
+- report.pdf
+
