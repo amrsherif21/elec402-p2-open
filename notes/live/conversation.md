@@ -1,6 +1,6 @@
 # Session record
 
-Rendered 2026-11-08 03:24:05 UTC from the Claude Code transcript.
+Rendered 2026-11-08 03:25:17 UTC from the Claude Code transcript.
 
 ### Prompt, 2026-11-08 02:33:34
 
@@ -733,3 +733,34 @@ The header comment miscounts: the configuration has seven register ranks (latenc
 F14 is proven on both netlists: all 166 flip-flops at 400 MHz and all 577 at 800 MHz are reset by `RST_N`. Recording checkpoint 3 so far in the work log while the Dadda candidate finishes.
 
 - `Bash` cat >> notes/WORKLOG.md <<'EOF' **03:30 check/400 pushed** ('git push origin HEAD:refs/heads/check/400', commit 60ed005). Work continued without waiting. Note: 'rtl_800/' was still empty at that point ...
+  - result: ok
+
+### Agent, 2026-11-08 03:24:09
+
+Next, an 800 MHz mutant set for `mutate.sh`, since its control code differs from 400 MHz (separate pointers and inverted port copies).
+
+- `Bash` python3 - <<'EOF' p='submission/scripts/mutate.sh' s=open(p).read() a=s.index('mutants=(') b=s.index(')\nok=0') m400=s[a:b+1] m800='''mutants=( "if (acc_q == 6'd63) begin|if (acc_q == 6'd62) begin|RDY ...
+  - result: mutant 1 (RDY_mult drops one pair early): FAIL 10618 check(s) failed mutant 2 (drain starts before the last write): FAIL 5152 check(s) failed mutant 3 (drain ends one read early): FAIL 4085 check(s) failed mutant 4 (VALID_memVal ignores RDY_blockRead): FAIL 1464 check(s) failed mutant 5 (EN_mult accepted while not ready): FAIL 9269 check(s) failed mutant 6 (reads without EN_blockRead): FAIL 12580  ...
+
+### Agent, 2026-11-08 03:24:31
+
+The 800 MHz mutation test kills 13 of 13 mutants, including one in the adder's carry-in. Checking whether the 400 MHz sign-off scorecard has arrived.
+
+- `Bash` git fetch -q origin check-results 2>&1 | tail -2; git ls-tree -r --name-only origin/check-results 2>/dev/null | head -20
+  - result: fatal: couldn't find remote ref check-results
+
+#### Reasoning, 2026-11-08 03:24:46
+
+> No scorecard on check-results yet, so I'll recheck later while I render the RTL and SDF-netlist waveforms side by side with GTKWave under Xvfb.
+
+- `Bash` mkdir -p /home/user/elec402-p2-open/submission/scripts/waves && cd /home/user/elec402-p2-open && cat > submission/scripts/waves/dumper.v <<'EOF' // dumper.v -- extra top-level module used only for the ...
+  - result: Exit code 1 ALL PASS ALL PASS -rw-r--r-- 1 root root 4447875 Nov 8 03:24 build/400/w_gate.vcd -rw-r--r-- 1 root root 118854 Nov 8 03:24 build/400/w_rtl.vcd /usr/bin/xvfb-run /usr/bin/convert
+
+### Agent, 2026-11-08 03:24:59
+
+Both waveform sims pass under the gate-level checker. Next I need the event times for each figure window and a way to export images from GTKWave.
+
+- `Bash` cat > submission/scripts/waves/vcd_events.py <<'EOF' #!/usr/bin/env python3 """vcd_events.py VCD SIGNAL -- print the times (ps) at which a 1-bit signal rises/falls.""" import sys vcd, sig = sys.argv[1 ...
+  - result: 0 x 1250 0 181250 1 341250 0 Traceback (most recent call last): File "/home/user/elec402-p2-open/submission/scripts/waves/vcd_events.py", line 15, in <module> print(t, v) ~~~~~^^^^^^ BrokenPipeError: [Errno 32] Broken pipe 0 x 1250 1 173750 0 341250 1 Traceback (most recent call last): File "/home/user/elec402-p2-open/submission/scripts/waves/vcd_events.py", line 15, in <module> print(t, v) ~~~~~^ ...
+
+- `Bash` cat > build/400/g.tcl <<'EOF' set sigs [list mkMultBuff_sdf_checker_400.DUT.clk mkMultBuff_sdf_checker_400.DUT.RDY_mult mkMultBuff_sdf_checker_400.DUT.EN_writeMem mkMultBuff_sdf_checker_400.DUT.writeM ...
