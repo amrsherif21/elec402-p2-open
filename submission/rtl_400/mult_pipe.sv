@@ -1,22 +1,30 @@
 // mult_pipe.sv -- pipelined signed 16x16 multiplier: radix-4 (modified) Booth
 // partial products, carry-save (3:2) reduction 9->6->4->3->2 rows and a final
-// carry-propagate adder. Every pipeline cut is optional (parameters), so the
-// same source serves the 400 MHz and 800 MHz implementations.
+// carry-propagate adder. Every pipeline cut is optional (parameters).
 //   PRE_ENC  : Booth-recode the multiplier before the operand register
 //   ENC_REG  : (PRE_ENC = 0 only) extra rank after the Booth recoding
+//   SEL_REG  : register the selected partial products (8 x 17 bits + 8 "+1" bits)
 //   CSA_REG  : bit k set -> register after carry-save level k+1 (k = 0..3)
-//   CPA_SPLIT: add the low 16 bits in one stage and the high 16 bits in the next
-// Register ranks (= latency from 'en' to 'p'):
-//   1 (operand) + (PRE_ENC ? 0 : ENC_REG) + popcount(CSA_REG) + CPA_SPLIT + 1 (product)
+//   GP4      : the level-4 register holds generate/propagate (c&s, c^s) of the
+//              two final rows instead of the rows themselves (same width)
+//   CPA_CSEL : two-stage carry-select final adder with CSW-bit blocks and
+//              Kogge-Stone prefixes inside the blocks and across the blocks
+//   CPA_SPLIT: (alternative) low 16 bits in one stage, high 16 bits in the next
+// Register ranks (= latency from 'en' to 'p'): 1 (operand) + (PRE_ENC ? 0 : ENC_REG)
+//   + SEL_REG + popcount(CSA_REG) + (CPA_CSEL | CPA_SPLIT) + 1 (product)
 // Every register has a synchronous active-low reset. When 'en' is 0 the operand
 // register loads zeros (operand isolation), so an idle multiplier does not toggle.
-// Written for this project; the Booth recoding and sign-extension constant follow
-// the textbook modified-Booth scheme (see the report's references).
+// Written for this project; the Booth recoding, the sign-extension constant and
+// the prefix adders follow textbook schemes (see the report's references).
 module mult_pipe #(
     parameter bit       PRE_ENC   = 1'b1,
     parameter bit       ENC_REG   = 1'b0,
     parameter bit [3:0] CSA_REG   = 4'b1000,
-    parameter bit       CPA_SPLIT = 1'b0
+    parameter bit       SEL_REG   = 1'b0,
+    parameter bit       CPA_SPLIT = 1'b0,
+    parameter bit       CPA_CSEL  = 1'b0,
+    parameter int       CSW       = 8,
+    parameter bit       GP4       = 1'b0
 ) (
     input  logic               clk,
     input  logic               RST_N,
@@ -75,6 +83,34 @@ module mult_pipe #(
     end endgenerate
     genvar i;
 
+    localparam int NB = 32 / CSW;     // carry-select blocks
+
+    // Kogge-Stone prefix over the NB block carries (generate = carry-out with
+    // carry-in 0, propagate = carry-out with carry-in 1)
+    function automatic logic [NB-1:0] bprefix(input logic [NB-1:0] g, input logic [NB-1:0] p);
+        logic [NB-1:0] G, P;
+        G = g; P = p;
+        for (int d = 1; d < NB; d = 2 * d)
+            for (int j = NB - 1; j >= d; j--) begin
+                G[j] = G[j] | (P[j] & G[j-d]);
+                P[j] = P[j] & P[j-d];
+            end
+        bprefix = G;
+    endfunction
+
+    // Kogge-Stone prefix over a CSW-bit block: G[j] / P[j] = group generate /
+    // propagate of bits j..0 of the block
+    function automatic logic [2*CSW-1:0] prefix(input logic [CSW-1:0] g, input logic [CSW-1:0] p);
+        logic [CSW-1:0] G, P;
+        G = g; P = p;
+        for (int d = 1; d < CSW; d = 2 * d)
+            for (int j = CSW - 1; j >= d; j--) begin
+                G[j] = G[j] | (P[j] & G[j-d]);
+                P[j] = P[j] & P[j-d];
+            end
+        prefix = {G, P};
+    endfunction
+
     // ------------------------------------------------------------------
     // Partial-product rows. Sign extension is replaced by inverting each row's
     // sign bit and adding the constant K = -sum(2^(16+2i)) (mod 2^32); the
@@ -108,11 +144,38 @@ module mult_pipe #(
     logic [4*32-1:0] l2, l2q;
     logic [3*32-1:0] l3, l3q;
     logic [2*32-1:0] l4, l4q;
-    assign l1 = {csa(r6, r7, r8), csa(r3, r4, r5), csa(r0, r1, r2)};
+    // optional register after partial-product selection (8 rows of 17 bits + the
+    // row +1 bits; the constant part of row 8 is re-created after the register)
+    logic [31:0] q0, q1, q2, q3, q4, q5, q6, q7, q8;
+    generate if (SEL_REG) begin : g_sel
+        logic [16:0] ppq [0:7];
+        logic [7:0]  negq;
+        for (i = 0; i < 8; i++) begin : g_q
+            always_ff @(posedge clk) ppq[i] <= RST_N ? pp[i] : 17'd0;
+        end
+        always_ff @(posedge clk) negq <= RST_N ? neg_e : 8'd0;
+        assign q0 = {15'd0, ~ppq[0][16], ppq[0][15:0]};
+        assign q1 = {13'd0, ~ppq[1][16], ppq[1][15:0], 1'b0, negq[0]} << 0;
+        assign q2 = {13'd0, ~ppq[2][16], ppq[2][15:0], 1'b0, negq[1]} << 2;
+        assign q3 = {13'd0, ~ppq[3][16], ppq[3][15:0], 1'b0, negq[2]} << 4;
+        assign q4 = {13'd0, ~ppq[4][16], ppq[4][15:0], 1'b0, negq[3]} << 6;
+        assign q5 = {13'd0, ~ppq[5][16], ppq[5][15:0], 1'b0, negq[4]} << 8;
+        assign q6 = {13'd0, ~ppq[6][16], ppq[6][15:0], 1'b0, negq[5]} << 10;
+        assign q7 = {13'd0, ~ppq[7][16], ppq[7][15:0], 1'b0, negq[6]} << 12;
+        assign q8 = K | ({31'd0, negq[7]} << 14);
+    end else begin : g_nosel
+        assign {q0, q1, q2, q3, q4, q5, q6, q7, q8} = {r0, r1, r2, r3, r4, r5, r6, r7, r8};
+    end endgenerate
+    assign l1 = {csa(q6, q7, q8), csa(q3, q4, q5), csa(q0, q1, q2)};
     assign l2 = {csa(l1q[3*32 +: 32], l1q[4*32 +: 32], l1q[5*32 +: 32]),
                  csa(l1q[0*32 +: 32], l1q[1*32 +: 32], l1q[2*32 +: 32])};
     assign l3 = {l2q[3*32 +: 32], csa(l2q[0*32 +: 32], l2q[1*32 +: 32], l2q[2*32 +: 32])};
-    assign l4 = csa(l3q[0*32 +: 32], l3q[1*32 +: 32], l3q[2*32 +: 32]);
+    // level 4 output: the two final rows {c, s}, or (GP4) their bitwise
+    // generate / propagate {c & s, c ^ s}, so the adder's first gate level
+    // moves in front of the level-4 register
+    logic [63:0] l4cs;
+    assign l4cs = csa(l3q[0*32 +: 32], l3q[1*32 +: 32], l3q[2*32 +: 32]);
+    assign l4 = GP4 ? {l4cs[63:32] & l4cs[31:0], l4cs[63:32] ^ l4cs[31:0]} : l4cs;
 
     generate
         if (CSA_REG[0]) begin : g_r1
@@ -140,7 +203,45 @@ module mult_pipe #(
 
     // ------------------------------------------------------------------
     // final carry-propagate adder, registered product
-    generate if (CPA_SPLIT) begin : g_split
+    generate if (CPA_CSEL) begin : g_csel
+        // two-stage carry-select adder with CSW-bit blocks. Stage A: per block,
+        // bit generate/propagate and an in-block Kogge-Stone prefix give the
+        // block sums for carry-in 0 and carry-in 1 and the two block carry-outs.
+        // Stage B: the block carries are resolved and each block sum selected.
+        logic [31:0]   s0, s1, s0q, s1q;
+        logic [NB-1:0] co0, co1, co0q, co1q, cin;
+        for (i = 0; i < NB; i++) begin : g_blk
+            logic [CSW-1:0] gg, pp_, G, P;
+            if (GP4) begin : g_gp
+                assign gg  = sy[CSW*i +: CSW];        // generate (registered)
+                assign pp_ = sx[CSW*i +: CSW];        // propagate (registered)
+            end else begin : g_cs
+                assign gg  = sx[CSW*i +: CSW] & sy[CSW*i +: CSW];
+                assign pp_ = sx[CSW*i +: CSW] ^ sy[CSW*i +: CSW];
+            end
+            assign {G, P} = prefix(gg, pp_);
+            assign s0[CSW*i +: CSW] = pp_ ^ {G[CSW-2:0], 1'b0};
+            assign s1[CSW*i +: CSW] = pp_ ^ {G[CSW-2:0] | P[CSW-2:0], 1'b1};
+            assign co0[i] = G[CSW-1];
+            assign co1[i] = G[CSW-1] | P[CSW-1];
+        end
+        always_ff @(posedge clk) begin
+            if (!RST_N) begin
+                s0q <= '0; s1q <= '0; co0q <= '0; co1q <= '0;
+            end else begin
+                s0q <= s0; s1q <= s1; co0q <= co0; co1q <= co1;
+            end
+        end
+        // carry into block i = group generate of blocks i-1..0
+        logic [NB-1:0] bg;
+        assign bg  = bprefix(co0q, co1q);
+        assign cin = {bg[NB-2:0], 1'b0};
+        logic [31:0] psel;
+        for (i = 0; i < NB; i++) begin : g_sel
+            assign psel[CSW*i +: CSW] = cin[i] ? s1q[CSW*i +: CSW] : s0q[CSW*i +: CSW];
+        end
+        always_ff @(posedge clk) p <= RST_N ? psel : 32'd0;
+    end else if (CPA_SPLIT) begin : g_split
         logic [16:0] lo;
         logic [15:0] lo_q, xh_q, yh_q;
         logic        c_q;

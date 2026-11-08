@@ -41,7 +41,7 @@ module mkMultBuff #(parameter N = 32) (
     // multiplier pipeline configuration (see mult_pipe.sv)
     localparam bit       PRE_ENC   = 1'b1;
     localparam bit       ENC_REG   = 1'b0;
-    localparam bit [3:0] CSA_REG   = 4'b0100;
+    localparam bit [3:0] CSA_REG   = 4'b1000;
     localparam bit       CPA_SPLIT = 1'b0;
     localparam int       LAT       = 1 + (PRE_ENC ? 0 : ENC_REG) + CSA_REG[0] + CSA_REG[1]
                                      + CSA_REG[2] + CSA_REG[3] + CPA_SPLIT + 1;
