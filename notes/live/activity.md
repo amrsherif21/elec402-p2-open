@@ -597,3 +597,8 @@
 | 2026-11-08 17:46:17 UTC | Bash | `cd /home/user/elec402-p2-open/build/r4wal && python3 - <<'PY' import re # 400 template from the submission top t = open('../../submission/rtl_400/mkMultBuff.sv').read() t = re.sub(r"// Datapath: mult_ ...` |
 | 2026-11-08 17:46:31 UTC | Bash | `cd /home/user/elec402-p2-open/build/r4wal && cat > mktop.py <<'PY' #!/usr/bin/env python3 """mktop.py RUN GEN_TXT OUT -- fill top<RUN>.sv.in from the generator summary""" import sys, re, textwrap run, ...` |
 | 2026-11-08 17:46:51 UTC | Bash | `cat submission/testbench/sdf_checker_800.sv \| head -80; grep -n "writeMem_val\\|EN_writeMem" submission/testbench/rtl_checker.sv \| head -20` |
+| 2026-11-08 17:47:06 UTC | Bash | `D=build/r4row/c1_noR6/rtl && mkdir -p $D && cp submission/rtl_800/*.sv $D/ && python3 - $D <<'EOF' import sys,re d=sys.argv[1] f=d+'/mult_pipe.sv'; t=open(f).read() t=t.replace(""" parameter int PFX = ...` |
+| 2026-11-08 17:47:27 UTC | Bash | `bash submission/scripts/eval_candidate.sh 800 build/r4row/c1_noR6/rtl build/r4row/c1_noR6 2>&1 \| grep -v "^ppq\\|g_sel.ppq\[[1-7]\]"` |
+| 2026-11-08 17:47:31 UTC | Bash | `grep -n "Startpoint\\|Endpoint\\|slack" build/r4row/c1_noR6/rep/sta.rpt \| head -20; awk '/Startpoint/{n++} n==1' build/r4row/c1_noR6/rep/sta.rpt \| head -70` |
+| 2026-11-08 17:47:39 UTC | Bash | `grep -E "^== before\|^\s+(final\|[0-9]+)\s+\\|" build/r4row/c1_noR6/rep/resize.log \| tail -8; grep -c RSZ-0075 build/r4row/c1_noR6/rep/resize.log` |
+| 2026-11-08 17:47:58 UTC | Bash | `cat submission/scripts/abc_speed.script; grep -n "ABC_SCRIPT\\|abc" Makefile \| head` |
