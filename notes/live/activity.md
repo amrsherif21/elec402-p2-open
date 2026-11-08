@@ -690,3 +690,11 @@
 | 2026-11-08 17:58:52 UTC | Bash | `cd /home/user/elec402-p2-open/build/r4wal && for d in a8_np b8_bp a4_np; do echo "$d: $(./gcount.sh build/r4wal/$d/rtl/mult_pipe.sv \| tail -12 \| tr -s ' ' \| tr '\n' ' ')"; done; echo "rtl_400 (w4r3cpa ...` |
 | 2026-11-08 17:58:56 UTC | Monitor | `cd /home/user/elec402-p2-open/build/r4wal; until grep -q "u_mult" <(sed -n '/c8_pl RUN/,$p' batch3.log) \|\| grep -q "UNIT FAIL" batch3.log; do sleep 5; done; grep -v "^ " batch3.log; until grep -q "u_m ...` |
 | 2026-11-08 17:59:01 UTC | Bash | `cd /home/user/elec402-p2-open/build/r4wal && sed -n 1,32p gen_tree.py` |
+| 2026-11-08 17:59:14 UTC | Bash | `cd /home/user/elec402-p2-open/build/r4wal; cat batch3.log \| grep -v "^ "` |
+| 2026-11-08 17:59:20 UTC | Bash | `D=build/r4row/c2_drst && python3 - $D/rtl/mult_pipe.sv <<'EOF' import sys f=sys.argv[1]; t=open(f).read() old=""" logic [7:0] one_g, two_g, neg_g; assign one_g = one_e & {8{RST_N}}; assign two_g = two ...` |
+| 2026-11-08 17:59:22 UTC | Bash | `cd /home/user/elec402-p2-open/build/r4wal && python3 - <<'PY' p='gen_tree.py'; s=open(p).read() a=''' ... adder stages: carry-increment (default) or carry-select, then the product register ''' assert  ...` |
+| 2026-11-08 17:59:24 UTC | Bash | `cd /home/user/elec402-p2-open/build/r4wal; ps aux \| grep -c "[y]osys\\|[o]penroad\\|[v]vp\\|[s]ta "; uptime; ls c8_bs; tail -3 batch3.log` |
+| 2026-11-08 17:59:28 UTC | Bash | `cd /home/user/elec402-p2-open/build/r4wal; until [ -s c8_bs/rep/power_summary.txt ] && grep -q u_mult c8_bs/eval.txt 2>/dev/null; do sleep 3; done; grep -v "^ *[a-z_.]* *[0-9]* *[-0-9.]*$" c8_bs/eval. ...` |
+| 2026-11-08 17:59:32 UTC | Bash | `cd /home/user/elec402-p2-open/build/r4wal; awk '/Startpoint/{f=1} f' c8_bs/rep/sta.rpt \| sed -n 10,24p; grep -c "cin\\|& ~\\|\| (" c8_bs/rtl/mult_pipe.sv; diff b8_bp/rtl/mult_pipe.sv c8_bs/rtl/mult_pipe. ...` |
+| 2026-11-08 18:00:01 UTC | Bash | `sed -n 1,39p Makefile \| grep -v "^#" \| grep -i "abc\\|load\\|driver\\|dont"; grep -n "ABC_LOAD\\|ABC_DRIVER\\|set_load\\|abc " submission/scripts/synth.tcl \| head` |
+| 2026-11-08 18:00:11 UTC | Bash | `cd /home/user/elec402-p2-open/build/r4wal; until grep -q u_mult c8_pl/eval.txt 2>/dev/null; do sleep 3; done; grep -v "^ *[A-Za-z_.]* *[0-9]* *[-0-9.]*$" c8_pl/eval.txt; grep "u_mult\\|writeMem" c8_pl/ ...` |
