@@ -1,0 +1,25 @@
+# Simulation and build products
+build/
+work/
+obj_dir/
+*.vvp
+*.wlf
+transcript
+
+# Large generated files
+*.vcd
+*.saif
+*.fst
+
+# Logs outside submission/ (logs that back a reported number go in submission/)
+/*.log
+
+# OS / editor
+.DS_Store
+*.swp
+*~
+__pycache__/
+.vscode/
+
+# Live session record (published on branch live-log)
+notes/live/
