@@ -24,7 +24,12 @@ module mult_pipe #(
     parameter bit       CPA_SPLIT = 1'b0,
     parameter bit       CPA_CSEL  = 1'b0,
     parameter int       CSW       = 8,
-    parameter bit       GP4       = 1'b0
+    parameter bit       GP4       = 1'b0,
+    parameter bit       GT        = 1'b0,  // with GP4: store generate / transmit (c|s) instead of propagate
+    parameter bit       ORD       = 1'b0,  // arrival-aware 3:2 input order
+    parameter int       CPA       = 0,     // 0: per CPA_CSEL/CPA_SPLIT, 1: 2-stage carry-increment, 2: 1-stage prefix, 3: 1-stage '+'
+    parameter bit       CI1       = 1'b0,  // CPA=1: also register block carry-outs for carry-in 1
+    parameter int       PFX       = 0      // CPA=2: 0 Kogge-Stone, 1 Sklansky, 2 Brent-Kung, 3 Han-Carlson
 ) (
     input  logic               clk,
     input  logic               RST_N,
@@ -81,7 +86,7 @@ module mult_pipe #(
             assign {a_e, one_e, two_e, neg_e} = {a_q, one_d, two_d, neg_d};
         end
     end endgenerate
-    genvar i;
+    genvar i, k;
 
     localparam int NB = 32 / CSW;     // carry-select blocks
 
@@ -167,15 +172,32 @@ module mult_pipe #(
         assign {q0, q1, q2, q3, q4, q5, q6, q7, q8} = {r0, r1, r2, r3, r4, r5, r6, r7, r8};
     end endgenerate
     assign l1 = {csa(q6, q7, q8), csa(q3, q4, q5), csa(q0, q1, q2)};
+    // csa3: z is the late input: sum = (x ^ y) ^ z, carry = x&y | z&(x|y)
+    function automatic logic [63:0] csa3(input logic [31:0] x, y, z);
+        logic [31:0] t;
+        t = x ^ y;
+        csa3 = {((x & y) | (z & (x | y))) << 1, t ^ z};
+    endfunction
+    // l1 = {c678, s678, c345, s345, c012, s012}
+    generate if (ORD) begin : g_ord
+        assign l2 = {csa3(l1q[5*32 +: 32], l1q[4*32 +: 32], l1q[2*32 +: 32]),    // c678, s678, s345
+                     csa3(l1q[1*32 +: 32], l1q[3*32 +: 32], l1q[0*32 +: 32])};   // c012, c345, s012
+        // l2 = {cB, sB, cA, sA}; l3 = {sB, c3, s3}
+        assign l3 = {l2q[2*32 +: 32], csa3(l2q[1*32 +: 32], l2q[3*32 +: 32], l2q[0*32 +: 32])};
+    end else begin : g_nord
     assign l2 = {csa(l1q[3*32 +: 32], l1q[4*32 +: 32], l1q[5*32 +: 32]),
                  csa(l1q[0*32 +: 32], l1q[1*32 +: 32], l1q[2*32 +: 32])};
     assign l3 = {l2q[3*32 +: 32], csa(l2q[0*32 +: 32], l2q[1*32 +: 32], l2q[2*32 +: 32])};
+    end endgenerate
     // level 4 output: the two final rows {c, s}, or (GP4) their bitwise
     // generate / propagate {c & s, c ^ s}, so the adder's first gate level
     // moves in front of the level-4 register
     logic [63:0] l4cs;
-    assign l4cs = csa(l3q[0*32 +: 32], l3q[1*32 +: 32], l3q[2*32 +: 32]);
-    assign l4 = GP4 ? {l4cs[63:32] & l4cs[31:0], l4cs[63:32] ^ l4cs[31:0]} : l4cs;
+    assign l4cs = ORD ? csa3(l3q[1*32 +: 32], l3q[2*32 +: 32], l3q[0*32 +: 32])
+                      : csa(l3q[0*32 +: 32], l3q[1*32 +: 32], l3q[2*32 +: 32]);
+    assign l4 = !GP4 ? l4cs
+              : GT   ? {l4cs[63:32] & l4cs[31:0], l4cs[63:32] | l4cs[31:0]}
+              :        {l4cs[63:32] & l4cs[31:0], l4cs[63:32] ^ l4cs[31:0]};
 
     generate
         if (CSA_REG[0]) begin : g_r1
@@ -203,7 +225,109 @@ module mult_pipe #(
 
     // ------------------------------------------------------------------
     // final carry-propagate adder, registered product
-    generate if (CPA_CSEL) begin : g_csel
+    // bitwise generate, carry-transmit (for the carry network) and propagate (for the sum)
+    logic [31:0] bg_, bt_, bp_;
+    assign bg_ = GP4 ? sy : (sx & sy);
+    assign bt_ = GP4 ? sx : (GT ? (sx | sy) : (sx ^ sy));
+    assign bp_ = GP4 ? (GT ? (sx & ~sy) : sx) : (sx ^ sy);
+
+    // 32-bit parallel-prefix carry network; returns group generate G[j] = bits j..0
+    function automatic logic [31:0] pfx32(input logic [31:0] g, input logic [31:0] p, input int kind);
+        logic [31:0] G, P;
+        int s;
+        G = g; P = p;
+        if (kind == 0) begin                       // Kogge-Stone
+            for (int d = 1; d < 32; d = 2 * d)
+                for (int j = 31; j >= d; j--) begin
+                    G[j] = G[j] | (P[j] & G[j-d]); P[j] = P[j] & P[j-d];
+                end
+        end else if (kind == 1) begin              // Sklansky
+            for (int l = 0; l < 5; l++)
+                for (int j = 0; j < 32; j++)
+                    if ((j >> l) & 1) begin
+                        s = ((j >> (l + 1)) << (l + 1)) + (1 << l) - 1;
+                        G[j] = G[j] | (P[j] & G[s]); P[j] = P[j] & P[s];
+                    end
+        end else if (kind == 2) begin              // Brent-Kung
+            for (int d = 1; d < 32; d = 2 * d)
+                for (int j = 2 * d - 1; j < 32; j = j + 2 * d) begin
+                    G[j] = G[j] | (P[j] & G[j-d]); P[j] = P[j] & P[j-d];
+                end
+            for (int d = 8; d >= 1; d = d / 2)
+                for (int j = 3 * d - 1; j < 32; j = j + 2 * d) begin
+                    G[j] = G[j] | (P[j] & G[j-d]); P[j] = P[j] & P[j-d];
+                end
+        end else begin                             // Han-Carlson
+            for (int j = 31; j >= 1; j = j - 2) begin
+                G[j] = G[j] | (P[j] & G[j-1]); P[j] = P[j] & P[j-1];
+            end
+            for (int d = 2; d < 32; d = 2 * d)
+                for (int j = 31; j >= d + 1; j = j - 2) begin
+                    G[j] = G[j] | (P[j] & G[j-d]); P[j] = P[j] & P[j-d];
+                end
+            for (int j = 2; j < 32; j = j + 2) begin
+                G[j] = G[j] | (P[j] & G[j-1]); P[j] = P[j] & P[j-1];
+            end
+        end
+        pfx32 = G;
+    endfunction
+
+    generate if (CPA == 2) begin : g_pfx
+        logic [31:0] Gc;
+        assign Gc = pfx32(bg_, bt_, PFX);
+        always_ff @(posedge clk) p <= RST_N ? (bp_ ^ {Gc[30:0], 1'b0}) : 32'd0;
+    end else if (CPA == 3) begin : g_beh
+        always_ff @(posedge clk) p <= RST_N ? (sx + sy) : 32'd0;
+    end else if (CPA == 1) begin : g_cinc
+        // two-stage carry-increment adder: stage A gives each CSW-bit block's
+        // sum and carry-out for carry-in 0; stage B resolves the block carries
+        // (block propagate = block sum all ones) and increments the blocks
+        logic [31:0]   s0, s0q;
+        logic [NB-1:0] co0, co0q, co1, co1q, bpq, cin;
+        for (i = 0; i < NB; i++) begin : g_blk
+            logic [CSW-1:0] G, P;
+            assign {G, P} = prefix(bg_[CSW*i +: CSW], bt_[CSW*i +: CSW]);
+            assign s0[CSW*i +: CSW] = bp_[CSW*i +: CSW] ^ {G[CSW-2:0], 1'b0};
+            assign co0[i] = G[CSW-1];
+            assign co1[i] = G[CSW-1] | P[CSW-1];
+        end
+        always_ff @(posedge clk) begin
+            if (!RST_N) begin s0q <= '0; co0q <= '0; end
+            else        begin s0q <= s0; co0q <= co0; end
+        end
+        if (CI1) begin : g_ci1
+            always_ff @(posedge clk) co1q <= RST_N ? co1 : '0;
+            assign bpq = co1q;          // carry-out with carry-in 1 (generate | propagate)
+        end else begin : g_ci0
+            assign co1q = '0;
+            for (i = 0; i < NB; i++) begin : g_bp
+                assign bpq[i] = &s0q[CSW*i +: CSW];
+            end
+        end
+        logic [NB-1:0] bgg;
+        logic [31:0]   inc, s0i;
+        for (i = 0; i < NB; i++) begin : g_incb
+            for (k = 0; k < CSW; k++) begin : g_k
+                if (k == 0) begin : g_k0
+                    assign inc[CSW*i] = 1'b1;
+                end else begin : g_kn
+                    assign inc[CSW*i + k] = &s0q[CSW*i +: k];
+                end
+            end
+        end
+        // block carry: CI1 -> prefix over (co0, co1) as generate / transmit
+        assign bgg = bprefix(co0q, bpq);
+        assign cin = {bgg[NB-2:0], 1'b0};
+        // incremented block sums, reset folded into the early operands; the
+        // late block carry only selects
+        assign s0i = s0q ^ inc;
+        logic [31:0] psum;
+        for (i = 0; i < NB; i++) begin : g_inc
+            assign psum[CSW*i +: CSW] = ({CSW{cin[i]}} & s0i[CSW*i +: CSW] & {CSW{RST_N}})
+                                      | ({CSW{~cin[i]}} & s0q[CSW*i +: CSW] & {CSW{RST_N}});
+        end
+        always_ff @(posedge clk) p <= RST_N ? psum : 32'd0;
+    end else if (CPA_CSEL) begin : g_csel
         // two-stage carry-select adder with CSW-bit blocks. Stage A: per block,
         // bit generate/propagate and an in-block Kogge-Stone prefix give the
         // block sums for carry-in 0 and carry-in 1 and the two block carry-outs.
@@ -212,14 +336,11 @@ module mult_pipe #(
         logic [NB-1:0] co0, co1, co0q, co1q, cin;
         for (i = 0; i < NB; i++) begin : g_blk
             logic [CSW-1:0] gg, pp_, G, P;
-            if (GP4) begin : g_gp
-                assign gg  = sy[CSW*i +: CSW];        // generate (registered)
-                assign pp_ = sx[CSW*i +: CSW];        // propagate (registered)
-            end else begin : g_cs
-                assign gg  = sx[CSW*i +: CSW] & sy[CSW*i +: CSW];
-                assign pp_ = sx[CSW*i +: CSW] ^ sy[CSW*i +: CSW];
-            end
-            assign {G, P} = prefix(gg, pp_);
+            logic [CSW-1:0] tt;
+            assign gg  = bg_[CSW*i +: CSW];
+            assign tt  = bt_[CSW*i +: CSW];
+            assign pp_ = bp_[CSW*i +: CSW];
+            assign {G, P} = prefix(gg, tt);
             assign s0[CSW*i +: CSW] = pp_ ^ {G[CSW-2:0], 1'b0};
             assign s1[CSW*i +: CSW] = pp_ ^ {G[CSW-2:0] | P[CSW-2:0], 1'b1};
             assign co0[i] = G[CSW-1];
