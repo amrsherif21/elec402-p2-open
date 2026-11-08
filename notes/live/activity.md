@@ -520,3 +520,9 @@
 | 2026-11-08 08:52:53 UTC | Bash | `diff <(grep -v "^\s*//" build/cand800a/e18_gt0/rtl/mkMultBuff.sv) <(grep -v "^\s*//" build/cand800b/w24r3gt5re/rtl/mkMultBuff.sv) \| head -80; grep -n "module mult_pipe\\|parameter\\|input\\|output" build ...` |
 | 2026-11-08 08:53:37 UTC | Bash | `d=build/cand800c/combo && mkdir -p $d/rtl && cp build/cand800b/w24r3gt5re/rtl/mult_pipe.sv $d/rtl/ && python3 - <<'EOF' s=open('build/cand800a/e18_gt0/rtl/mkMultBuff.sv').read() import re i=s.index('  ...` |
 | 2026-11-08 08:53:47 UTC | Bash | `SP=/tmp/claude-0/-home-user-elec402-p2-open/6503db16-82a0-5ee1-9a2e-83eb2b44d2ca/scratchpad && cd $SP/wt_c400 && cp /home/user/elec402-p2-open/build/cand800c/combo/rtl/*.sv submission/rtl_800/ && git  ...` |
+| 2026-11-08 08:53:55 UTC | Bash | `sed -n 1,140p build/cand800c/combo/rtl/mkMultBuff.sv` |
+| 2026-11-08 08:54:03 UTC | Bash | `sed -n 1,19p build/cand800b/w24r3gt5re/rtl/mult_pipe.sv; grep -c "" build/cand800b/w24r3gt5re/rtl/mult_pipe.sv; cat build/cand800b/w24r3gt5re/gen.txt 2>/dev/null \| head -20; sed -n 1,40p build/cand800 ...` |
+| 2026-11-08 08:54:08 UTC | Bash | `git fetch -q origin check-results && for d in $(git ls-tree --name-only origin/check-results results/ \| grep -E "wallace\|combo"); do echo "== $d"; git show origin/check-results:$d/scorecard.md \| sed - ...` |
+| 2026-11-08 08:54:28 UTC | Write | `/home/user/elec402-p2-open/build/final800/rtl/mkMultBuff.sv` |
+| 2026-11-08 08:54:31 UTC | Bash | `cp build/cand800b/gen_tree.py submission/scripts/gen_tree.py && sed -i 's\|build/cand800b/gen_tree.py\|submission/scripts/gen_tree.py\|g; s\|Written for this project (build/cand800b).\|Written for this pro ...` |
+| 2026-11-08 08:55:42 UTC | Bash | `export ABC_DRIVER=BUF_X1 ABC_LOAD=1.0 DONT_USE="OAI33_* NOR3_* NOR4_* OR3_* OR4_* AND4_* NAND4_* AOI211_* AOI221_* AOI222_* OAI211_* OAI221_* OAI222_* MUX2_*"; d=build/final800; bash submission/script ...` |
