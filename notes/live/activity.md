@@ -74,3 +74,8 @@
 | 2026-11-08 02:53:04 UTC | Bash | `sed -i "s/assign rw\[i\] = 32'({~pp\[i\]\[16\], pp\[i\]\[15:0\], 1'b0, neg_e\[i-1\]}) << (2\*i-2);/assign rw[i] = {13'd0, ~pp[i][16], pp[i][15:0], 1'b0, neg_e[i-1]} << (2*i-2);/; s/assign r8 = K \| (32 ...` |
 | 2026-11-08 02:53:07 UTC | Bash | `sed -n 66,72p build/exp/mult_pipe.sv` |
 | 2026-11-08 02:53:35 UTC | Bash | `sed -i 's/ return {((x \& y) \| (x \& z) \| (y \& z)) << 1, x ^ y ^ z};/ csa = {((x \& y) \| (x \& z) \| (y \& z)) << 1, x ^ y ^ z};/' build/exp/mult_pipe.sv && sed -n 69p build/exp/mult_pipe.sv && build/ ...` |
+| 2026-11-08 02:53:53 UTC | Bash | `(build/exp/run.sh t400b 2.5 1 1000 0 2000 & build/exp/run.sh t400c 2.5 0 0100 0 2000 & build/exp/run.sh t400d 2.5 0 0010 0 2000 & wait) 2>&1 \| grep -v Warning; for d in t400a t400b t400c t400d; do ech ...` |
+| 2026-11-08 02:53:58 UTC | Bash | `grep -E "^\s+[0-9]+.*_X" build/exp/t400c/syn.stat.rpt \| sort -k2 -n -r \| head -30; grep -E "sequential\|Chip" build/exp/t400c/syn.stat.rpt` |
+| 2026-11-08 02:54:06 UTC | Bash | `cat > build/exp/path.sh <<'EOF' #!/bin/bash # compact view of the first (worst) max path in an sta report awk '/^Startpoint/{n++} n==1' $1 \| grep -E "^\s+[0-9]+\s+[0-9.]+\s+[0-9.]+\s+[0-9.]+\s+[0-9.]+ ...` |
+| 2026-11-08 02:54:33 UTC | Bash | `python3 - <<'EOF' p='build/exp/mult_pipe.sv' s=open(p).read() old_hdr=s[s.index('module mult_pipe'):s.index(' // ------------------------------------------------------------------\n // Partial-product ...` |
+| 2026-11-08 02:54:41 UTC | Bash | `mkdir -p build/exp/ft && for cfg in "1 0 0100 0" "0 0 1000 0" "0 1 1010 1" "1 0 1111 1"; do set -- $cfg; sed "s/\'PRE/1'b$1/; s/\'ENC/1'b$2/; s/\'CSA/4'b$3/; s/\'SPL/1'b$4/" build/exp/top.sv > build/e ...` |

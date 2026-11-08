@@ -1,6 +1,6 @@
 # Session record
 
-Rendered 2026-11-08 02:53:35 UTC from the Claude Code transcript.
+Rendered 2026-11-08 02:54:41 UTC from the Claude Code transcript.
 
 ### Prompt, 2026-11-08 02:33:34
 
@@ -226,3 +226,26 @@ Icarus 12 mishandles arrays in `always_comb`; rewriting with generate loops and 
   - result: // ------------------------------------------------------------------ // carry-save levels (3:2 compressors on whole rows); each optionally registered function automatic logic [63:0] csa(input logic [31:0] x, y, z); return {((x & y) | (x & z) | (y & z)) << 1, x ^ y ^ z}; endfunction
 
 - `Bash` sed -i 's/ return {((x \& y) | (x \& z) | (y \& z)) << 1, x ^ y ^ z};/ csa = {((x \& y) | (x \& z) | (y \& z)) << 1, x ^ y ^ z};/' build/exp/mult_pipe.sv && sed -n 69p build/exp/mult_pipe.sv && build/ ...
+  - result: function automatic logic [63:0] csa(input logic [31:0] x, y, z); Warning: Replacing memory \rw with list of registers. See build/exp/t400a/rtl/mult_pipe.sv:58 Warning: Replacing memory \pp with list of registers. See build/exp/t400a/rtl/mult_pipe.sv:56 t400a P=2.5 enc=0 csa=1000 spl=0 abcD=2000 | yosys_area=2808.162000 rsz_area=3146 wns=-0.202 whs=0.055 pwr_est=7.6262e-04 == before: wns -1.8122030 ...
+
+### Agent, 2026-11-08 02:53:41
+
+First 400 MHz candidate (operand register → Booth + full CSA tree → carry-save register → final adder, latency 3): −0.20 ns WNS, 3146 µm². Sweeping the cut position.
+
+- `Bash` (build/exp/run.sh t400b 2.5 1 1000 0 2000 & build/exp/run.sh t400c 2.5 0 0100 0 2000 & build/exp/run.sh t400d 2.5 0 0010 0 2000 & wait) 2>&1 | grep -v Warning; for d in t400a t400b t400c t400d; do ech ...
+  - result: t400b P=2.5 enc=1 csa=1000 spl=0 abcD=2000 | yosys_area=2731.554000 rsz_area=2820 wns=0.001 whs=0.053 pwr_est=6.5157e-04 t400c P=2.5 enc=0 csa=0100 spl=0 abcD=2000 | yosys_area=2779.966000 rsz_area=2871 wns=0.004 whs=0.053 pwr_est=6.9885e-04 t400d P=2.5 enc=0 csa=0010 spl=0 abcD=2000 | yosys_area=2839.284000 rsz_area=2903 wns=-0.170 whs=0.053 pwr_est=7.1769e-04 t400a: Startpoint: _3901_ (rising ed ...
+
+- `Bash` grep -E "^\s+[0-9]+.*_X" build/exp/t400c/syn.stat.rpt | sort -k2 -n -r | head -30; grep -E "sequential|Chip" build/exp/t400c/syn.stat.rpt
+  - result: 158 714.476 DFF_X1 206 328.776 XNOR2_X1 216 229.824 AOI21_X1 203 215.992 OAI21_X1 224 178.752 NOR2_X1 167 133.266 NAND2_X1 83 132.468 XOR2_X1 65 69.16 AND2_X1 50 66.5 AOI22_X1 80 63.84 BUF_X1 40 63.84 AOI221_X1 45 59.85 AOI211_X1 55 58.52 NAND3_X1 15 43.89 AOI221_X2 30 39.9 OAI22_X1 67 35.644 INV_X1 33 35.112 OR2_X1 26 34.58 NOR2_X2 31 32.984 NOR3_X1 16 29.792 MUX2_X1 20 26.6 AND3_X1 14 26.068 AOI ...
+
+- `Bash` cat > build/exp/path.sh <<'EOF' #!/bin/bash # compact view of the first (worst) max path in an sta report awk '/^Startpoint/{n++} n==1' $1 | grep -E "^\s+[0-9]+\s+[0-9.]+\s+[0-9.]+\s+[0-9.]+\s+[0-9.]+ ...
+  - result: by clk) fo=Startpoint: d=edge-triggered t=flip-flop by clk) fo=Endpoint: d=edge-triggered t=flip-flop _3839_/Q (DFF_X2) fo=9 d=0.391 t=0.391 split20/Z (CLKBUF_X3) fo=8 d=0.130 t=0.521 _2646_/ZN (NOR2_X1) fo=6 d=0.410 t=0.931 _2647_/Z (BUF_X2) fo=10 d=0.231 t=1.162 _3393_/ZN (AOI22_X1) fo=1 d=0.071 t=1.233 _3396_/ZN (OAI21_X1) fo=3 d=0.117 t=1.351 _3406_/Z (XOR2_X1) fo=1 d=0.221 t=1.572 _3407_/ZN ( ...
+
+#### Reasoning, 2026-11-08 02:54:19
+
+> Stage 1 is at 2.41 ns against a 2.5 ns clock, so I'm moving Booth recoding ahead of the operand register, which the 800 MHz design will need too.
+
+- `Bash` python3 - <<'EOF' p='build/exp/mult_pipe.sv' s=open(p).read() old_hdr=s[s.index('module mult_pipe'):s.index(' // ------------------------------------------------------------------\n // Partial-product ...
+  - result: 20: // multiplier pipeline configuration (see mult_pipe.sv) 25: localparam int LAT_M = 1 + (PRE_ENC ? 0 : ENC_REG) + CSA_REG[0] + CSA_REG[1] + CSA_REG[2] + CSA_REG[3] + 1 + CPA_SPLIT; 26: localparam int LAT = LAT_M; // operand register included 30: logic [LAT-1:0] v_q; // valid bit of each pipeline rank 35: wire wr = v_q[LAT-1]; 42: v_q <= {v_q[LAT-2:0], acc}; 56: mult_pipe #(.PRE_ENC(PRE_ENC), .E ...
+
+- `Bash` mkdir -p build/exp/ft && for cfg in "1 0 0100 0" "0 0 1000 0" "0 1 1010 1" "1 0 1111 1"; do set -- $cfg; sed "s/\'PRE/1'b$1/; s/\'ENC/1'b$2/; s/\'CSA/4'b$3/; s/\'SPL/1'b$4/" build/exp/top.sv > build/e ...
