@@ -436,3 +436,17 @@ New references (Parhi, Leiserson-Saxe, Touati-Brayton, Townsend et al., Harris, 
 - *`git status` after the run:* only logs and the tool_versions date changed. Netlists, SDF and reports are byte-identical.
 
 **Final build** of the report and token usage follows (`submission/syn_reports/token_usage.md`).
+
+## Round 4: further area/power reduction (started after the user's review)
+
+The user's review asked for the following.
+- *(1)* Drop the product register at both frequencies. F4 only needs writeMem_val to settle within the cycle (output delay 0, memory captures at the rising edge). My headers had wrongly imposed "all outputs from registers".
+- *(2)* Reset the 144-bit PP rank by gating the 24 Booth digit bits instead of each PP bit.
+- *(3)* Redo Wallace vs row tree at 800 MHz with a Wallace design that has more slack. Its sign-off slack of 91 ps suggests GPDK045 upsized it to close timing, which would explain the +11 % power better than the XOR network does.
+- *(4)* Resolve low columns before R4, size adder blocks to the arrival profile, try CI1=0, PRE_ENC=0 at low priority, and at 400 MHz push --res-budget.
+- *(5)* No more control tweaks.
+- *(6)* Report fixes: the "binding flow" claim; the decision metric is the relative change in area × power; cite Oklobdzija/Villeger/Liu 1996 and Zimmermann 1997, both verified first (`notes/REFERENCES_CHECK.md`).
+
+**Workers, one flow each:**
+- (a) the row-tree 800 MHz design, items 1, 2 and 4, in `build/r4row/`;
+- (b) the Wallace generator, items 1–4 at 800 and 400 MHz, in `build/r4wal/`.
