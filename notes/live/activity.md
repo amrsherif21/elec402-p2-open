@@ -476,3 +476,4 @@
 | 2026-11-08 08:20:55 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800b && ./run.sh 800 w24gt5 --mode wallace --cuts 2,4 --gp gt --k0 8 --k 5 2>&1 \| tail -22` |
 | 2026-11-08 08:20:57 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800b && sed -n 1,38p w24gt5/rep/sta.rpt \| grep -v "^ *0\.[0-9]* *0.000"` |
 | 2026-11-08 08:21:04 UTC | Bash | `cat >> notes/WORKLOG.md <<'EOF' **Sign-off of the 400 MHz candidate p1c4** ('check/c400-p1c4', 0fbf037, checked 08:19 UTC). Against the previous design: \| \| previous \| p1c4 \| \|---\|---\|---\| \| WNS \| 156 ...` |
+| 2026-11-08 08:23:22 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800b && ./run.sh 800 w24cpa5 --mode wallace --cuts 2,4 --gp cpa --k0 8 --k 5 2>&1 \| tail -21 \| grep -v "u_mult.[aont][1enw]"` |
