@@ -1,6 +1,6 @@
 # Session record
 
-Rendered 2026-11-08 18:18:59 UTC from the Claude Code transcript.
+Rendered 2026-11-08 18:22:26 UTC from the Claude Code transcript.
 
 ### Prompt, 2026-11-08 02:33:34
 
@@ -2946,3 +2946,13 @@ All three pass the SDF and F14 checks in our flow. The 800 MHz Wallace designs c
 > At 400 MHz the Wallace design without a product register wins on area (−8.8%) and power (−17.5%), but at 800 MHz none of the Wallace candidates yet beats e18 on sign-off slack or area×power, so I'm trying two more variants.
 
 - `Bash` for v in "f8p|--gp gt" "f8pc|--gp cpa"; do IFS='|' read -r n gp <<< "$v"; bash build/r4wal/run.sh 800 $n --mode wallace --rawlevels 3 --cuts 2,4 $gp --res-budget 0.66 --bpair --k0 8 --k 5 --pair-late ...
+  - result: check=PASS sim=PASS wns=0.124 whs=0.041 area=3864.182 seq=1910.412 comb=1953.8 flops=422 vectorless_uW=2113.7 u_mult.a17 16 0.211 | u_mult.neg_q 8 0.326 | u_mult.one_q 8 0.332 | u_mult.prod 13 0.159 | u_mult.r2 144 0.164 | u_mult.r3 85 0.124 | u_mult.r4 52 0.125 | u_mult.r5 25 0.155 | u_mult.two_q 8 0.237 | writeMem_val 32 0.157 | check=PASS sim=PASS wns=0.017 whs=0.041 area=3899.294 seq=1910.412  ...
+
+#### Reasoning, 2026-11-08 18:19:06
+
+> The Wallace variant without the digit reset (f8p) clears +0.124 ns across all ranks, so I'm dropping the f8pc variant, which only moves the critical path, and running the SDF and F14 checks on f8p before sign-off.
+
+- `Bash` d=build/r4wal/f8p; M="RUN=800 RTL_DIR=$d/rtl BUILD=$d REP=$d/rep NETLIST=$d/map.v SDF=$d/map.sdf"; make -s timing $M 2>&1 | grep -E "^ALL PASS|TIMING FAIL" | head -1; make -s f14 $M 2>&1 | tail -1; SP ...
+  - result: ALL PASS F14CHECK: flops 422, reset-gated 422 (of which reset-to-1 2), NOT reset-gated 0: remote: 5bad848 Sign-off candidate r4-f8p: 800 MHz Wallace with product register, rebalanced (422 flops, our WNS +0.124); 400 MHz a4_np Shell cwd was reset to /home/user/elec402-p2-open
+
+- `Bash` cat >> notes/WORKLOG.md <<'EOF' **Sign-off of r4-wal, r4-walp, r4-c2a** (all pass SDF simulation). Area in µm², power in µW (vectorless); "A×P" is area × power relative to e18. | design | flops | sign ...

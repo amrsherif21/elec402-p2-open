@@ -741,3 +741,5 @@
 | 2026-11-08 18:11:08 UTC | Bash | `until git fetch -q origin check-results 2>/dev/null && [ $(git ls-tree --name-only origin/check-results results/ \| grep -c "r4-wal\\|r4-c2a") -ge 3 ]; do sleep 30; done; for d in $(git ls-tree --name-o ...` |
 | 2026-11-08 18:16:50 UTC | Bash | `cat /tmp/claude-0/-home-user-elec402-p2-open/6503db16-82a0-5ee1-9a2e-83eb2b44d2ca/tasks/bwc32ul7v.output` |
 | 2026-11-08 18:18:59 UTC | Bash | `for v in "f8p\|--gp gt" "f8pc\|--gp cpa"; do IFS='\|' read -r n gp <<< "$v"; bash build/r4wal/run.sh 800 $n --mode wallace --rawlevels 3 --cuts 2,4 $gp --res-budget 0.66 --bpair --k0 8 --k 5 --pair-late  ...` |
+| 2026-11-08 18:19:39 UTC | Bash | `d=build/r4wal/f8p; M="RUN=800 RTL_DIR=$d/rtl BUILD=$d REP=$d/rep NETLIST=$d/map.v SDF=$d/map.sdf"; make -s timing $M 2>&1 \| grep -E "^ALL PASS\|TIMING FAIL" \| head -1; make -s f14 $M 2>&1 \| tail -1; SP ...` |
+| 2026-11-08 18:22:26 UTC | Bash | `cat >> notes/WORKLOG.md <<'EOF' **Sign-off of r4-wal, r4-walp, r4-c2a** (all pass SDF simulation). Area in µm², power in µW (vectorless); "A×P" is area × power relative to e18. \| design \| flops \| sign ...` |
