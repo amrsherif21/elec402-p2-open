@@ -159,3 +159,26 @@ Gate-level only effects visible in the zoom:
 - EN_readMem following EN_blockRead (driven 20 ps after the edge) through one AND gate.
 
 RDY_mult is a register output in both designs, so it shows no glitch.
+
+## Checkpoint 4: power
+
+Activity-based power uses OpenSTA `read_vcd` on the zero-delay gate-level VCD of `make sim`, which runs the full RTL-checker stimulus. It is reported for the whole run and for the two 64-cycle windows announced by the checker (`PWR_WIN`, passed as `-begin_time/-end_time`). The vectorless "synthesis estimate" is `report_power` with OpenSTA's default input activity of 0.1. Reports: `submission/syn_reports/<RUN>/{sta.rpt,power.rpt,power_summary.txt}`.
+
+Power in µW, slow corner (0.95 V, 125 °C):
+
+| case | 400 MHz | 800 MHz |
+|---|---|---|
+| vectorless estimate | 652.5 | 2727.6 |
+| whole run | 642.8 | 3073.1 |
+| fill window (64 back-to-back accepts) | 1480.1 | 5209.5 |
+| drain window (64 back-to-back reads, producer idle) | 430.4 | 2535.6 |
+
+In the drain window, sequential internal (clock) power dominates: 158 flops at 400 MHz and 577 at 800 MHz, with no clock gating.
+
+**Operand-isolation experiment** (400 MHz, `build/noiso400`; operand registers load the inputs every cycle instead of zeros when nothing is accepted). Files: `submission/syn_reports/400/experiments/`.
+- Area: 2337.9 µm², against 2386.6 µm² with isolation.
+- Power: whole run 1402.0 µW (+118 %), fill window 1471.1 µW, drain window 428.6 µW. The windows hardly change because the checker keeps the producer quiet in the drain window. Over the whole run, the random operands presented while not ready (F5/F11 stimulus) toggle the multiplier without isolation.
+- Vectorless estimate: 755.9 µW.
+- Isolation costs about 49 µm² of gating and removes about 54 % of the whole-run power.
+
+Glitch power is not included, because the VCD is from the zero-delay simulation that SPEC Section 7 prescribes for `sim`. This is noted in the report.

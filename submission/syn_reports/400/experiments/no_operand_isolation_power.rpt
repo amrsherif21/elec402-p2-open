@@ -1,0 +1,39 @@
+Annotated 5198 pin activities.
+== power run: window whole run, VCD build/noiso400/gate.vcd
+Group                  Internal  Switching    Leakage      Total
+                          Power      Power      Power      Power (Watts)
+----------------------------------------------------------------
+Sequential           3.9854e-04 2.5815e-04 9.0685e-06 6.6575e-04  47.5%
+Combinational        3.7631e-04 3.3576e-04 2.4201e-05 7.3627e-04  52.5%
+Clock                0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00   0.0%
+Macro                0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00   0.0%
+Pad                  0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00   0.0%
+----------------------------------------------------------------
+Total                7.7485e-04 5.9391e-04 3.3269e-05 1.4020e-03 100.0%
+                          55.3%      42.4%       2.4%
+Annotated 5198 pin activities.
+== power fill: window 521250..681250 ps, VCD build/noiso400/gate.vcd
+Group                  Internal  Switching    Leakage      Total
+                          Power      Power      Power      Power (Watts)
+----------------------------------------------------------------
+Sequential           4.1645e-04 2.8025e-04 9.0586e-06 7.0576e-04  48.0%
+Combinational        3.9307e-04 3.4806e-04 2.4250e-05 7.6538e-04  52.0%
+Clock                0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00   0.0%
+Macro                0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00   0.0%
+Pad                  0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00   0.0%
+----------------------------------------------------------------
+Total                8.0952e-04 6.2831e-04 3.3308e-05 1.4711e-03 100.0%
+                          55.0%      42.7%       2.3%
+Annotated 5198 pin activities.
+== power drain: window 688750..848750 ps, VCD build/noiso400/gate.vcd
+Group                  Internal  Switching    Leakage      Total
+                          Power      Power      Power      Power (Watts)
+----------------------------------------------------------------
+Sequential           3.6548e-04 2.1079e-05 8.8039e-06 3.9536e-04  92.2%
+Combinational        5.3047e-06 3.4073e-06 2.4569e-05 3.3281e-05   7.8%
+Clock                0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00   0.0%
+Macro                0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00   0.0%
+Pad                  0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00   0.0%
+----------------------------------------------------------------
+Total                3.7078e-04 2.4486e-05 3.3373e-05 4.2864e-04 100.0%
+                          86.5%       5.7%       7.8%
