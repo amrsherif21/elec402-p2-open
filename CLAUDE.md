@@ -16,7 +16,7 @@ Work proceeds in checkpoints. At the end of each checkpoint, commit and push the
 
 ## 4. Sign-off service
 
-Pushing a branch named `check/<label>` submits the RTL in `submission/rtl_400/` and `submission/rtl_800/` to the sign-off service described in `SPEC.md` Section 8.3. The scorecard appears on branch `check-results`, under `results/`, usually between five and twenty minutes later while the service is online, and can be read with `git fetch origin check-results`. Work should continue in the meantime rather than wait for the result. The service is intended for completed implementations, not for routine iteration.
+Pushing a branch named `check/<label>` submits the RTL in `submission/rtl_400/` and `submission/rtl_800/` to the sign-off service described in `SPEC.md` Section 8.3. The scorecard appears on branch `check-results`, under `results/`, usually between five and twenty minutes later while the service is online, and can be read with `git fetch origin check-results`. Work should continue in the meantime rather than wait for the result. Candidate implementations may be submitted as well as completed ones. A check takes about three minutes once it starts, and checks run one at a time.
 
 ## 5. Environment
 

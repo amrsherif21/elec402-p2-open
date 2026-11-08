@@ -111,7 +111,7 @@ Figures 1 to 4 illustrate the phases of operation for an implementation with a l
 | Cell area | < 6000 µm² | < 12000 µm² |
 | Power | Minimized, reported in µW from simulation activity | Minimized, reported in µW from simulation activity |
 
-Each implementation shall have `mkMultBuff` as its top module and shall compile from the complete set of `.sv` files in its source directory, read in any order. `` `include`` directives shall not be used. The targets apply to the results of the open-source flow in Section 7. The slack target leaves margin for physical implementation. Among implementations that meet timing and area, lower area and lower power are preferred.
+Each implementation shall have `mkMultBuff` as its top module and shall compile from the complete set of `.sv` files in its source directory, read in any order. `` `include`` directives shall not be used. The targets apply to the results of the open-source flow in Section 7, and the slack target shall also be met in the sign-off results of Section 8.3. The slack target leaves margin for physical implementation, and slack beyond it confers no further benefit. Among implementations that meet these targets, lower area and lower power are preferred, judged on the sign-off results, since these are comparable with designs from the course's standard flow.
 
 ## 6. Technology and constraints
 
