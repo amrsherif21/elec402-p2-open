@@ -508,3 +508,6 @@
 | 2026-11-08 08:47:29 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800b && ./run.sh 800 w24r3gt5r --mode wallace --rawlevels 3 --cuts 2,4 --gp gt --k0 8 --k 5 --res-budget 0.66 2>&1 \| grep -v "u_mult.[aont][1enw]" \| tail -14` |
 | 2026-11-08 08:47:50 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800b && python3 - <<'EOF' s = open("gen_tree.py").read() old = ''' rb = args.res_budget if last else (args.res_mid if lv in cuts else 0)''' new = ''' if not las ...` |
 | 2026-11-08 08:49:54 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800b && python3 gen_tree.py /dev/null --mode dadda --nosel --cuts 4 --gp cpa --cpa one --res-budget 1.9 \| head -1; python3 gen_tree.py /dev/null --mode wallace  ...` |
+| 2026-11-08 08:50:08 UTC | Bash | `grep -n "^f14" -A6 Makefile` |
+| 2026-11-08 08:50:38 UTC | Bash | `for d in w24r3gt5re:800 w4r3cpa:400; do n=${d%%:*}; r=${d##*:}; W=build/cand800b/$n; make -s f14 RUN=$r RTL_DIR=$W/rtl BUILD=$W REP=$W/rep NETLIST=$W/map.v SDF=$W/map.sdf 2>&1 \| tail -2; done` |
+| 2026-11-08 08:51:35 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800b && ./run.sh 400 d4cpa --mode dadda --nosel --cuts 4 --gp cpa --cpa one --res-budget 1.9 2>&1 \| grep -v "u_mult.[aont][1enw]" \| grep -A4 "^=="; grep "u_mult ...` |
