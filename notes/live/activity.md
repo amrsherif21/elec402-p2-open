@@ -110,3 +110,6 @@
 | 2026-11-08 03:01:33 UTC | Bash | `git add .gitignore Makefile submission/scripts submission/syn_reports/tool_versions.txt notes/WORKLOG.md && git commit -q -m "Checkpoint 1: toolchain (install script, make targets, Nangate45 slow corn ...` |
 | 2026-11-08 03:02:17 UTC | Bash | `(PRE=1 build/exp/run.sh e800a 1.25 0 1111 1 1000 0 kogge-stone & PRE=1 build/exp/run.sh e800b 1.25 0 0101 1 1000 0 kogge-stone & PRE=1 build/exp/run.sh e800c 1.25 0 1010 1 1000 0 kogge-stone & wait) 2 ...` |
 | 2026-11-08 03:02:40 UTC | Bash | `docker run --rm openroad/orfs:26Q4-365-g898576f04 bash -c 'echo "buffer -h; upsize -h" \| /OpenROAD-flow-scripts/tools/install/yosys/bin/yosys-abc 2>&1 \| head -40; ls /OpenROAD-flow-scripts/flow/platfo ...` |
+| 2026-11-08 03:03:10 UTC | Bash | `sed 's/^buffer -c$/buffer -p -c/' submission/scripts/abc_speed.script > build/exp/abc_p.script && grep buffer build/exp/abc_p.script && (ABC_SCRIPT=build/exp/abc_p.script PRE=1 build/exp/run.sh f800b  ...` |
+| 2026-11-08 03:03:25 UTC | Write | `/home/user/elec402-p2-open/submission/scripts/resize.tcl` |
+| 2026-11-08 03:03:48 UTC | Bash | `(PRE=1 build/exp/run.sh g800b 1.25 0 0101 1 1000 0 kogge-stone & PRE=1 build/exp/run.sh g400 2.5 0 0100 0 2000 0 kogge-stone & wait) 2>&1 \| grep -v Warning; grep -E "ERROR\|before\|^worst\|RSZ-00(45\|51)" ...` |
