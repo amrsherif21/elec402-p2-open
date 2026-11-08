@@ -11,7 +11,7 @@ t = open(sys.argv[1]).read()
 t = re.sub(r'\\(\S+)(\s)', lambda m: 'e_' + re.sub(r'\W', '_', m.group(1)) + m.group(2), t)
 open(sys.argv[2], 'w').write(t)
 ds = re.findall(r'\bDFF\w*\s+\S+\s*\(([^;]*)\);', t, re.S)
-nets = [re.search(r'\.D\(\s*([^)\s]+)\s*\)', d).group(1) for d in ds]
+nets = [re.sub(r'\s+', '', re.search(r'\.D\(([^)]*)\)', d).group(1)) for d in ds]
 open(sys.argv[2][:-2] + '.dnets', 'w').write('\n'.join(nets) + '\n')
 PY
 IMG=openroad/orfs@sha256:d3505fd5f930fcd20d3d25a41f3047230b7db7b7797e3448561c9e556cca3774

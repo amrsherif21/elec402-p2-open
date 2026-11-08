@@ -471,3 +471,32 @@ Notes on these results:
 - Arrival-sized blocks, the low-column resolve and CI1=0 all fail timing. PRE_ENC=0 fails timing (−0.027 ns) and adds 524 µm², so no sign-off run was made for it.
 - c2 passes check, sim, SDF timing (ALL PASS) and F14 (408/408).
 - c2 was submitted to sign-off as `check/r4-c2` (6e26303), paired with the unchanged 400 MHz design.
+
+**Worker (b), Wallace generator** (`build/r4wal/`, generator copy with new options: --noprod, --rst-digits, --rawop, --blocks, --res-cout, --pair-late, --lvl-limit/--lvl-cap, --bpair, --bsel).
+
+| cand | MHz | change | ranks | flops | area tot/seq/comb µm² | vectorless µW | activity run/fill/drain µW | WNS ns |
+|---|---|---|---|---:|---|---:|---|---:|
+| a8_base | 800 | w24r3gt5re + e18 control | 40/144/82/52/39/32 | 420 | 3849/1901/1947 | 2104 | 2393/4410/1852 | .085 |
+| a8_np | 800 | noprod | …/39/– | 387 | 3728 | 1990 | 2279/4323/1716 | .013 |
+| b8_bp | 800 | noprod + block-prefix level in stage A | …/38/– | 386 | 3686 | 1976 | 2258/4252/1710 | .087 |
+| b8_bp888 / b8_999 | 800 | larger blocks | | 384/383 | 3727/3725 | 1975/1971 | | −.006/−.020 |
+| e8 | 800 | + pair-late 2, lvl-limit | 40/144/85/52/38/– | 389 | 3718 | 1993 | 2279/4313/1723 | .087 |
+| **e8rd** | 800 | e8 + rst-digits | 40/144/85/52/38/– | 389 | 3676/1761/1914 | 1984 | 2265/4254/1722 | .087 |
+| **a4_np** | 400 | noprod (2 ranks) | 40/51 | 108 | 2184/488/1696 | 551 | 547/1437/304 | .172 |
+| b4_rc23 | 400 | + res-cout, budget 2.3 | 40/49 | 106 | 2170 | 552 | 539/1414/299 | .151 |
+| d4_raw | 400 | raw operands | 32/51 | 100 | 2923 | 645 | 658/1937/301 | .144 |
+
+Notes:
+- e8rd and a4_np pass timing and F14.
+- 800 MHz WNS is limited at about +0.087 ns by the output port: an XOR2 drives the 23.5 fF load and the Resizer cannot buffer it.
+- Generic gates in mult_pipe: row tree e18 has 1495 logic gates (291 XOR); Wallace w24r3gt5re has 1291 (393 XOR). So the Wallace tree has 13 % fewer logic gates but 35 % more XORs.
+- f14_check.sh failed on named bus bits at D pins (rst-digits designs); the worker's one-line fix was merged and re-verified on the final designs (141/141, 442/442).
+
+**Sign-off r4-c2** (row tree c2: no product register + DRST, 408 flops):
+- 800 MHz: 4320.8 µm² (−2.2 % vs 4416.2), **988.2 µW (+19 % vs 829.7)**, WNS 109 ps (vs 158).
+- Fewer flops and gates, yet more power, and the slack dropped. This supports the user's hypothesis: GPDK045 synthesis closes timing with margin, and the now-combinational adder → port path is upsized.
+
+**More candidates to sign-off**, to separate the effects:
+- r4-wal: a4_np + e8rd (no product register);
+- r4-walp: Wallace with product register + rst-digits, f8rdp, 422 flops, our WNS +0.075, timing/F14 PASS;
+- r4-c2a: row tree with product register + DRST only, 442 flops, our WNS +0.145.
