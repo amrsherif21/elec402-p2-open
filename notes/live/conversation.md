@@ -1,6 +1,6 @@
 # Session record
 
-Rendered 2026-11-08 03:15:44 UTC from the Claude Code transcript.
+Rendered 2026-11-08 03:16:52 UTC from the Claude Code transcript.
 
 ### Prompt, 2026-11-08 02:33:34
 
@@ -598,3 +598,27 @@ WNS is now −0.014 ns. What remains is stage B of the carry-select adder, where
 With the block-carry prefix, `RDY_mult`'s port copy has been merged back into internal logic, so the ready-flag copies get the same inverted-storage treatment.
 
 - `Bash` python3 - <<'EOF' t=open('build/exp/top.sv').read() t=t.replace(""" // copies of the two ready flags that drive only the output ports, so the // port load does not slow the internal handshake logic (k ...
+  - result: ALL PASS t800c P=1.25 enc=0 csa=1111 spl=0 abcD=1000 | yosys_area=5767.412000 rsz_area=5874 wns=-0.034 whs=0.024 pwr_est=3.1758e-03 t800b P=1.25 enc=0 csa=1111 spl=0 abcD=1000 | yosys_area=5784.968000 rsz_area=5933 wns=-0.034 whs=0.028 pwr_est=3.1901e-03 _4840_/Q (DFF_X1) fo=2 d=0.332 t=0.332 .Q(\u_mult.g_csel.co0q [4]), _4812_/Q (DFF_X1) fo=2 d=0.332 t=0.332 .Q(\u_mult.g_csel.co0q [4]),
+
+- `Bash` build/exp/path.sh build/exp/t800b/sta.rpt | sed -n '3,20p'; grep -E "^\s+-?[0-9.]+\s+slack" build/exp/t800b/sta.rpt | head -4; grep -A3 "^Endpoint" build/exp/t800b/sta.rpt | head -1;
+  - result: _4840_/Q (DFF_X1) fo=2 d=0.332 t=0.332 _2799_/ZN (OR2_X4) fo=2 d=0.181 t=0.513 _2800_/ZN (OR2_X4) fo=1 d=0.154 t=0.667 _2806_/ZN (OAI21_X4) fo=4 d=0.113 t=0.780 _2881_/Z (MUX2_X1) fo=1 d=0.242 t=1.022 _2882_/ZN (AND2_X4) fo=1 d=0.105 t=1.127 _2883_/Z (BUF_X8) fo=1 d=0.069 t=1.197 1.197 data arrival time -0.087 1.163 library setup time -1.197 data arrival time slack (VIOLATED) fo=-0.034 d= t= -0.03 ...
+
+### Agent, 2026-11-08 03:16:08
+
+Down to −0.034 ns. The remaining path is the block-carry prefix, then a `MUX2_X1` (0.24 ns), then the reset AND. Trying `MUX2` as don't-use too.
+
+- `Bash` python3 submission/scripts/lib_dont_use.py tech/NangateOpenCellLibrary_slow.lib build/exp/lib_du3.lib 'OAI33_*' 'NOR3_*' 'NOR4_*' 'OR3_*' 'OR4_*' 'AND4_*' 'NAND4_*' 'AOI211_*' 'AOI221_*' 'AOI222_*' 'O ...
+  - result: lib_dont_use: 39 cells marked dont_use -> build/exp/lib_du3.lib u800b P=1.25 enc=0 csa=1111 spl=0 abcD=1000 | yosys_area=5790.288000 rsz_area=5893 wns=0.051 whs=0.028 pwr_est=3.1902e-03 u800m P=1.25 enc=0 csa=1111 spl=0 abcD=1000 | yosys_area=5784.968000 rsz_area=5933 wns=-0.034 whs=0.028 pwr_est=3.1901e-03 _4894_/Q (DFF_X1) fo=1 d=0.376 t=0.376 .Q(\u_mult.l4q [40]), _4840_/Q (DFF_X1) fo=2 d=0.332 ...
+
+### Agent, 2026-11-08 03:16:36
+
+Removing `MUX2` gives the first positive result at 800 MHz: WNS +0.051 ns, 5,893 µm², against the +0.062 ns target. Looking at the new critical path.
+
+- `Bash` build/exp/path.sh build/exp/u800b/sta.rpt | sed -n '3,20p'; for k in 1 2 3; do awk -v k=$k '/^Startpoint/{n++} n==k' build/exp/u800b/sta.rpt | grep -E "^(Start|End)point" | cut -c1-40 | tr '\n' ' '; e ...
+  - result: _4894_/Q (DFF_X1) fo=1 d=0.376 t=0.376 _3611_/Z (BUF_X4) fo=6 d=0.086 t=0.463 _3633_/Z (XOR2_X2) fo=3 d=0.220 t=0.683 _3952_/ZN (NAND3_X2) fo=1 d=0.099 t=0.782 _3953_/ZN (OAI21_X4) fo=3 d=0.088 t=0.870 _3954_/Z (XOR2_X2) fo=1 d=0.207 t=1.077 _3955_/ZN (NOR2_X4) fo=1 d=0.029 t=1.106 1.106 data arrival time -0.093 1.157 library setup time -1.106 data arrival time slack (MET) fo=0.051 d= t= Startpoin ...
+
+### Agent, 2026-11-08 03:16:46
+
+Stage A of the adder is now critical, with almost nothing left to trim inside it. To rebalance I need the worst slack into each register group, so I'm writing a per-group slack report.
+
+- `Bash` cat > build/exp/groups.tcl <<'EOF' set period $::env(PERIOD) read_liberty $::env(LIB) read_verilog $::env(NETLIST) link_design mkMultBuff source submission/scripts/constraints.tcl array set w {} forea ...
