@@ -1,6 +1,6 @@
 # Session record
 
-Rendered 2026-11-08 02:44:05 UTC from the Claude Code transcript.
+Rendered 2026-11-08 02:45:35 UTC from the Claude Code transcript.
 
 ### Prompt, 2026-11-08 02:33:34
 
@@ -176,3 +176,5 @@ Building the Yosys/OpenSTA flow and fixing script issues as they come up.
 Using OpenROAD's Resizer (gate sizing + buffering, with wire-load models) after Yosys looks viable; testing repair_timing.
 
 - `Bash` docker run --rm openroad/orfs:26Q4-365-g898576f04 cat /OpenROAD-flow-scripts/flow/platforms/nangate45/setRC.tcl | head; sed -i 's|^repair_design|source /OpenROAD-flow-scripts/flow/platforms/nangate45/ ...
+  - result: set_layer_rc -layer metal1 -resistance 5.4286e-03 -capacitance 7.41819E-02 set_layer_rc -layer metal2 -resistance 3.57167E-03 -capacitance 8.33611E-02 set_layer_rc -layer metal3 -resistance 3.57147E-03 -capacitance 1.03981E-01 set_layer_rc -layer metal4 -resistance 1.50001E-03 -capacitance 1.19150E-01 set_layer_rc -layer metal5 -resistance 1.50000E-03 -capacitance 1.09256E-01 set_layer_rc -layer m ...
+
