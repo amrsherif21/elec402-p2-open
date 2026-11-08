@@ -23,3 +23,6 @@ __pycache__/
 
 # Live session record (published on branch live-log)
 notes/live/
+
+# Third-party technology files fetched by submission/scripts/install.sh (not stored in the repo)
+/tech/

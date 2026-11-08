@@ -1,0 +1,11 @@
+# Tool versions recorded by install.sh on 2026-11-08T02:40Z
+host: Ubuntu 24.04.5 LTS x86_64
+iverilog: Icarus Verilog version 12.0 (stable) ()
+gtkwave: Usage: gtkwave [OPTION]... [DUMPFILE] [SAVEFILE] [RCFILE]
+python3: Python 3.13.18
+docker: Docker version 29.9.2, build a82e528
+yosys image: openroad/orfs@sha256:d3505fd5f930fcd20d3d25a41f3047230b7db7b7797e3448561c9e556cca3774
+yosys: Yosys 0.68+post (git sha1 UNKNOWN, Release, GNU /usr/local/bin/wrapped-cc/g++ 15.2.0)
+opensta image: openroad/opensta@sha256:4162b4be70ee69eaa42e5eb3c830433393ff46cf0370f9b6c5b814b48a221a7a
+opensta: 3.1.0
+nangate45: mflowgen/freepdk-45nm@d3be42a72ca6eabff54a4f3be50c16613f69f1b6 stdcells-wc.lib (operating_conditions slow: process 1.0, 0.95 V, 125 C) and stdcells.v
