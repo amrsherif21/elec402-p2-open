@@ -566,3 +566,11 @@ The informational check (the 400 MHz netlist at 1.25 ns) fails, as it should. Fr
 - Oklobdzija et al. [26] and Zimmermann [27] cited.
 
 Two claims in the first draft were checked against the data and corrected before the build. "Power rises as slack shrinks almost without exception" is wrong, because f8p has the least slack and the lowest power. "The flows agree within 20 ps when the product register is kept" is wrong, because c2a is 145 vs 83 ps.
+
+**Fresh-clone rerun, round 4** (d4a2c26, 18:28:50–18:30:44 UTC, `syn_reports/fresh_clone_rerun.log`).
+- *400 MHz:* +0.172 ns, 2183.860 µm²; power 550.85 / 546.82 / 1436.80 / 304.15 µW.
+- *800 MHz:* +0.124 ns, 3864.182 µm²; power 2113.70 / 2400.30 / 4424.70 / 1860.80 µW.
+- *Checks:* all ALL PASS; F14 108/108 and 422/422; timing_fail TIMING FAIL for both; mutants 11/11 and 13/13.
+- *`git status` after the run:* only logs and the tool_versions date changed. Netlists, SDF and reports are byte-identical.
+
+The final report build and token usage follow.
