@@ -289,3 +289,12 @@
 | 2026-11-08 03:32:20 UTC | Bash | `git log --format='%h %ad %s' --date=format:'%H:%M:%S' \| head -6; ls -l --time-style=+%H:%M build/exp \| awk '{print $6, $7}' \| sort \| sed -n '1p;$p'; for d in e800b g800b i800a k800a m800b n800b r800b  ...` |
 | 2026-11-08 03:32:31 UTC | Bash | `python3 - <<'EOF' import re p='notes/WORKLOG.md' s=open(p).read() s=re.sub(r'^\*\*\d\d:\d\d ', '**', s, flags=re.M) s=s.replace("Times are UTC on 2026-11-08. Each entry gives what was done, why, the c ...` |
 | 2026-11-08 03:32:49 UTC | Bash | `cat > submission/pdf_report/src/signoff.md <<'EOF' The sign-off service of SPEC Section 8.3 synthesises the submitted RTL with the GPDK045 library and simulates the netlists with SDF back-annotation a ...` |
+| 2026-11-08 03:32:57 UTC | Bash | `mkdir -p build/report/pages && pdftoppm -r 50 -png -f 1 -l 12 submission/pdf_report/report.pdf build/report/pages/p && ls build/report/pages \| head -20 && cd build/report/pages && convert p-01.png p-0 ...` |
+| 2026-11-08 03:32:58 UTC | Read | `/home/user/elec402-p2-open/build/report/pages/row1.png` |
+| 2026-11-08 03:32:58 UTC | Read | `/home/user/elec402-p2-open/build/report/pages/row2.png` |
+| 2026-11-08 03:33:29 UTC | Bash | `ls q* \| head -3; convert q-01.png q-02.png q-03.png q-04.png +append r1.png && convert q-05.png q-06.png q-07.png q-08.png +append r2.png` |
+| 2026-11-08 03:33:29 UTC | Read | `/home/user/elec402-p2-open/build/report/pages/r1.png` |
+| 2026-11-08 03:33:29 UTC | Read | `/home/user/elec402-p2-open/build/report/pages/r2.png` |
+| 2026-11-08 03:33:38 UTC | Bash | `cd /home/user/elec402-p2-open/submission/pdf_report/src && python3 - <<'EOF' for f,pairs in [('dp400.dot',[('enc','r1'),('c12','r2'),('cpa','r3')]),('dp800.dot',[('enc','r1'),('pp','r2'),('c1','r3'),( ...` |
+| 2026-11-08 03:33:38 UTC | Read | `/home/user/elec402-p2-open/submission/pdf_report/fig/dp800.png` |
+| 2026-11-08 03:33:56 UTC | Bash | `cd /home/user/elec402-p2-open && sed -i 's\|(../fig/dp400.png){height=9cm}\|(../fig/dp400.png){width=62%}\|; s\|(../fig/dp800.png){height=15cm}\|(../fig/dp800.png){width=78%}\|' submission/pdf_report/src/re ...` |
