@@ -216,11 +216,11 @@ SIGNOFF_SECTION
 
 # Project metrics
 
-The work took one Claude Code session, which began at 02:33 UTC and ended with the report at about WALLCLOCK_END UTC. In the session, the main agent built the toolchain, the 400 MHz design, candidate (A) and the flow, and wrote the report, while four subagents worked in parallel. One wrote the checkers, two evaluated candidates (B) and (C), and none ran more than two flows at once. Token usage was counted from the session transcripts under `~/.claude/projects/` by `submission/scripts/token_usage.py`, which reads the main session and every subagent transcript, counts each API response once, and prices input, output, cache writes and cache reads at Anthropic's published API rates [17]. For Claude Opus 5.5 these rates are $4 per million input tokens, $20 per million output tokens, $0.20 per million cache-read tokens, and 1.25 and 2 times the input rate for 5-minute and 1-hour cache writes. The figures were taken just before the final build of this report, so the report's own last steps are not included.
+The work took one Claude Code session, which began at 02:33 UTC and ended with the report at about WALLCLOCK_END UTC. In the session, the main agent built the toolchain, the 400 MHz design, candidate (A) and the flow, and wrote the report, while three subagents worked in parallel. One wrote the checkers and two evaluated candidates (B) and (C), with no more than two flows running at a time on the 4-core machine. Token usage was counted from the session transcripts under `~/.claude/projects/` by `submission/scripts/token_usage.py`, which reads the main session and every subagent transcript, counts each API response once, and prices input, output, cache writes and cache reads at Anthropic's published API rates [17]. For Claude Opus 5.5 these rates are $4 per million input tokens, $20 per million output tokens, $0.20 per million cache-read tokens, and 1.25 and 2 times the input rate for 5-minute and 1-hour cache writes. The figures were taken just before the final build of this report, so the report's own last steps are not included.
 
 TOKEN_TABLE
 
-Almost all input is served from the prompt cache, which is why 55 million cached tokens cost less than the 0.4 million output tokens and the cache writes together.
+Almost all input tokens are served from the prompt cache. Cache reads are by far the largest count, and at $0.20 per million they make up a little under half of the cost.
 
 # References
 

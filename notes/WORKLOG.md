@@ -189,3 +189,24 @@ In the drain window, sequential internal (clock) power dominates: 158 flops at 4
 - Isolation costs about 49 µm² of gating and removes about 54 % of the whole-run power.
 
 Glitch power is not included, because the VCD is from the zero-delay simulation that SPEC Section 7 prescribes for `sim`. This is noted in the report.
+
+## Checkpoint 5: report
+
+**Report** (`submission/pdf_report/report.pdf`). Built by `bash submission/scripts/build_report.sh`: pandoc 3.1.3 + pdflatex from `submission/pdf_report/src/report.md`. The script fills four placeholders:
+- the sign-off section, from `src/signoff.md`;
+- the token table, from `submission/scripts/token_usage.py`;
+- the end time;
+- the full source listing appendix.
+
+Figures: Graphviz state and datapath diagrams (`src/*.dot`) and the GTKWave captures. The report is marked AI-generated on its first page, with author Claude Opus 5.5 (Anthropic).
+
+**Token usage** (`submission/scripts/token_usage.py`). It reads every transcript under `~/.claude/projects/-home-user-elec402-p2-open/`: the main session and the 3 subagents. Each API response is counted once (deduplicated by message id and request id), and costs use Anthropic API prices for Claude Opus 5.5:
+- $4 / $20 per MTok input / output;
+- cache reads $0.20;
+- cache writes 1.25× input (5 min) or 2× input (1 h).
+
+At the first measurement (03:40) the total was 279 responses and $24.72. The final numbers are in the report.
+
+**Sign-off service.** `check/400` (60ed005) and `check/800` (b6917e9) were pushed at about 03:02 and 03:27. Repeated `git fetch origin check-results` returned "couldn't find remote ref", and `git ls-remote` shows no such branch, so no scorecard was available while the report was being built. The report states this and lists the differences to expect.
+
+**Fresh-clone rerun.** The script is in the scratchpad (`fresh.sh`). It clones the pushed branch, runs `install.sh`, `make synth check sim timing power f14` for both RUNs, `make timing_fail` for both, and the mutation tests, then reports `git status` and diffs the netlists against the committed ones. The result is recorded below.
