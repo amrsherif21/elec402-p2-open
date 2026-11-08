@@ -756,3 +756,8 @@
 | 2026-11-08 18:26:29 UTC | Bash | `for r in 400 800; do echo "== $r"; build/exp/path.sh submission/syn_reports/$r/sta.rpt \| sed -n '3,30p' \| grep -v "data arrival\\|^ *-" \| head -16; s=$(build/exp/path.sh submission/syn_reports/$r/sta.r ...` |
 | 2026-11-08 18:26:43 UTC | Bash | `cd /home/user/elec402-p2-open/submission/pdf_report/src && cat > dp400.dot <<'EOF' digraph dp400 { rankdir=TB; newrank=true; bgcolor=white; nodesep=0.25; ranksep=0.3; node [fontname="Helvetica", fonts ...` |
 | 2026-11-08 18:27:57 UTC | Write | `/home/user/elec402-p2-open/submission/pdf_report/src/report.md` |
+| 2026-11-08 18:28:04 UTC | Write | `/home/user/elec402-p2-open/submission/pdf_report/src/signoff.md` |
+| 2026-11-08 18:28:24 UTC | Bash | `cd /home/user/elec402-p2-open && python3 - <<'EOF' p='submission/pdf_report/src/report.md' s=open(p).read() old=s[s.index("Register to register, the two flows are about equally tight."):s.index("Pipel ...` |
+| 2026-11-08 18:28:27 UTC | Bash | `git show origin/check-results:results/check_final-6d228d0e28/scorecard.md \| sed -n '3p;/^\| GPDK/p;/^\| Gate/p;/^\| 400 MHz netlist/p'` |
+| 2026-11-08 18:28:49 UTC | Bash | `cat >> notes/WORKLOG.md <<'EOF' **Final sign-off, round 4** ('check/final', 6d228d0, checked 18:28 UTC). Identical to the candidate checks. \| \| area \| vectorless power \| WNS \| SDF simulation \| \|---\|-- ...` |
+| 2026-11-08 18:30:44 UTC | Bash | `bash submission/scripts/fresh_clone_rerun.sh > /tmp/claude-0/-home-user-elec402-p2-open/6503db16-82a0-5ee1-9a2e-83eb2b44d2ca/scratchpad/fresh4.log 2>&1; grep -v "^+ \\|^$" /tmp/claude-0/-home-user-elec ...` |
