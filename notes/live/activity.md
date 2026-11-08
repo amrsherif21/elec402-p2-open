@@ -34,3 +34,11 @@
 | 2026-11-08 02:40:57 UTC | Bash | `sed -i "s\|dpkg-query -W -f \"\${Version}\" gtkwave\|dpkg-query -W -f='\${Version}' gtkwave\|" submission/scripts/install.sh && grep 'gtkwave:' submission/scripts/install.sh cat > submission/scripts/synt ...` |
 | 2026-11-08 02:41:20 UTC | Bash | `cat > Makefile <<'EOF' # Makefile -- open-source flow for mkMultBuff (SPEC.md Section 7). # Usage: make <synth\|check\|sim\|timing\|power\|all> RUN=<400\|800> # Toolchain: bash submission/scripts/install.sh ...` |
 | 2026-11-08 02:41:27 UTC | Bash | `time make synth RUN=400 2>&1 \| tail -15` |
+| 2026-11-08 02:41:37 UTC | Bash | `sed -i '/^splitnets/d' submission/scripts/synth.tcl && time make synth RUN=400 2>&1 \| tail -8; grep -c assign submission/outputs/mkMultBuff_400_map.v; grep assign submission/outputs/mkMultBuff_400_map ...` |
+| 2026-11-08 02:41:41 UTC | Bash | `grep -n -B2 -A6 "Executing CHECK" submission/syn_reports/400/synth.log \| head -40; grep -n "problem\\|Warning" submission/syn_reports/400/synth.log \| head -5` |
+| 2026-11-08 02:41:43 UTC | Bash | `mkdir -p /tmp/claude-0/checkers_scratch && cd /tmp/claude-0/checkers_scratch && cat > t.sv <<'EOF' 'timescale 1ns/1ps module t; int unsigned seed; int unsigned a,b; logic signed [31:0] p; logic [15:0] ...` |
+| 2026-11-08 02:41:50 UTC | Bash | `sed -i 's\|^# read every .sv file\|read_liberty -lib $lib\n# read every .sv file\|' submission/scripts/synth.tcl && make synth RUN=400 2>&1 \| tail -8; grep -c assign submission/outputs/mkMultBuff_400_map ...` |
+| 2026-11-08 02:41:53 UTC | Bash | `sed -n 1,80p submission/syn_reports/400/sta.rpt` |
+| 2026-11-08 02:42:22 UTC | Bash | `docker run --rm openroad/orfs:26Q4-365-g898576f04 bash -c 'cd /OpenROAD-flow-scripts/flow/scripts; ls; cat abc_speed*.script 2>/dev/null \| head -40; grep -n -i "abc\\|booth\\|adder\\|lcu\\|kogge\\|han-carl ...` |
+| 2026-11-08 02:42:26 UTC | Bash | `docker run --rm openroad/orfs:26Q4-365-g898576f04 bash -c 'cd /OpenROAD-flow-scripts/flow/scripts; tail -15 abc_speed.script; echo ===; cat abc_retime.script; echo ===; cat synth_wrap_operators.tcl \|  ...` |
+| 2026-11-08 02:42:48 UTC | Bash | `cat > submission/scripts/abc_speed.script <<'EOF' &get -n &st &dch &nf &st &syn2 &if -g -K 6 &synch2 &nf &st &syn2 &if -g -K 6 &synch2 &nf &put buffer -c topo stime -c upsize -c dnsize -c EOF python3  ...` |
