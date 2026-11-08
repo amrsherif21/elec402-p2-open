@@ -334,3 +334,13 @@
 | 2026-11-08 08:00:26 UTC | Bash | `cp build/exp/ranks.tcl submission/scripts/ranks.tcl && sed -i '1s/.*/# ranks.tcl -- flop count and worst setup slack at D per register group (Q-net name). env: LIB NETLIST PERIOD/' submission/scripts/ ...` |
 | 2026-11-08 08:01:20 UTC | Agent | `800MHz: bit-level Dadda tree` |
 | 2026-11-08 08:01:20 UTC | Agent | `800MHz: cuts + final adder` |
+| 2026-11-08 08:01:22 UTC | Bash | `sed -n '/^## 3/,/^## 7/p' SPEC.md \| head -300; ls build/ build/cand_dadda submission/rtl_800 submission/scripts` |
+| 2026-11-08 08:01:22 UTC | Bash | `sed -n '/^## 3/,/^## 7/p' SPEC.md \| head -250; wc -l submission/rtl_800/*.sv; ls build/ \| head` |
+| 2026-11-08 08:01:24 UTC | Bash | `cat submission/rtl_800/mult_pipe.sv; cat submission/rtl_800/mkMultBuff.sv \| head -80` |
+| 2026-11-08 08:01:25 UTC | Bash | `cat submission/rtl_800/mkMultBuff.sv submission/rtl_800/mult_pipe.sv` |
+| 2026-11-08 08:01:25 UTC | Bash | `cat submission/scripts/eval_candidate.sh; grep -n "Checkpoint 3" -A80 notes/WORKLOG.md \| head -160` |
+| 2026-11-08 08:01:25 UTC | Bash | `sed -n 80,200p submission/rtl_800/mkMultBuff.sv; cat submission/scripts/eval_candidate.sh; grep -n "Checkpoint 3" -A80 notes/WORKLOG.md \| head -150` |
+| 2026-11-08 08:01:28 UTC | Bash | `wc -l build/cand_dadda/gen2.py && sed -n 1,200p build/cand_dadda/gen2.py; ls build/cand_dadda/v6; ls build/cand800b 2>/dev/null; git log --oneline \| head -5` |
+| 2026-11-08 08:01:28 UTC | Bash | `sed -n '170,400p' notes/WORKLOG.md \| head -120; ls build/cand800a 2>/dev/null; git log --oneline \| head -5; cat submission/scripts/ranks.tcl \| head -40` |
+| 2026-11-08 08:01:42 UTC | Bash | `docker run --rm -v $PWD:$PWD -w $PWD -e LIB=tech/NangateOpenCellLibrary_slow.lib -e NETLIST=submission/outputs/mkMultBuff_400_map.v -e PERIOD=2.5 --entrypoint /OpenSTA/build/sta openroad/opensta@sha25 ...` |
+| 2026-11-08 08:02:44 UTC | Bash | `export ABC_DRIVER=BUF_X1 ABC_LOAD=1.0 DONT_USE="OAI33_* NOR3_* NOR4_* OR3_* OR4_* AND4_* NAND4_* AOI211_* AOI221_* AOI222_* OAI211_* OAI221_* OAI222_* MUX2_*"; for n in p1c2 p1c4 p0c4; do bash submiss ...` |
