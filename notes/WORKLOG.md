@@ -257,3 +257,50 @@ RTL untouched.
 **Build fixes.**
 - The first rebuild failed silently. LaTeX could not render "≈" (U+2248), and `| tail -1` hid the error, so the old PDF stayed in place. "≈" and "…" are now declared in the header.
 - `token_usage.py` now labels subagents by their task description from `*.meta.json` and states the model once.
+
+## Round 3: minimum flops (RTL optimisation)
+
+**Merge** of `origin/main` (e1b93d2), which changed SPEC Section 5 and CLAUDE Section 4:
+- the 5 % slack target must also hold in sign-off, and slack beyond it is worth nothing;
+- area and power are judged on the GPDK045 sign-off results (vectorless power);
+- candidates may be submitted to sign-off (about 3 min each, one at a time).
+
+Consequence: the cost to minimise is flops and cells in the RTL itself. Sign-off synthesises the RTL with its own tool, so our ABC/Resizer knobs only matter for meeting slack in our flow.
+
+**Tooling.**
+- `submission/scripts/eval_candidate.sh RUN RTL_DIR WORK` runs check, synth, sim and power on one candidate and prints slack, area seq/comb, flops, vectorless and activity power, and flops and slack per register group (`submission/scripts/ranks.tcl`). One run takes about 35 s.
+- Baseline 800 MHz per group:
+
+  | group | flops | slack |
+  |---|---:|---:|
+  | operand + digits | 40 | |
+  | PP | 144 | 0.166 |
+  | L1 | 117 | 0.368 |
+  | L2+3 | 76 | 0.075 |
+  | g/p | ≈60 | |
+  | csel A | ≈64 | |
+  | product | 32 | 0.079 |
+  | control | ≈44 | |
+
+**400 MHz experiments (mine)**, `build/cand400/`. 800 MHz mapping knobs (BUF_X1 driver, 1 fF load, dont-use list) unless noted.
+
+| candidate | ranks | flops | WNS ns | area (seq/comb) µm² | vectorless µW | activity run/fill/drain µW |
+|---|---|---:|---:|---|---:|---|
+| current (Booth digits, CS after L2, product) | 3 | 166 | +0.224 | 2547 (751/1797) | 664.5 | 677/1566/434 |
+| digits, CS after L4 (2 rows, 59 b), product **(p1c4)** | 3 | 149 | +0.207 | 2518 (674/1844) | 663.2 | 659/1607/398 |
+| raw operands (recode after reg), CS after L4 (p0c4) | 3 | 141 | +0.110 (+0.073/+0.083 with other knobs) | 3165 (638/2528) | 746.9 | 765/2084/394 |
+| p1c4 / p0c4 with the old 400 knobs | 3 | 149 / 141 | −0.035 / −0.269 | 2341 / 3550 | | |
+| 2 ranks: no operand register, CS after L2 (r2c0100) | 2 | 125 | −0.314 | 2737 (566/2171) | 800.0 | 882/1629/349 |
+| 2 ranks: no operand register, CS after L3 | 2 | 139 | −1.100 | 2844 | | |
+
+Notes on these results:
+- 2 ranks with operands and product only is the one-stage multiplier: −1.469 ns (see the timing_fail variant).
+- The 2-rank designs with logic before the first register fail because the input port, modelled as a DFF_X1 driver, drives 37 loads (0.83 ns) and the product stage also misses (−0.155 ns).
+- Decision for 400: **p1c4**. The only internal cut is at the narrowest cutset that meets the target (2 carry-save rows, 59 bits), saving 17 flops. Recoding after the register would save another 8 but misses 125 ps in our flow. The 400 knobs in the Makefile change to the 800 knobs.
+
+**Parallel workers (subagents), one flow each:**
+- (a) 800 MHz cut placement and final-adder comparison on the row tree;
+- (b) 800 MHz bit-level Dadda/Wallace tree on the Booth PPs, plus 400;
+- (c) clock-gating feasibility on p1c4.
+
+**References** were checked before citing (`notes/REFERENCES_CHECK.md`). Harris's taxonomy page range could not be confirmed, so it is cited without pages.
