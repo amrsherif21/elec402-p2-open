@@ -743,3 +743,10 @@
 | 2026-11-08 18:18:59 UTC | Bash | `for v in "f8p\|--gp gt" "f8pc\|--gp cpa"; do IFS='\|' read -r n gp <<< "$v"; bash build/r4wal/run.sh 800 $n --mode wallace --rawlevels 3 --cuts 2,4 $gp --res-budget 0.66 --bpair --k0 8 --k 5 --pair-late  ...` |
 | 2026-11-08 18:19:39 UTC | Bash | `d=build/r4wal/f8p; M="RUN=800 RTL_DIR=$d/rtl BUILD=$d REP=$d/rep NETLIST=$d/map.v SDF=$d/map.sdf"; make -s timing $M 2>&1 \| grep -E "^ALL PASS\|TIMING FAIL" \| head -1; make -s f14 $M 2>&1 \| tail -1; SP ...` |
 | 2026-11-08 18:22:26 UTC | Bash | `cat >> notes/WORKLOG.md <<'EOF' **Sign-off of r4-wal, r4-walp, r4-c2a** (all pass SDF simulation). Area in µm², power in µW (vectorless); "A×P" is area × power relative to e18. \| design \| flops \| sign ...` |
+| 2026-11-08 18:22:45 UTC | Bash | `cp build/r4wal/gen_tree.py submission/scripts/gen_tree.py && grep -n "build/r4wal\\|build/cand800b" submission/scripts/gen_tree.py \| head; cat build/r4wal/a4_np/args.txt build/r4wal/f8p/args.txt; mkdir ...` |
+| 2026-11-08 18:22:49 UTC | Bash | `sed -n 30,50p submission/scripts/gen_tree.py` |
+| 2026-11-08 18:22:57 UTC | Bash | `python3 - <<'EOF' p='submission/scripts/gen_tree.py' s=open(p).read() a=s.index('usage: gen_tree.py OUT.sv [options]') b=s.index('Delay model (model ns)') s=s[:a]+'''usage: gen_tree.py OUT.sv [options ...` |
+| 2026-11-08 18:23:21 UTC | Bash | `sed -i '0,/bit-level Wallace column compression and a pipelined/s//bit-level Wallace column compression and a one-stage/' submission/rtl_400/mkMultBuff.sv && sed -n 5,6p submission/rtl_400/mkMultBuff. ...` |
+| 2026-11-08 18:23:25 UTC | Bash | `grep -n "cin\\|incr\\|blk" submission/rtl_800/mult_pipe.sv \| head -20` |
+| 2026-11-08 18:23:28 UTC | Bash | `grep -n "assign" submission/rtl_800/mult_pipe.sv \| tail -30 \| head -30` |
+| 2026-11-08 18:23:30 UTC | Bash | `sed -n 840,881p submission/rtl_800/mult_pipe.sv \| head -40` |
