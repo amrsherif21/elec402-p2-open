@@ -94,3 +94,6 @@
 | 2026-11-08 02:57:46 UTC | Bash | `head -20 submission/outputs/mkMultBuff_400_map.sdf; grep -m3 IOPATH submission/outputs/mkMultBuff_400_map.sdf; grep -c INTERCONNECT submission/outputs/mkMultBuff_400_map.sdf; grep -m2 -A3 TIMINGCHECK  ...` |
 | 2026-11-08 02:58:03 UTC | Bash | `cd /tmp/claude-0/probe/tc && cat > s.v <<'EOF' 'timescale 1ns/1ps module top(input A, output Z); BUF_X1 u(.A(A),.Z(Z)); endmodule module t; reg A=0; wire Z; top dut(.A(A),.Z(Z)); initial begin $sdf_an ...` |
 | 2026-11-08 02:58:19 UTC | Bash | `cat > submission/scripts/sdf_typmax.py <<'EOF' #!/usr/bin/env python3 """sdf_typmax.py IN OUT -- copy an SDF file, replacing the 'typ' entry of every (min:typ:max) triple by 'max'. Icarus Verilog anno ...` |
+| 2026-11-08 02:59:09 UTC | Bash | `mkdir -p submission/testbench/timing_fail/rtl_onestage && sed 's/localparam bit \[3:0\] CSA_REG = 4'"'"'b0100;/localparam bit [3:0] CSA_REG = 4'"'"'b0000; \/\/ TIMING-FAIL VARIANT: no carry-save regis ...` |
+| 2026-11-08 02:59:16 UTC | Bash | `printf "help read_vcd\nhelp report_power\nhelp read_saif\nhelp set_power_activity\n" > build/h.tcl && docker run --rm -v $PWD:$PWD -w $PWD --entrypoint /OpenSTA/build/sta openroad/opensta@sha256:4162b ...` |
+| 2026-11-08 02:59:40 UTC | Write | `/home/user/elec402-p2-open/submission/scripts/power.tcl` |
