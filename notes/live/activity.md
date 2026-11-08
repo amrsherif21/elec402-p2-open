@@ -42,3 +42,8 @@
 | 2026-11-08 02:42:22 UTC | Bash | `docker run --rm openroad/orfs:26Q4-365-g898576f04 bash -c 'cd /OpenROAD-flow-scripts/flow/scripts; ls; cat abc_speed*.script 2>/dev/null \| head -40; grep -n -i "abc\\|booth\\|adder\\|lcu\\|kogge\\|han-carl ...` |
 | 2026-11-08 02:42:26 UTC | Bash | `docker run --rm openroad/orfs:26Q4-365-g898576f04 bash -c 'cd /OpenROAD-flow-scripts/flow/scripts; tail -15 abc_speed.script; echo ===; cat abc_retime.script; echo ===; cat synth_wrap_operators.tcl \|  ...` |
 | 2026-11-08 02:42:48 UTC | Bash | `cat > submission/scripts/abc_speed.script <<'EOF' &get -n &st &dch &nf &st &syn2 &if -g -K 6 &synch2 &nf &st &syn2 &if -g -K 6 &synch2 &nf &put buffer -c topo stime -c upsize -c dnsize -c EOF python3  ...` |
+| 2026-11-08 02:42:54 UTC | Bash | `grep "Chip area" submission/syn_reports/400/area.rpt; awk '/^Startpoint/{n++} n==1' submission/syn_reports/400/sta.rpt \| grep -E "\^\|v " \| awk '{print $NF, $(NF-1), $(NF-3), $1, $2}' \| head -60 \| colu ...` |
+| 2026-11-08 02:42:57 UTC | Bash | `awk '/^Startpoint/{n++} n==1' submission/syn_reports/400/sta.rpt \| grep -E "/(Z\|ZN\|Q\|S\|CO) " \| awk '{printf "%s %s fo=%s cap=%s d=%s t=%s\n",$(NF-1),$NF,$1,$2,$4,$5}' \| head -40` |
+| 2026-11-08 02:43:20 UTC | Write | `/home/user/elec402-p2-open/submission/testbench/rtl_checker.sv` |
+| 2026-11-08 02:43:37 UTC | Bash | `mkdir -p build/exp && cat > build/exp/rsz.tcl <<'EOF' read_lef /OpenROAD-flow-scripts/flow/platforms/nangate45/lef/NangateOpenCellLibrary.tech.lef read_lef /OpenROAD-flow-scripts/flow/platforms/nangat ...` |
+| 2026-11-08 02:44:05 UTC | Bash | `sed -n 570,584p submission/testbench/rtl_checker.sv` |
