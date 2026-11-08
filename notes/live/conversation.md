@@ -1,6 +1,6 @@
 # Session record
 
-Rendered 2026-11-08 07:03:41 UTC from the Claude Code transcript.
+Rendered 2026-11-08 07:05:25 UTC from the Claude Code transcript.
 
 ### Prompt, 2026-11-08 02:33:34
 
@@ -1727,3 +1727,15 @@ While you’re in there, make the report more concise and clear. It should open 
 When you’re done, rebuild the PDF, update the WORKLOG and the token usage, then commit and push.
 
 - `Bash` git status --short | head; git fetch -q origin check-results && git ls-tree -r --name-only origin/check-results | head -30; git log --oneline -3 origin/check-results
+  - result: README.md results/check_400-60ed005585/scorecard.md results/check_800-b6917e9eb1/scorecard.md c5544f3 Remove the repeated index row 2fc3572 Results for check_800-b6917e9eb1 771fbd3 Results for check_400-60ed005585, check_800-b6917e9eb1
+
+- `Bash` git show origin/check-results:README.md; echo =====; git show origin/check-results:results/check_400-60ed005585/scorecard.md; echo =====; git show origin/check-results:results/check_800-b6917e9eb1/sco ...
+  - result: # Sign-off results | Check | Commit | Scorecard | |---|---|---| | check_400-60ed005585 | '60ed0055857b' | [scorecard](results/check_400-60ed005585/scorecard.md) | | check_800-b6917e9eb1 | 'b6917e9eb1c8' | [scorecard](results/check_800-b6917e9eb1/scorecard.md) | ===== # Sign-off check check/400 Commit '60ed0055857b', checked 2026-11-08 06:37 UTC. Each implementation is synthesized with the GPDK045  ...
+
+#### Reasoning, 2026-11-08 07:04:11
+
+> The scorecards are on `check-results` and both GPDK045 runs pass. I'm measuring the main-text length now so the report draft can be checked against the roughly 2,900-word target.
+
+- `Bash` python3 - <<'EOF' s=open('build/report/report.md').read() main=s[s.index('# Results at a glance'):s.index('# References')] print(len(main.split())) EOF
+  - result: 5650
+
