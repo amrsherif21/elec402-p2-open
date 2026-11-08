@@ -1,6 +1,6 @@
 # Session record
 
-Rendered 2026-11-08 08:20:49 UTC from the Claude Code transcript.
+Rendered 2026-11-08 08:21:10 UTC from the Claude Code transcript.
 
 ### Prompt, 2026-11-08 02:33:34
 
@@ -2207,3 +2207,20 @@ Checking whether the 400 MHz sign-off result has arrived.
 > Sign-off confirms the 149-flop candidate beats the previous design on area (−3.8 %), power (−2.7 %) and worst slack (441 ps against 156 ps), with all 1204 SDF products passing. I'm sending e18 to sign-off paired with that candidate next, while the Dadda worker runs.
 
 - `Bash` ls build/cand800a/e18_gt0/rtl/ && wc -l build/cand800a/e18_gt0/rtl/*.sv && SP=/tmp/claude-0/-home-user-elec402-p2-open/6503db16-82a0-5ee1-9a2e-83eb2b44d2ca/scratchpad && cd $SP/wt_c400 && git rm -q su ...
+  - result: mkMultBuff.sv mult_pipe.sv 140 build/cand800a/e18_gt0/rtl/mkMultBuff.sv 385 build/cand800a/e18_gt0/rtl/mult_pipe.sv 525 total remote: 89c8d99 Sign-off candidate: 800 MHz e18 (6 ranks, 442 flops) + 400 MHz p1c4 Shell cwd was reset to /home/user/elec402-p2-open
+
+- `Bash` cat >> notes/WORKLOG.md <<'EOF' **Sign-off of the 400 MHz candidate p1c4** ('check/c400-p1c4', 0fbf037, checked 08:19 UTC). Against the previous design: | | previous | p1c4 | |---|---|---| | WNS | 156 ...
+  - result: 0
+
+### Agent, 2026-11-08 08:21:08
+
+I've sent the best 800 MHz candidate, e18, to sign-off as `check/c800-e18`, paired with the 149-flop 400 MHz design. It has 442 flops (down from 577) and +0.129 ns of slack in our flow.
+
+The 400 MHz design is settled. In sign-off it improves area to 2648.1 µm² (−3.8 %) and power to 218.6 µW (−2.7 %), with 441 ps of slack against the 125 ps target.
+
+Still pending:
+- **e18's sign-off scorecard**, which decides whether it also beats the old 800 MHz design on the judged area and power.
+- **The Dadda-tree worker**, still running. Its bit-level reduction may cut the flops in the carry-save ranks further.
+
+When both are in, I'll pick the final 800 MHz design and move it into `submission/`. Work-log entries are committed and pushed.
+

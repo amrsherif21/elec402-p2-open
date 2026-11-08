@@ -473,3 +473,6 @@
 | 2026-11-08 08:20:31 UTC | SubagentHandback | `{"message": "The best configuration is **e18: 442 flops (down from 577, -23%) at WNS +0.129 ns**, with check, sim, SDF timing sim (384/384) and F14 (442/442) all passing. It has 6 ranks instead of 7.\ ...` |
 | 2026-11-08 08:20:37 UTC | Bash | `git fetch -q origin check-results && git ls-tree --name-only origin/check-results results/ ; for d in $(git ls-tree --name-only origin/check-results results/ \| grep c400); do git show origin/check-res ...` |
 | 2026-11-08 08:20:49 UTC | Bash | `ls build/cand800a/e18_gt0/rtl/ && wc -l build/cand800a/e18_gt0/rtl/*.sv && SP=/tmp/claude-0/-home-user-elec402-p2-open/6503db16-82a0-5ee1-9a2e-83eb2b44d2ca/scratchpad && cd $SP/wt_c400 && git rm -q su ...` |
+| 2026-11-08 08:20:55 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800b && ./run.sh 800 w24gt5 --mode wallace --cuts 2,4 --gp gt --k0 8 --k 5 2>&1 \| tail -22` |
+| 2026-11-08 08:20:57 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800b && sed -n 1,38p w24gt5/rep/sta.rpt \| grep -v "^ *0\.[0-9]* *0.000"` |
+| 2026-11-08 08:21:04 UTC | Bash | `cat >> notes/WORKLOG.md <<'EOF' **Sign-off of the 400 MHz candidate p1c4** ('check/c400-p1c4', 0fbf037, checked 08:19 UTC). Against the previous design: \| \| previous \| p1c4 \| \|---\|---\|---\| \| WNS \| 156 ...` |
