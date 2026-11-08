@@ -363,3 +363,7 @@
 | 2026-11-08 08:05:48 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800a/src && python3 - <<'EOF' src = open('mult_pipe.sv').read() # 1. header params src = src.replace(""" parameter int CSW = 8, parameter bit GP4 = 1'b0 ) (""", ...` |
 | 2026-11-08 08:06:02 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800a/src && sed -i 's/for (genvar k = 0; k < CSW; k++)/for (k = 0; k < CSW; k++)/; s/^ genvar i;$/ genvar i, k;/' mult_pipe.sv && grep -n "genvar" mult_pipe.sv  ...` |
 | 2026-11-08 08:06:14 UTC | Bash | `cat > /home/user/elec402-p2-open/build/cand800a/rk.py <<'EOF' import sys, re # summarise ranks.rpt per pipeline rank: flops, worst slack b = {} order = ['R1op','PP','L1','L2','L3','GP','ADD','PROD','C ...` |
+| 2026-11-08 08:06:18 UTC | Bash | `export ABC_DRIVER=BUF_X1 ABC_LOAD=1.0; for v in "m25\|OAI33_* NOR3_* NOR4_* OR3_* OR4_* AND4_* NAND4_* AOI211_* AOI221_* AOI222_* OAI211_* OAI221_* OAI222_* MUX2_*\|0.25" "du2\|OAI33_* NOR3_* NOR4_* OR3_ ...` |
+| 2026-11-08 08:06:47 UTC | Bash | `echo 'python3 build/cand800a/rk.py $D/rep/ranks.rpt \| tee -a $D/summary.txt' >> build/cand800a/mk.sh && build/cand800a/mk.sh e1_ks1 CPA=2 PFX=0 GT=1"'"b1` |
+| 2026-11-08 08:06:50 UTC | Bash | `awk '/^Startpoint/{n++} n==1' build/cand800a/e1_ks1/rep/sta.rpt \| grep -E "\^\|v " \| head -30` |
+| 2026-11-08 08:07:17 UTC | Agent | `Clock-gating feasibility study` |
