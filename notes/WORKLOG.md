@@ -450,3 +450,24 @@ The user's review asked for the following.
 **Workers, one flow each:**
 - (a) the row-tree 800 MHz design, items 1, 2 and 4, in `build/r4row/`;
 - (b) the Wallace generator, items 1–4 at 800 and 400 MHz, in `build/r4wal/`.
+
+**Worker (a), row tree at 800 MHz** (`build/r4row/`; Docker had to be restarted after a host reboot).
+
+| cand | change | flops (R1/R2/R3/R4/R5/R6/ctrl) | total | area tot/seq/comb µm² | vectorless µW; run/fill/drain | WNS ns |
+|---|---|---|---|---|---|---|
+| base | final round 3 | 40/144/92/60/43/32/31 | 442 | 4017.9/2000.9/2017.1 | 2186.6; 2491.9/4530.0/1945.6 | +0.140 |
+| c1 | no product register (LAT 5) | 40/144/92/60/43/–/30 | 409 | 3894.2 | 2063.1 | −0.036 |
+| c3a | c1 + blocks 11/7/7/7 | R5 37 | 403 | 4002.0 | 2071.5 | −0.082 |
+| c1d | c1 + first block-carry prefix level moved into stage A (BPA) | R5 42 | 408 | 3909.1 | 2072.2 | +0.101 |
+| c2a | base + R2 reset via Booth digits (DRST) | as base | 442 | 4046.9 | 2206.1 | +0.145 |
+| **c2** | c1d + DRST | 40/144/92/60/42/–/30 | **408** | **3896.9/1847.1/2049.8** | **2078.9; 2381.1/4485.0/1805.9** | **+0.111** |
+| c3b | c2 + low 8 columns resolved before R4 | 405 | 405 | 3986.3 | 2077.8 | −0.134 |
+| c3c | base + CI1=0 | 437 | 437 | 4122.2 | 2188.6 | −0.065 |
+| c4 | c2 + PRE_ENC=0 | R1 32 | 400 | 4420.7 | 2213.6 | −0.027 |
+
+Notes on these results:
+- Without the product register, writeMem_val is driven by stage B's last XOR into the 23.5 fF port: −0.036 ns. Moving one block-carry prefix level into stage A fixes it, and the worst port has +0.128 ns.
+- DRST is neutral in our flow, because ABC already folds RST_N into the selection gates. In generic gates it saves about 380 (mult_pipe 2568 → 2187).
+- Arrival-sized blocks, the low-column resolve and CI1=0 all fail timing. PRE_ENC=0 fails timing (−0.027 ns) and adds 524 µm², so no sign-off run was made for it.
+- c2 passes check, sim, SDF timing (ALL PASS) and F14 (408/408).
+- c2 was submitted to sign-off as `check/r4-c2` (6e26303), paired with the unchanged 400 MHz design.
