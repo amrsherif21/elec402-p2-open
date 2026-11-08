@@ -1,0 +1,16 @@
+digraph fsm {
+  rankdir=LR; bgcolor=white; fontname="Helvetica";
+  node [shape=circle, fontname="Helvetica", fontsize=11, width=1.6, fixedsize=true];
+  edge [fontname="Helvetica", fontsize=9];
+  rst [shape=point, width=0.12];
+  FILL  [label="FILL\nRDY_mult=1\nRDY_blockRead=0"];
+  WAIT  [label="WAIT\nRDY_mult=0\nRDY_blockRead=0"];
+  DRAIN [label="DRAIN\nRDY_mult=0\nRDY_blockRead=1"];
+  rst -> FILL [label="RST_N=0\n(from any state)"];
+  FILL -> FILL [label="accept & acc_q<63\n/ acc_q++"];
+  FILL -> WAIT [label="accept & acc_q=63\n/ acc_q:=0"];
+  WAIT -> WAIT [label="write & wp<63"];
+  WAIT -> DRAIN [label="write & wp=63\n(EN_writeMem, addr 63)"];
+  DRAIN -> DRAIN [label="read & rp<63\n/ rp++"];
+  DRAIN -> FILL [label="read & rp=63\n(accepted read of addr 63)"];
+}
