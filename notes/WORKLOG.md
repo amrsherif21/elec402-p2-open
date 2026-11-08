@@ -210,3 +210,11 @@ At the first measurement (03:40) the total was 279 responses and $24.72. The fin
 **Sign-off service.** `check/400` (60ed005) and `check/800` (b6917e9) were pushed at about 03:02 and 03:27. Repeated `git fetch origin check-results` returned "couldn't find remote ref", and `git ls-remote` shows no such branch, so no scorecard was available while the report was being built. The report states this and lists the differences to expect.
 
 **Fresh-clone rerun.** The script is in the scratchpad (`fresh.sh`). It clones the pushed branch, runs `install.sh`, `make synth check sim timing power f14` for both RUNs, `make timing_fail` for both, and the mutation tests, then reports `git status` and diffs the netlists against the committed ones. The result is recorded below.
+
+**Fresh-clone rerun result** (`submission/scripts/fresh_clone_rerun.sh`, log `submission/syn_reports/fresh_clone_rerun.log`).
+- *Run:* the clone of 8f205c3 ran from 03:34:16 to 03:36:14, with install.sh and the Docker images already cached.
+- *Both RUNs reproduce the committed results exactly:*
+  - 400 MHz: +0.152 ns, 2386.552 µm², power 652.53 / 642.80 / 1480.10 / 430.37 µW;
+  - 800 MHz: +0.075 ns, 4755.016 µm², 2727.60 / 3073.10 / 5209.50 / 2535.60 µW;
+  - check, sim and timing all ALL PASS; F14 166/166 and 577/577; timing_fail TIMING FAIL for both; mutants 11/11 and 13/13.
+- *`git status` after the run:* only logs changed (synth.log, resize.log and the tool_versions.txt date). Netlists, SDF and reports are byte-identical.
