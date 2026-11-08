@@ -1,6 +1,6 @@
 # Session record
 
-Rendered 2026-11-08 08:08:29 UTC from the Claude Code transcript.
+Rendered 2026-11-08 08:08:52 UTC from the Claude Code transcript.
 
 ### Prompt, 2026-11-08 02:33:34
 
@@ -2027,4 +2027,36 @@ Everything else checks out: MacSorley, Wallace, Dadda, Kogge-Stone and Baugh-Woo
 
 - `Write` /home/user/elec402-p2-open/notes/REFERENCES_CHECK.md
   - result: File created successfully at: /home/user/elec402-p2-open/notes/REFERENCES_CHECK.md (file state is current in your context — no need to Read it back)
+
+### Agent, 2026-11-08 08:08:20
+
+While the subagents work, I'm logging this round's decisions and the 400 MHz results so far.
+
+- `Bash` git log --oneline -1 && cat >> notes/WORKLOG.md <<'EOF' ## Round 3: minimum flops (RTL optimisation) **Merge** of 'origin/main' (e1b93d2), which changed SPEC Section 5 and CLAUDE Section 4: - the 5 % ...
+  - result: 82a3a02 Merge remote-tracking branch 'origin/main' into claude/focused-dijkstra-3f079i ok
+
+- `Bash` git add -A notes submission/scripts && git commit -q -m "Round 3: candidate evaluation script, per-rank report, 400 MHz exploration log, reference check Co-Authored-By: Claude Opus 5.5 <noreply@anthro ...
+  - result: 0
+
+### Agent, 2026-11-08 08:08:49
+
+The three-rank 400 MHz design meets the 125 ps target with 149 flops, down from 166. The two-rank design does not meet timing in our flow (WNS −0.314 ns). Three subagents are still running: 800 MHz cut placement with the final adder, the bit-level Dadda/Wallace tree, and clock gating. Once they report, I'll pick a shortlist and run it through sign-off.
+
+**400 MHz.** I tried every rank count SPEC allows:
+
+| Design | Ranks | Flops | Slack in our flow (target +125 ps) |
+|---|---|---|---|
+| Current design | 3 | 166 | met |
+| Booth digits, one cut at 2 carry-save rows (59 bits), product | 3 | 149 | +207 ps |
+| Raw operands, recoding after the register | 3 | 141 | best +110 ps, misses |
+| No operand register, logic before the first register | 2 | 125 | −314 ps |
+| Operands + product only, no internal cut | 2 | — | −1469 ps |
+
+- **Recoding after the register:** it would save another 8 flops, but over three mapping settings it never got above +110 ps, so I dropped it.
+- **Two ranks:** the input pins drive 37 loads through the spec's weak driver model, which costs 0.83 ns before any logic, and the product stage misses as well.
+- **Mapping settings:** the 800 MHz mapping settings also work better at 400 MHz, so both frequencies will use them.
+
+**References.** I checked every reference against its bibliographic record before citing it. One page range, for Harris's prefix-network taxonomy, could not be confirmed, so the report will cite that paper by DOI without pages. The records are in `notes/REFERENCES_CHECK.md`.
+
+Main is merged, and the 400 MHz results and evaluation scripts are in `notes/WORKLOG.md`, committed and pushed.
 

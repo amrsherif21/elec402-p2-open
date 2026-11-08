@@ -390,3 +390,5 @@
 | 2026-11-08 08:08:03 UTC | WebSearch | `Kogge Stone 1973 "parallel algorithm for the efficient solution of a general class of recurrence equations" C-22 786-793; Baugh Wooley 1973 "two's complement parallel array multiplication algorithm" C ...` |
 | 2026-11-08 08:08:18 UTC | Write | `/home/user/elec402-p2-open/notes/REFERENCES_CHECK.md` |
 | 2026-11-08 08:08:29 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800a/src && python3 - <<'EOF' s = open('mult_pipe.sv').read() s = s.replace(""" parameter int PFX = 0 // CPA=2""", """ parameter bit CI1 = 1'b0, // CPA=1: also  ...` |
+| 2026-11-08 08:08:33 UTC | Bash | `git log --oneline -1 && cat >> notes/WORKLOG.md <<'EOF' ## Round 3: minimum flops (RTL optimisation) **Merge** of 'origin/main' (e1b93d2), which changed SPEC Section 5 and CLAUDE Section 4: - the 5 %  ...` |
+| 2026-11-08 08:08:42 UTC | Bash | `git add -A notes submission/scripts && git commit -q -m "Round 3: candidate evaluation script, per-rank report, 400 MHz exploration log, reference check Co-Authored-By: Claude Opus 5.5 <noreply@anthro ...` |
