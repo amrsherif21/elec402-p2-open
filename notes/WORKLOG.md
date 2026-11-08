@@ -407,3 +407,24 @@ The Wallace 800 MHz design probably loses on vectorless power because its bit-le
 | timing_fail | TIMING FAIL (−0.675 ns) | TIMING FAIL (−0.951 ns) |
 
 Waveforms were regenerated.
+
+**Final sign-off** (`check/final`, efbfecd, checked 09:06 UTC). Results are identical to the candidate checks.
+
+| | area | vectorless power | WNS | SDF simulation |
+|---|---|---|---|---|
+| 400 MHz | 2660.8 µm² | 215.2 µW | 203 ps | 1204/1204 |
+| 800 MHz | 4416.2 µm² | 829.7 µW | 158 ps | 1162/1162 |
+
+The informational check (the 400 MHz netlist at 1.25 ns) fails, as it should.
+
+Against the previous designs this is −3.3 % area and −4.2 % power at 400 MHz, and −22.2 % area and −26.0 % power at 800 MHz.
+
+**Report** rewritten for round 3 at the same length. New sections:
+- the cost model (cutset width, retiming and initial states);
+- the 400 MHz rank analysis and Wallace cutsets;
+- the 800 MHz rank and adder decisions;
+- a candidate table with the sign-off decision;
+- clock gating;
+- new datapath figures.
+
+New references (Parhi, Leiserson-Saxe, Touati-Brayton, Townsend et al., Harris, Han-Carlson, Sklansky, Brent-Kung) were checked first (`notes/REFERENCES_CHECK.md`).

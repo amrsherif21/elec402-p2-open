@@ -14,10 +14,10 @@ Two implementations of `mkMultBuff` were built, one for a 2.5 ns clock and one f
 | | 400 MHz (2.5 ns) | 800 MHz (1.25 ns) |
 |---------------------------------------|------------:|------------:|
 | Register ranks (latency) / flip-flops | 3 / 141 | 6 / 442 |
-| GPDK045 sign-off: area | S4A µm² | S8A µm² |
-| GPDK045 sign-off: power (vectorless) | S4P µW | S8P µW |
-| GPDK045 sign-off: worst slack (target) | S4W ps (125) | S8W ps (62) |
-| GPDK045 sign-off: SDF simulation | S4N products | S8N products |
+| GPDK045 sign-off: area | 2660.8 µm² | 4416.2 µm² |
+| GPDK045 sign-off: power (vectorless) | 215.2 µW | 829.7 µW |
+| GPDK045 sign-off: worst slack (target) | 203 ps (125) | 158 ps (62) |
+| GPDK045 sign-off: SDF simulation | 1204 of 1204 products | 1162 of 1162 products |
 | Previous design in sign-off: area / power | 2752.1 µm² / 224.6 µW | 5674.5 µm² / 1121.9 µW |
 | Nangate45: worst setup / hold slack | +0.263 / +0.061 ns | +0.140 / +0.041 ns |
 | Nangate45: cell area (sequential) | 2449.6 (637.6) µm² | 4017.9 (2000.9) µm² |
