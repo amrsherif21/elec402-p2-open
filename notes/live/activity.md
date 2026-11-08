@@ -580,3 +580,11 @@
 | 2026-11-08 17:44:18 UTC | Bash | `diff build/cand800b/top400.sv.in submission/rtl_400/mkMultBuff.sv; cat submission/rtl_800/mkMultBuff.sv; head -60 submission/rtl_800/mult_pipe.sv` |
 | 2026-11-08 17:44:23 UTC | Bash | `cat submission/scripts/eval_candidate.sh; ls build/cand800c; head -30 build/cand800c/combo/rtl/mkMultBuff.sv 2>/dev/null \| head -5; grep -n "^timing\\|^f14\\|^synth\\|docker\\|IMAGE\\|yosys" Makefile \| hea ...` |
 | 2026-11-08 17:44:26 UTC | Bash | `python3 - <<'EOF' p='notes/REFERENCES_CHECK.md' s=open(p).read() s=s.replace("\| N. H. E. Weste, D. M. Harris,","""\| V. G. Oklobdzija, D. Villeger, S. S. Liu, "A method for speed optimized partial prod ...` |
+| 2026-11-08 17:44:39 UTC | Bash | `cat build/cand800b/w24r3gt5re/gen.txt build/cand800b/w24r3gt5re/eval.txt; cat build/cand800b/w4r3cpa/gen.txt build/cand800b/w4r3cpa/eval.txt; cat submission/scripts/ranks.tcl` |
+| 2026-11-08 17:44:40 UTC | Bash | `cat submission/scripts/constraints.tcl; ls build/cand800a \| head -40; ls build/800; cat build/800/rep/ranks.rpt 2>/dev/null \| grep -v Warning` |
+| 2026-11-08 17:44:46 UTC | Bash | `mkdir -p build/r4row/base/rtl && cp submission/rtl_800/*.sv build/r4row/base/rtl/ && time bash submission/scripts/eval_candidate.sh 800 build/r4row/base/rtl build/r4row/base 2>&1 \| tail -30` |
+| 2026-11-08 17:44:49 UTC | Bash | `docker ps 2>&1 \| head; ls -la /var/run/docker.sock; pgrep -a dockerd; cat /home/user/elec402-p2-open/submission/scripts/install.sh \| grep -i -n docker \| head` |
+| 2026-11-08 17:44:51 UTC | Bash | `mkdir -p build/r4wal && cp submission/scripts/gen_tree.py build/r4wal/gen_tree.py && cp build/cand800b/tb_mult.sv build/r4wal/ && diff submission/scripts/gen_tree.py build/cand800b/gen_tree.py \| head; ...` |
+| 2026-11-08 17:44:53 UTC | Bash | `tail -5 /tmp/dockerd.log 2>/dev/null; id; uptime` |
+| 2026-11-08 17:45:07 UTC | Bash | `pgrep -a dockerd \|\| (dockerd >/tmp/dockerd.log 2>&1 &); sleep 8; docker info >/dev/null 2>&1 && echo OK; docker images \| head` |
+| 2026-11-08 17:45:45 UTC | Bash | `time bash submission/scripts/eval_candidate.sh 800 build/r4row/base/rtl build/r4row/base 2>&1 \| tail -30` |
