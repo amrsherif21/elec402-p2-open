@@ -1,6 +1,6 @@
 # Session record
 
-Rendered 2026-11-08 18:07:29 UTC from the Claude Code transcript.
+Rendered 2026-11-08 18:08:35 UTC from the Claude Code transcript.
 
 ### Prompt, 2026-11-08 02:33:34
 
@@ -2869,3 +2869,23 @@ The generic gate counts support your point: the Wallace multiplier has 13 % fewe
 It also found a real bug in my F14 check, which fails when a flip-flop's D pin connects to a named bus bit. That happens with the digit-gated reset, so the fix goes in first. Then this pair goes to sign-off.
 
 - `Bash` diff submission/scripts/f14_check.sh build/r4wal/f14_check_fix.sh
+  - result: 14c14 < nets = [re.search(r'\.D\(\s*([^)\s]+)\s*\)', d).group(1) for d in ds] --- > nets = [re.sub(r'\s+', '', re.search(r'\.D\(([^)]*)\)', d).group(1)) for d in ds]
+
+### Agent, 2026-11-08 18:07:35
+
+The fix is one line in the D-net parser. I'm applying it to the repository's F14 script and re-running the check on the current final designs, to make sure it still works there before relying on it.
+
+- `Bash` cp build/r4wal/f14_check_fix.sh submission/scripts/f14_check.sh && make f14 RUN=400 2>&1 | tail -1 && make f14 RUN=800 2>&1 | tail -1; ls build/r4wal/a4_np/rtl build/r4wal/e8rd/rtl
+  - result: F14CHECK: flops 141, reset-gated 141 (of which reset-to-1 1), NOT reset-gated 0: F14CHECK: flops 442, reset-gated 442 (of which reset-to-1 2), NOT reset-gated 0: build/r4wal/a4_np/rtl: mkMultBuff.sv mult_pipe.sv build/r4wal/e8rd/rtl: mkMultBuff.sv mult_pipe.sv
+
+- `Bash` SP=/tmp/claude-0/-home-user-elec402-p2-open/6503db16-82a0-5ee1-9a2e-83eb2b44d2ca/scratchpad && cd $SP/wt_c400 && git checkout -q -B cand/r4w origin/claude/focused-dijkstra-3f079i && cp /home/user/elec ...
+  - result: remote: c566db4 Sign-off candidate r4-wal: 400 MHz Wallace without product register (108 flops), 800 MHz Wallace e8rd (389 flops) results/check_r4-c2-6e26303c4c
+
+- `Bash` git show origin/check-results:results/check_r4-c2-6e26303c4c/scorecard.md | sed -n '3p;/^| GPDK/p;/^| Gate/p'
+  - result: Commit '6e26303c4c43', checked 2026-11-08 18:02 UTC. | GPDK045 static timing, 400 MHz at 2.5 ns | WNS 203 ps, meets the slack target (target 125 ps) | | GPDK045 cell area, 400 MHz | 2660.8 µm², within budget (limit 6000 µm²) | | GPDK045 power estimate, 400 MHz | 215.2 µW (vectorless) | | GPDK045 static timing, 800 MHz at 1.25 ns | WNS 109 ps, meets the slack target (target 62 ps) | | GPDK045 cell  ...
+
+#### Reasoning, 2026-11-08 18:08:35
+
+> The row-tree c2 variant came in at 4320.8 µm² and 988.2 µW with 109 ps slack, so removing the product register pushes power up 19% at 800 MHz. I'm now building two variants that keep the product register to separate the reset change from the Wallace comparison.
+
+- `Bash` ls build/r4row/ build/r4wal/ | head -60; sed -n 1,40p build/r4wal/run.sh
