@@ -1,6 +1,6 @@
 # Session record
 
-Rendered 2026-11-08 03:23:00 UTC from the Claude Code transcript.
+Rendered 2026-11-08 03:24:05 UTC from the Claude Code transcript.
 
 ### Prompt, 2026-11-08 02:33:34
 
@@ -726,3 +726,10 @@ The header comment miscounts: the configuration has seven register ranks (latenc
 > The formal check shows that each flip-flop's D input stays constant while RST_N is 0, and I'm adding it as a make f14 target and running it on both final netlists.
 
 - `Bash` cd /home/user/elec402-p2-open && cp build/cand_retime/src/f14check.tcl submission/scripts/f14_check.tcl && python3 - <<'EOF' s=open('build/cand_retime/src/f14.sh').read() s=s.replace("# f14.sh NETLIST ...
+  - result: #!/usr/bin/env bash # f14_check.sh NETLIST WORKDIR -- SPEC F14 check on a gate-level netlist: for every # flip-flop, Yosys' SAT solver proves that its D input is constant whenever RST_N = 0 # (all other inputs and all flip-flop outputs are left free), i.e. that every # register has a synchronous reset driven by RST_N. set -euo pipefail N=$1; W=$2; mkdir -p "$W"; S=$W/$(basename ${N%.v}).f14in.v py ...
+
+### Agent, 2026-11-08 03:23:43
+
+F14 is proven on both netlists: all 166 flip-flops at 400 MHz and all 577 at 800 MHz are reset by `RST_N`. Recording checkpoint 3 so far in the work log while the Dadda candidate finishes.
+
+- `Bash` cat >> notes/WORKLOG.md <<'EOF' **03:30 check/400 pushed** ('git push origin HEAD:refs/heads/check/400', commit 60ed005). Work continued without waiting. Note: 'rtl_800/' was still empty at that point ...

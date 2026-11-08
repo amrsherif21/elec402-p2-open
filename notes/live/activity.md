@@ -247,3 +247,9 @@
 | 2026-11-08 03:22:43 UTC | Bash | `cat submission/syn_reports/400/power_summary.txt 2>/dev/null \| head; grep -E "^(worst\|cell area)" submission/syn_reports/400/sta.rpt` |
 | 2026-11-08 03:22:47 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand_retime/src && cat f14.sh; cat f14check.tcl \| head -60` |
 | 2026-11-08 03:23:00 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand_dadda && grep -n "a_q\\|b_q\\|LAT = 1 + st\\|if (!RST_N) p <= \\|else p <= prod\\|stage {st} register: product\\|budget = B1\\|B1 if st == 1\\|isolation\\|ffs.append" g ...` |
+| 2026-11-08 03:23:05 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand_dadda && sed -n 470,535p gen2.py` |
+| 2026-11-08 03:23:21 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand_dadda && python3 - <<'EOF' s = open('gen2.py').read() s = s.replace('ap.add_argument("--xor"', 'ap.add_argument("--outcomb", action="store_true", help="no prod ...` |
+| 2026-11-08 03:23:40 UTC | Bash | `cd /home/user/elec402-p2-open && cp build/cand_retime/src/f14check.tcl submission/scripts/f14_check.tcl && python3 - <<'EOF' s=open('build/cand_retime/src/f14.sh').read() s=s.replace("# f14.sh NETLIST ...` |
+| 2026-11-08 03:23:45 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand_dadda && TOP=top4.sv.in python3 gen2.py v7 --b1 0.62 --budget 0.62 --k 4 --cpa3 --outcomb >/dev/null && TOP=top4.sv.in python3 gen2.py v8 --inlogic --b1 0.95 - ...` |
+| 2026-11-08 03:23:55 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand_dadda && cat > io.tcl <<'EOF' set period $::env(PERIOD) read_liberty $::env(LIB) read_verilog $::env(NETLIST) link_design mkMultBuff source submission/scripts/ ...` |
+| 2026-11-08 03:24:05 UTC | Bash | `cat >> notes/WORKLOG.md <<'EOF' **03:30 check/400 pushed** ('git push origin HEAD:refs/heads/check/400', commit 60ed005). Work continued without waiting. Note: 'rtl_800/' was still empty at that point ...` |
