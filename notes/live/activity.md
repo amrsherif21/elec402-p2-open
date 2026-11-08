@@ -563,3 +563,20 @@
 | 2026-11-08 17:43:46 UTC | Agent | `800MHz row tree: next reductions` |
 | 2026-11-08 17:43:49 UTC | Bash | `ls && ls submission submission/rtl_800 submission/scripts build/r4row 2>/dev/null \| head -50 && wc -l submission/rtl_800/* SPEC.md notes/WORKLOG.md` |
 | 2026-11-08 17:43:49 UTC | Bash | `ls && ls build/ && ls build/cand800b \| head -50 && wc -l submission/scripts/gen_tree.py SPEC.md notes/WORKLOG.md && ls submission/scripts submission/rtl_400 submission/rtl_800` |
+| 2026-11-08 17:43:55 UTC | Bash | `sed -n 1,205p SPEC.md` |
+| 2026-11-08 17:43:56 UTC | Bash | `sed -n 1,205p SPEC.md` |
+| 2026-11-08 17:43:56 UTC | Bash | `grep -n "Round 3" -A 200 notes/WORKLOG.md \| head -260` |
+| 2026-11-08 17:43:58 UTC | Bash | `grep -n "Round 3" -A200 notes/WORKLOG.md \| head -260` |
+| 2026-11-08 17:43:58 UTC | Bash | `cat submission/scripts/gen_tree.py` |
+| 2026-11-08 17:43:59 UTC | Bash | `git status --short \| head; git fetch -q origin && git log --oneline -3 origin/main; git log --oneline -2 origin/claude/focused-dijkstra-3f079i; git diff HEAD --stat \| tail -2` |
+| 2026-11-08 17:44:00 UTC | Bash | `cat submission/rtl_800/mkMultBuff.sv && cat submission/rtl_800/mult_pipe.sv` |
+| 2026-11-08 17:44:00 UTC | Bash | `sed -n 30,400p submission/scripts/gen_tree.py` |
+| 2026-11-08 17:44:02 UTC | Bash | `sed -n 400,712p submission/scripts/gen_tree.py` |
+| 2026-11-08 17:44:02 UTC | Bash | `cat submission/scripts/eval_candidate.sh; cat submission/scripts/ranks.tcl; ls build/ build/r4row 2>&1 \| head; git log --oneline \| head -5; git status --short \| head` |
+| 2026-11-08 17:44:04 UTC | Bash | `cat Makefile \| head -150; cat submission/scripts/f14_check.sh` |
+| 2026-11-08 17:44:08 UTC | Bash | `cat build/cand800b/run.sh; cat build/cand800b/tb_mult.sv; cat build/cand800b/top800.sv.in; diff build/cand800b/top800.sv.in build/cand800b/top400.sv.in; ls build/cand800b/w24r3gt5re build/cand800b/w24 ...` |
+| 2026-11-08 17:44:09 UTC | WebSearch | `Oklobdzija Villeger Liu "A method for speed optimized partial product reduction and generation of fast parallel multipliers using an algorithmic approach" IEEE Transactions on Computers 1996 45(3) 294 ...` |
+| 2026-11-08 17:44:09 UTC | WebSearch | `Reto Zimmermann "Binary Adder Architectures for Cell-Based VLSI and their Synthesis" ETH Zurich dissertation 1997 carry-increment` |
+| 2026-11-08 17:44:18 UTC | Bash | `diff build/cand800b/top400.sv.in submission/rtl_400/mkMultBuff.sv; cat submission/rtl_800/mkMultBuff.sv; head -60 submission/rtl_800/mult_pipe.sv` |
+| 2026-11-08 17:44:23 UTC | Bash | `cat submission/scripts/eval_candidate.sh; ls build/cand800c; head -30 build/cand800c/combo/rtl/mkMultBuff.sv 2>/dev/null \| head -5; grep -n "^timing\\|^f14\\|^synth\\|docker\\|IMAGE\\|yosys" Makefile \| hea ...` |
+| 2026-11-08 17:44:26 UTC | Bash | `python3 - <<'EOF' p='notes/REFERENCES_CHECK.md' s=open(p).read() s=s.replace("\| N. H. E. Weste, D. M. Harris,","""\| V. G. Oklobdzija, D. Villeger, S. S. Liu, "A method for speed optimized partial prod ...` |
