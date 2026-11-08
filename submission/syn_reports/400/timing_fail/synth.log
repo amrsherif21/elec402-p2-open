@@ -1279,6 +1279,6 @@ Found and reported 0 problems.
 Dumping module `\mkMultBuff'.
 
 Warnings: 2 unique messages, 4 total
-End of script. Logfile hash: 52799e736f, time: 2.09s, user: 0.41s, system: 0.07s, MEM: 47.14 MB peak
+End of script. Logfile hash: 52799e736f, time: 1.87s, user: 0.45s, system: 0.07s, MEM: 47.21 MB peak
 Yosys 0.68+post (git sha1 UNKNOWN, Release, GNU /usr/local/bin/wrapped-cc/g++ 15.2.0)
-Time spent: 79% 2x abc (1 sec), 4% 23x opt_clean (0 sec), ...
+Time spent: 75% 2x abc (1 sec), 5% 23x opt_clean (0 sec), ...

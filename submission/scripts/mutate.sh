@@ -37,7 +37,7 @@ mutants=(
   "assign memVal_data   = readMem_val;|assign memVal_data   = writeMem_val;|wrong data source"
   "assign EN_readMem    = rd;|assign EN_readMem    = rdy_rd_q;|EN_readMem held during drain"
   "wc_q <= (wp_q\[2:0\] == 3'd6);|wc_q <= (wp_q[2:0] == 3'd5);|write-pointer carry one step early"
-  "assign cin = {bgg\[NB-2:0\], 1'b0};|assign cin = {bgg[NB-2:0], 1'b1};|adder carry-in error (mult_pipe)"
+  "wire x786 = r5\[28\] ^ n785;|wire x786 = r5[28] ^ o739;|carry-increment error in the generated adder (mult_pipe)"
 )
 fi
 ok=0; tot=0

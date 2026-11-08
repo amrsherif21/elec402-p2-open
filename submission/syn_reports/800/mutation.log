@@ -10,5 +10,5 @@ mutant 9 (valid bit set by unaccepted pairs): FAIL 11023 check(s) failed
 mutant 10 (wrong data source): FAIL 1818 check(s) failed
 mutant 11 (EN_readMem held during drain): FAIL 2240 check(s) failed
 mutant 12 (write-pointer carry one step early): FAIL 259 check(s) failed
-mutant 13 (adder carry-in error (mult_pipe)): FAIL 1981 check(s) failed
+mutant 13 (carry-increment error in the generated adder (mult_pipe)): FAIL 340 check(s) failed
 killed 13 of 13 mutants

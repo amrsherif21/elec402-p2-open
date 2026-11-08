@@ -1,9 +1,9 @@
 WARNING: submission/testbench/sdf_checker_800.sv:82: $sdf_annotate currently only uses the first two argument.
-INFO t=11250 ps: latency measured from the first write = 3 cycles
+INFO t=10000 ps: latency measured from the first write = 2 cycles
 TIMING FAIL t=5087500 ps cycle=4070: phase 0: drain not completed (0 of 64 reads accepted)
 TIMING FAIL t=5087500 ps cycle=4070: 64 operand pairs accepted, expected 384
 TIMING FAIL t=5087500 ps cycle=4070: 0 products returned, 64 accepted
 
-==== mkMultBuff_sdf_checker_800 summary: period 1.250 ns, seed 402, latency 3, 4070 cycles, 64 accepted, 0 returned, 3 failure(s) ====
+==== mkMultBuff_sdf_checker_800 summary: period 1.250 ns, seed 402, latency 2, 4070 cycles, 64 accepted, 0 returned, 3 failure(s) ====
 TIMING FAIL: 3 failure(s)
 submission/testbench/sdf_checker_800.sv:289: $finish called at 5087500 (1ps)

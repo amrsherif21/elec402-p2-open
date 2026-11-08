@@ -1,39 +1,39 @@
-Annotated 5146 pin activities.
+Annotated 4804 pin activities.
 == power run: window whole run, VCD build/400/gate.vcd
 Group                  Internal  Switching    Leakage      Total
                           Power      Power      Power      Power (Watts)
 ----------------------------------------------------------------
-Sequential           3.0083e-04 2.8295e-05 7.5138e-06 3.3664e-04  52.2%
-Combinational        1.3286e-04 1.4622e-04 2.8987e-05 3.0807e-04  47.8%
+Sequential           2.2811e-04 1.7238e-05 5.7570e-06 2.5111e-04  45.9%
+Combinational        1.2169e-04 1.4749e-04 2.6537e-05 2.9572e-04  54.1%
 Clock                0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00   0.0%
 Macro                0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00   0.0%
 Pad                  0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00   0.0%
 ----------------------------------------------------------------
-Total                4.3369e-04 1.7452e-04 3.6501e-05 6.4471e-04 100.0%
-                          67.3%      27.1%       5.7%
-Annotated 5146 pin activities.
-== power fill: window 521250..681250 ps, VCD build/400/gate.vcd
+Total                3.4980e-04 1.6473e-04 3.2294e-05 5.4682e-04 100.0%
+                          64.0%      30.1%       5.9%
+Annotated 4804 pin activities.
+== power fill: window 571250..731250 ps, VCD build/400/gate.vcd
 Group                  Internal  Switching    Leakage      Total
                           Power      Power      Power      Power (Watts)
 ----------------------------------------------------------------
-Sequential           3.4663e-04 1.0725e-04 7.6576e-06 4.6153e-04  28.9%
-Combinational        5.2982e-04 5.7698e-04 3.1270e-05 1.1381e-03  71.1%
+Sequential           2.6510e-04 6.4182e-05 5.8635e-06 3.3515e-04  23.3%
+Combinational        4.8626e-04 5.8670e-04 2.8650e-05 1.1016e-03  76.7%
 Clock                0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00   0.0%
 Macro                0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00   0.0%
 Pad                  0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00   0.0%
 ----------------------------------------------------------------
-Total                8.7645e-04 6.8423e-04 3.8928e-05 1.5996e-03 100.0%
-                          54.8%      42.8%       2.4%
-Annotated 5146 pin activities.
-== power drain: window 688750..848750 ps, VCD build/400/gate.vcd
+Total                7.5136e-04 6.5089e-04 3.4513e-05 1.4368e-03 100.0%
+                          52.3%      45.3%       2.4%
+Annotated 4804 pin activities.
+== power drain: window 736250..896250 ps, VCD build/400/gate.vcd
 Group                  Internal  Switching    Leakage      Total
                           Power      Power      Power      Power (Watts)
 ----------------------------------------------------------------
-Sequential           3.1205e-04 2.1227e-05 7.4070e-06 3.4068e-04  89.7%
-Combinational        5.1805e-06 5.6930e-06 2.8403e-05 3.9277e-05  10.3%
+Sequential           2.3897e-04 2.0290e-05 5.6780e-06 2.6494e-04  87.1%
+Combinational        5.8597e-06 7.3900e-06 2.5961e-05 3.9210e-05  12.9%
 Clock                0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00   0.0%
 Macro                0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00   0.0%
 Pad                  0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00   0.0%
 ----------------------------------------------------------------
-Total                3.1723e-04 2.6920e-05 3.5810e-05 3.7996e-04 100.0%
-                          83.5%       7.1%       9.4%
+Total                2.4483e-04 2.7680e-05 3.1639e-05 3.0415e-04 100.0%
+                          80.5%       9.1%      10.4%

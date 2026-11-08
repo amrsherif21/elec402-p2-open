@@ -12,19 +12,35 @@ Datapath (every stage ends in a register rank):
   ... tree stages: column compression with full / half adders; the cut positions are
       either "after level k" (level-based Dadda / Wallace) or arrival-budget driven
   ... adder stages: carry-increment (default) or carry-select, then the product register
+      (with --noprod no product register: p is the combinational output of the last
+      adder stage; the top's valid shift register is then one rank shorter, LAT = ranks)
+Options added in round 4 (each unit-tested against a*b):
+  --noprod       drop the product register (writeMem_val combinational, SPEC F4 allows it)
+  --rst-digits   reset the R2 rank by ANDing the 24 Booth digit bits with RST_N instead of a
+                 reset term on each of its 144 flops (every R2 D is 0 while RST_N = 0)
+  --rawop        R1 holds the raw operands (32 flops), Booth recoding after the register
+  --blocks L     carry-increment / -select block sizes from the LSB end (overrides --k0/--k)
+  --res-cout     ripple resolution may stop part-way: its carry-out becomes the generate of
+                 the last resolved column in the final adder
+  --pair-late N  in the first N Wallace levels each full adder takes the two earliest bits
+                 and the latest one
+  --lvl-limit T  in a level before a mid-tree cut, skip full adders whose sum arrives after
+                 T if the column stays within --lvl-cap bits (keeps the level count)
 Sign extension: classic form, row 0 top bits {~s0, s0, s0}, rows i >= 1 {1, ~s_i}; the
 constant ones are tree inputs that are never registered.  Every register has a
 synchronous active-low reset.
 
 usage: gen_tree.py OUT.sv [options]   (prints a stage / cutset summary; --stats only
        prints the level statistics of Dadda and Wallace)
-  run.sh RUN NAME [options] generates NAME/rtl, unit-tests it (tb_mult.sv, 200k random +
-  corner operands) and runs submission/scripts/eval_candidate.sh.
-Best configurations found (see the per-candidate eval.txt):
-  800 MHz, 6 ranks, 431 flops, WNS +0.096 (w24r3gt5re):
-    --mode wallace --rawlevels 3 --cuts 2,4 --gp gt --k0 8 --k 5 --res-budget 0.66 --extra 0.72
-  400 MHz, 3 ranks, 141 flops, WNS +0.151 (w4r3cpa):
-    --mode wallace --rawlevels 3 --nosel --cuts 4 --gp cpa --cpa one --res-budget 1.9
+Final designs (submission/rtl_400, submission/rtl_800; see notes/WORKLOG.md, round 4):
+  400 MHz, 2 ranks, 108 flops (no product register):
+    --mode wallace --rawlevels 3 --nosel --cuts 4 --gp cpa --cpa one --res-budget 1.9 --noprod
+  800 MHz, 6 ranks, 422 flops (with product register):
+    --mode wallace --rawlevels 3 --cuts 2,4 --gp gt --res-budget 0.66 --bpair --k0 8 --k 5
+    --pair-late 2 --lvl-limit 0.66
+  Options evaluated and not used in the final designs: --rst-digits (reset the PP rank
+  through the Booth digits; cost sign-off slack and power), --noprod at 800 MHz (output
+  path upsized in sign-off), --blocks, --res-cout, --rawop.
 Delay model (model ns): XOR --dx, AND/OR --da; the level-based modes ignore it except for
 the input assignment (latest input on the fast input) and the optional extras.
 """
@@ -54,6 +70,25 @@ ap.add_argument("--nosel", action="store_true", help="no register after the Boot
 ap.add_argument("--sel-t", type=float, default=0.55, help="model arrival of the selected bits with --nosel")
 ap.add_argument("--extra", type=float, default=0.0, help="level mode: extra full adders on early bits before mid-tree cuts, up to this arrival")
 ap.add_argument("--extra-h", type=int, default=4, help="column height limit for --extra")
+ap.add_argument("--noprod", action="store_true",
+                help="no product register: p is the combinational output of the last adder stage")
+ap.add_argument("--rst-digits", action="store_true",
+                help="reset the selected-PP rank by gating the 24 Booth digit bits with RST_N")
+ap.add_argument("--blocks", default="",
+                help="carry-increment / -select block sizes from the LSB end, e.g. 8,6,5,4 (overrides --k0/--k)")
+ap.add_argument("--res-cout", action="store_true",
+                help="ripple resolution: when the carry chain would exceed the budget, stop it and keep its "
+                     "carry-out as a third bit of the next column (taken by the final adder as the "
+                     "generate of the column below, or reduced by the next tree levels)")
+ap.add_argument("--pair-late", type=int, default=0,
+                help="wallace: in the first N levels each full adder takes the two earliest bits "
+                     "and the latest one")
+ap.add_argument("--rawop", action="store_true",
+                help="R1 holds the raw operands (32 flops); the Booth recoding moves after it")
+ap.add_argument("--lvl-limit", type=float, default=0.0,
+                help="wallace: in a level followed by a cut, skip full adders whose sum would arrive "
+                     "after this (model ns) where the column stays within --lvl-cap bits")
+ap.add_argument("--lvl-cap", type=int, default=4)
 ap.add_argument("--stats", action="store_true")
 ap.add_argument("--tag", default="")
 args = ap.parse_args()
@@ -61,6 +96,7 @@ args = ap.parse_args()
 W = 32
 ONE, ZERO = "1'b1", "1'b0"
 DX, DA = args.dx, args.da
+PAIR_LATE = False   # set per level (--pair-late N)
 EPS = 1e-9
 CONST_T = -1.0
 
@@ -159,6 +195,11 @@ def register(name, exprs):
     return m, len(order)
 
 def reg_cols(name, cols):
+    import os
+    if os.environ.get("ARRDBG"):
+        from collections import Counter
+        print(name, "arrivals", sorted(Counter(round(b[1], 2) for c in cols for b in c).items()),
+              "per column max", [round(max([b[1] for b in c] + [-1]), 2) for c in cols], file=sys.stderr)
     m, n = register(name, [b[0] for c in cols for b in c])
     return [[(m[b[0]], 0.0 if not is_const(b[0]) else CONST_T) for b in c] for c in cols], n
 
@@ -204,14 +245,27 @@ def level_dadda(cols, d):
         out[c] += bits + carries[c]
     return out, nf, nh
 
-def level_wallace(cols, ha_min=WALLACE_HA_MIN):
+def level_wallace(cols, ha_min=WALLACE_HA_MIN, limit=None, cap=None):
+    """limit / cap: a full adder whose sum would arrive after limit is not built if the
+    column (its outputs so far, the bits left and the carries in) stays within cap bits"""
     out = [[] for _ in range(W)]
     carries = [[] for _ in range(W + 1)]
     nf = nh = 0
     for c in range(W):
         bits = sorted(cols[c], key=lambda b: b[1])
         while len(bits) >= 3:
-            s, cy = fa(bits[0], bits[1], bits[2]); bits = bits[3:]; nf += 1
+            late = PAIR_LATE and bits[-1][1] > bits[2][1] + EPS
+            tri = (bits[0], bits[1], bits[-1]) if late else (bits[0], bits[1], bits[2])
+            if limit is not None and not any(is_const(b_[0]) for b_ in tri):
+                ts = max(max(tri[0][1], tri[1][1]) + DX, tri[2][1]) + DX
+                if ts > limit + EPS and len(out[c]) + len(bits) + len(carries[c]) <= cap:
+                    break
+            if late:
+                # the latest bit with the two earliest: (early ^ early) ^ late
+                s, cy = fa(bits[0], bits[1], bits[-1]); bits = bits[2:-1]
+            else:
+                s, cy = fa(bits[0], bits[1], bits[2]); bits = bits[3:]
+            nf += 1
             out[c].append(s)
             if c + 1 < W: carries[c + 1].append(cy)
         if len(bits) == 2 and len(cols[c]) >= ha_min:
@@ -298,10 +352,12 @@ def fill_final(cols):
             if c + 1 < W: cols[c + 1].append(cy)
     return cols, nf, nh
 
-def ripple_low(cols, budget):
+def ripple_low(cols, budget, cout=False):
     """resolve the lowest columns (<= 2 bits each) to one bit with half / full adders
     while the outputs stay within the budget (a ripple-carry adder on the LSBs).
-    A step is kept only if it leaves no column with three bits."""
+    A step is kept only if it leaves no column with three bits; with cout, a chain that
+    runs out of budget is cut instead, its carry-out left as a third bit of the next
+    column (the lowest unresolved one), and the resolution stops there."""
     global net
     cols = [list(c) for c in cols]
     n = 0
@@ -313,7 +369,9 @@ def ripple_low(cols, budget):
         save_lines, save_n, save_fa, save_ha = len(net.lines), net.n, net.fa, net.ha
         tc = [list(x) for x in cols]
         k, ok, m = c, True, 0
+        step = (save_lines, save_n, save_fa, save_ha)
         while k < W:
+            step = (len(net.lines), net.n, net.fa, net.ha)
             bs = sorted(tc[k], key=lambda b: b[1])
             if len(bs) <= 2 and k > c:
                 break
@@ -329,6 +387,13 @@ def ripple_low(cols, budget):
             tc[k] = [s_]
             if k + 1 < W: tc[k + 1].append(cy)
             k += 1
+        if cout and not ok and k > c:
+            # keep the chain up to column k - 1; its carry is the third bit of column k
+            del net.lines[step[0]:]
+            net.n, net.fa, net.ha = step[1], step[2], step[3]
+            cols, n = tc, n + m - 1
+            c = k
+            break
         if not ok or m == 0 or (k < W and len(tc[k]) > 2 and not (k == c)):
             del net.lines[save_lines:]
             net.n, net.fa, net.ha = save_n, save_fa, save_ha
@@ -365,14 +430,24 @@ def emit_stage_comment(txt):
 summary = []
 # ---- R1 / S2 / R2
 emit_stage_comment("stage 2: Booth selection pp_i = ((one_i & a) | (two_i & 2a)) ^ neg_i")
+if args.rst_digits and not args.nosel:
+    # R2 reset by gating: with the digits forced to 0 every selected bit and every
+    # neg bit is 0, so each R2 flop's D is the constant 0 while RST_N = 0 (SPEC F14)
+    net.lines.append("    wire [7:0] one_g = one_q & {8{RST_N}};")
+    net.lines.append("    wire [7:0] two_g = two_q & {8{RST_N}};")
+    net.lines.append("    wire [7:0] neg_g = neg_q & {8{RST_N}};")
+    DG = ("one_g", "two_g", "neg_g")
+else:
+    DG = ("one_q", "two_q", "neg_q")
 net.lines.append("    wire [16:0] a17 = {a_q[15], a_q};")
 net.lines.append("    wire [16:0] a2  = {a_q, 1'b0};")
 pps = []
 for i in range(8):
-    net.lines.append(f"    wire [16:0] pp{i} = (({{17{{one_q[{i}]}}}} & a17) | ({{17{{two_q[{i}]}}}} & a2)) ^ {{17{{neg_q[{i}]}}}};")
+    net.lines.append(f"    wire [16:0] pp{i} = (({{17{{{DG[0]}[{i}]}}}} & a17) | ({{17{{{DG[1]}[{i}]}}}} & a2)) ^ {{17{{{DG[2]}[{i}]}}}};")
     pps += [f"pp{i}[{j}]" for j in range(17)]
-pps += [f"neg_q[{i}]" for i in range(8)]
-summary.append(f"R1 operands + Booth digits: 40 flops")
+pps += [f"{DG[2]}[{i}]" for i in range(8)]
+summary.append("R1 raw operands a, b: 32 flops (Booth recoding after the register)" if args.rawop
+               else "R1 operands + Booth digits: 40 flops")
 if args.nosel:
     # no register after the selection: the tree continues in the same stage
     ppr = [[(f"pp{i}[{j}]", args.sel_t) for j in range(17)] for i in range(8)]
@@ -381,11 +456,12 @@ if args.nosel:
 else:
     m2, n2 = register("r2", pps)
     ppr = [[(m2[f"pp{i}[{j}]"], 0.0) for j in range(17)] for i in range(8)]
-    ngr = [(m2[f"neg_q[{i}]"], 0.0) for i in range(8)]
-    summary.append(f"R2 selected partial products + neg bits: {n2} flops")
+    ngr = [(m2[f"{DG[2]}[{i}]"], 0.0) for i in range(8)]
+    summary.append(f"R2 selected partial products + neg bits: {n2} flops"
+                   + (" (reset by gating the Booth digits with RST_N)" if args.rst_digits else ""))
 cols0 = booth_matrix([[b for b in row] for row in ppr], ngr)
 heights0 = [len(c) for c in cols0]
-ranks = [40] + ([n2] if n2 is not None else [])
+ranks = [32 if args.rawop else 40] + ([n2] if n2 is not None else [])
 
 # ---- statistics of the level-based trees (separate gate counters)
 def level_stats(kind):
@@ -432,7 +508,9 @@ if args.mode in ("dadda", "wallace"):
             d = max(x for x in DADDA if x < maxh(cols))
             cols, nf, nh = level_dadda(cols, d)
         else:
-            cols, nf, nh = level_wallace(cols, 3 if lv <= args.rawlevels else 2)
+            PAIR_LATE = lv <= args.pair_late
+            lim = args.lvl_limit if (args.lvl_limit > 0 and lv in cuts and lv != max(cuts)) else None
+            cols, nf, nh = level_wallace(cols, 3 if lv <= args.rawlevels else 2, lim, args.lvl_cap)
         sf += nf; sh += nh
         net.lines.append(f"    // level {lv}: {nf} FA, {nh} HA, max height {maxh(cols)}")
         last = maxh(cols) <= 2
@@ -443,7 +521,7 @@ if args.mode in ("dadda", "wallace"):
             sf += ne
         rb = args.res_budget if last else (args.res_mid if lv in cuts else 0)
         if rb > 0:
-            cols, nr, rlo = ripple_low(cols, rb)
+            cols, nr, rlo = ripple_low(cols, rb, args.res_cout)
             net.lines.append(f"    // ripple: columns below {rlo} resolved to one bit ({nr} adders)")
             summary.append(f"S{stage}: low columns resolved below {rlo} by ripple ({nr} adders)")
         if lv in cuts or last:
@@ -454,6 +532,8 @@ if args.mode in ("dadda", "wallace"):
             summary.append(f"R{stage} after level {lv}: {sf} FA {sh} HA, model arrival {t:.2f}, {n} flops")
             ranks.append(n)
             stage += 1; sf = sh = 0
+            if last:
+                break
             emit_stage_comment(f"stage {stage}: {args.mode} levels")
     tree_last_arr = arr(cols)
     tree_desc = f"{args.mode} cuts after levels {args.cuts}"
@@ -492,6 +572,18 @@ else:
 emit_stage_comment(f"stage {stage}: propagate / generate per column")
 pg = []
 tp = {}
+# --res-cout: the lowest unresolved column may hold a third bit (the carry-out of the
+# ripple below it); it becomes the generate of the resolved column underneath, so the
+# final adder adds it as the carry into that column
+cin_g = {}
+for c in range(W):
+    if len(cols[c]) > 2:
+        assert len(cols[c]) == 3 and c > 0 and all(len(cols[j]) == 1 for j in range(c)), \
+            [len(x) for x in cols]
+        bs = sorted(cols[c], key=lambda b: b[1])
+        cin_g[c - 1] = bs[-1][0]
+        cols[c] = bs[:2]
+        summary.append(f"S{stage}: ripple carry-out into column {c} taken as the generate of column {c - 1}")
 gp_in_tree = not all(r == 0.0 or r == CONST_T for c in cols for (e, r) in c)
 if gp_in_tree and args.gp == "gt":
     # tree end + generate g = x & y and transmit t = x | y (one fast gate level);
@@ -500,7 +592,7 @@ if gp_in_tree and args.gp == "gt":
     for c in range(W):
         bs = [b_[0] for b_ in cols[c]]
         if len(bs) == 0: pg.append((ZERO, ZERO, ZERO))
-        elif len(bs) == 1: pg.append((bs[0], ZERO, bs[0]))
+        elif len(bs) == 1: pg.append((bs[0], cin_g.get(c, ZERO), bs[0]))
         else:
             x, y = bs
             pg.append((None, net.and_(x, y) if c + 1 < W else ZERO, net.or_(x, y) if c + 1 < W else net.xor(x, y)))
@@ -524,7 +616,7 @@ else:
     for c in range(W):
         bs = [b_[0] for b_ in cols[c]]
         if len(bs) == 0: pg.append((ZERO, ZERO))
-        elif len(bs) == 1: pg.append((bs[0], ZERO))
+        elif len(bs) == 1: pg.append((bs[0], cin_g.get(c, ZERO)))
         else:
             x, y = bs
             pg.append((net.xor(x, y), net.and_(x, y) if c + 1 < W else ZERO))
@@ -560,8 +652,12 @@ while lo_c < W and pg[lo_c][1] == ZERO:
 blocks = []
 c = lo_c
 k0 = args.k0 or args.k
+bl = [int(x) for x in args.blocks.split(",")] if args.blocks else []
 while c < W:
-    sz = k0 if not blocks else args.k
+    if bl:
+        sz = bl[len(blocks)] if len(blocks) < len(bl) else bl[-1]
+    else:
+        sz = k0 if not blocks else args.k
     blocks.append((c, min(c + sz, W)))
     c += sz
 nb = len(blocks)
@@ -633,9 +729,13 @@ else:
     cpa_desc = {"cinc": "two-stage carry-increment", "csel": "two-stage carry-select"}[args.cpa] + f", blocks {blocks}"
 assert len(prod) == W, len(prod)
 net.lines.append("    assign prod = {" + ", ".join(reversed(prod)) + "};")
-ranks.append(32)
-LAT = len(ranks)
-summary.append(f"R{stage} product: 32 flops")
+if args.noprod:
+    LAT = len(ranks)
+    summary.append(f"S{stage}: no product register, p = combinational output of this stage")
+else:
+    ranks.append(32)
+    LAT = len(ranks)
+    summary.append(f"R{stage} product: 32 flops")
 
 # ---------------------------------------------------------------------------
 if args.out:
@@ -647,19 +747,25 @@ if args.out:
     o.append("// bits, classic sign extension {~s0,s0,s0} / {1,~si}, the +1 of each negative row as")
     o.append(f"// a separate bit), bit-level column compression ({tree_desc}),")
     o.append(f"// final adder: {cpa_desc}.")
-    o.append(f"// Register ranks (latency from 'en' to 'p'): {LAT}; datapath flops {sum(ranks)}:")
+    o.append(f"// Register ranks (latency from 'en' to 'p'): {LAT}; datapath flops {sum(ranks)}"
+             + (" (p is not registered):" if args.noprod else ":"))
     for s in summary:
         o.append("//   " + s)
     o.append(f"// Full adders {net.fa}, half adders {net.ha}. Constant bits are never registered.")
-    o.append("// Every register has a synchronous active-low reset (SPEC F14); the operand register")
-    o.append("// loads zeros when en = 0 (operand isolation).")
+    if args.rst_digits and not args.nosel:
+        o.append("// Every register has a synchronous active-low reset (SPEC F14): r2 through the Booth")
+        o.append("// digits, which are ANDed with RST_N; the operand register loads zeros when en = 0")
+        o.append("// (operand isolation).")
+    else:
+        o.append("// Every register has a synchronous active-low reset (SPEC F14); the operand register")
+        o.append("// loads zeros when en = 0 (operand isolation).")
     o.append("module mult_pipe (")
     o.append("    input  logic               clk,")
     o.append("    input  logic               RST_N,")
     o.append("    input  logic               en,     // accept: load operands, else load zeros")
     o.append("    input  logic signed [15:0] a,      // multiplicand (unregistered input)")
     o.append("    input  logic signed [15:0] b,      // multiplier   (unregistered input)")
-    o.append("    output logic signed [31:0] p       // product, registered")
+    o.append("    output logic signed [31:0] p       // product" + (" (combinational, from the last register rank)" if args.noprod else ", registered"))
     o.append(");")
     o.append("    // Booth radix-4 recoding of y: digit_i = -2 y[2i+1] + y[2i] + y[2i-1]")
     o.append("    function automatic logic [23:0] booth_enc(input logic [15:0] y);")
@@ -675,15 +781,28 @@ if args.out:
     o.append("    endfunction")
     o.append("")
     o.append("    // ---- stage 1: operand register (operand isolation: zeros when idle)")
-    o.append("    logic [15:0] a_q;")
-    o.append("    logic [7:0]  one_q, two_q, neg_q;")
-    o.append("    always_ff @(posedge clk) begin")
-    o.append("        if (!RST_N || !en) begin")
-    o.append("            a_q <= '0; one_q <= '0; two_q <= '0; neg_q <= '0;")
-    o.append("        end else begin")
-    o.append("            a_q <= a; {neg_q, two_q, one_q} <= booth_enc(b);")
-    o.append("        end")
-    o.append("    end")
+    if args.rawop:
+        o.append("    logic [15:0] a_q, b_q;")
+        o.append("    always_ff @(posedge clk) begin")
+        o.append("        if (!RST_N || !en) begin")
+        o.append("            a_q <= '0; b_q <= '0;")
+        o.append("        end else begin")
+        o.append("            a_q <= a; b_q <= b;")
+        o.append("        end")
+        o.append("    end")
+        o.append("    // Booth digits of the registered multiplier (all 0 when b_q = 0)")
+        o.append("    logic [7:0]  one_q, two_q, neg_q;")
+        o.append("    assign {neg_q, two_q, one_q} = booth_enc(b_q);")
+    else:
+        o.append("    logic [15:0] a_q;")
+        o.append("    logic [7:0]  one_q, two_q, neg_q;")
+        o.append("    always_ff @(posedge clk) begin")
+        o.append("            if (!RST_N || !en) begin".replace("            if", "        if"))
+        o.append("            a_q <= '0; one_q <= '0; two_q <= '0; neg_q <= '0;")
+        o.append("        end else begin")
+        o.append("            a_q <= a; {neg_q, two_q, one_q} <= booth_enc(b);")
+        o.append("        end")
+        o.append("    end")
     o.append("")
     for name, pairs in regs:
         o.append(f"    logic [{len(pairs) - 1}:0] {name};")
@@ -694,17 +813,26 @@ if args.out:
     for name, pairs in regs:
         o.append(f"    // register {name}: {len(pairs)} flops")
         o.append("    always_ff @(posedge clk) begin")
-        o.append(f"        if (!RST_N) {name} <= '0;")
-        o.append("        else begin")
-        for d, s in pairs:
-            o.append(f"            {d} <= {s};")
-        o.append("        end")
+        if name == "r2" and args.rst_digits and not args.nosel:
+            o.append("        // reset: every D is 0 while RST_N = 0 (Booth digits gated by RST_N)")
+            for d, s in pairs:
+                o.append(f"        {d} <= {s};")
+        else:
+            o.append(f"        if (!RST_N) {name} <= '0;")
+            o.append("        else begin")
+            for d, s in pairs:
+                o.append(f"            {d} <= {s};")
+            o.append("        end")
         o.append("    end")
-    o.append("    // product register")
-    o.append("    always_ff @(posedge clk) begin")
-    o.append("        if (!RST_N) p <= '0;")
-    o.append("        else        p <= prod;")
-    o.append("    end")
+    if args.noprod:
+        o.append("    // no product register: p is combinational (the memory captures writeMem_val)")
+        o.append("    assign p = prod;")
+    else:
+        o.append("    // product register")
+        o.append("    always_ff @(posedge clk) begin")
+        o.append("        if (!RST_N) p <= '0;")
+        o.append("        else        p <= prod;")
+        o.append("    end")
     o.append("endmodule : mult_pipe")
     open(args.out, "w").write("\n".join(o) + "\n")
 print(f"LAT={LAT} ranks={ranks} datapath flops={sum(ranks)} FA={net.fa} HA={net.ha}")

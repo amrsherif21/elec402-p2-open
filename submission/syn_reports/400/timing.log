@@ -1,12 +1,12 @@
 WARNING: submission/testbench/sdf_checker_400.sv:82: $sdf_annotate currently only uses the first two argument.
-INFO t=22500 ps: latency measured from the first write = 3 cycles
-INFO t=340000 ps: phase 0 complete (64 accepted, 63 returned)
-INFO t=667500 ps: phase 1 complete (128 accepted, 127 returned)
-INFO t=1027500 ps: phase 2 complete (192 accepted, 191 returned)
-INFO t=1462500 ps: phase 3 complete (256 accepted, 255 returned)
-INFO t=1887500 ps: phase 4 complete (320 accepted, 319 returned)
-INFO t=2215000 ps: phase 5 complete (384 accepted, 383 returned)
+INFO t=20000 ps: latency measured from the first write = 2 cycles
+INFO t=337500 ps: phase 0 complete (64 accepted, 63 returned)
+INFO t=662500 ps: phase 1 complete (128 accepted, 127 returned)
+INFO t=1020000 ps: phase 2 complete (192 accepted, 191 returned)
+INFO t=1447500 ps: phase 3 complete (256 accepted, 255 returned)
+INFO t=1872500 ps: phase 4 complete (320 accepted, 319 returned)
+INFO t=2197500 ps: phase 5 complete (384 accepted, 383 returned)
 
-==== mkMultBuff_sdf_checker_400 summary: period 2.500 ns, seed 402, latency 3, 894 cycles, 384 accepted, 384 returned, 0 failure(s) ====
+==== mkMultBuff_sdf_checker_400 summary: period 2.500 ns, seed 402, latency 2, 887 cycles, 384 accepted, 384 returned, 0 failure(s) ====
 ALL PASS
-submission/testbench/sdf_checker_400.sv:289: $finish called at 2235000 (1ps)
+submission/testbench/sdf_checker_400.sv:289: $finish called at 2217500 (1ps)

@@ -116,7 +116,7 @@ Iteration |   Area    | Resized | Buffers | Nets repaired | Remaining
         0 |     +0.0% |       0 |       0 |             0 |      1686
     final |     +0.0% |       0 |       0 |             0 |         0
 ---------------------------------------------------------------------
-[INFO RSZ-0504] Runtime: 1.43s
+[INFO RSZ-0504] Runtime: 1.45s
 [WARNING RSZ-3244] -effort has no effect unless -phases lists PARALLEL_EVAL.
 [WARNING EST-0027] no estimated parasitics. Using wire load models.
 [INFO RSZ-0100] Repair move sequence: UnbufferMove SizeUpMove SwapPinsMove BufferMove CloneMove SplitLoadMove 
@@ -1134,7 +1134,7 @@ Iteration |   Area    | Resized | Buffers | Nets repaired | Remaining
 [INFO RSZ-0051] Resized 279 instances: 279 up, 0 up match, 0 down, 0 VT
 [INFO RSZ-0043] Swapped pins on 48 instances.
 [WARNING RSZ-0062] Unable to repair all setup violations.
-[INFO RSZ-0505] Runtime: 11.73s
+[INFO RSZ-0505] Runtime: 11.86s
 [WARNING EST-0027] no estimated parasitics. Using wire load models.
 [INFO RSZ-0046] Found 18 endpoints with hold violations.
 Iteration | Resized | Buffers | Cloned Gates |   Area   |   WNS   |   TNS   | Endpoint
@@ -1143,7 +1143,7 @@ Iteration | Resized | Buffers | Cloned Gates |   Area   |   WNS   |   TNS   | En
     final |       0 |      18 |            0 |    +0.6% |   0.061 |   0.000 | _2974_/D
 --------------------------------------------------------------------------------------
 [INFO RSZ-0032] Inserted 18 hold buffers.
-[INFO RSZ-0506] Runtime: 0.32s
+[INFO RSZ-0506] Runtime: 0.47s
 worst slack max -0.68
 worst slack min 0.06
 Design area 2549 um^2 46% utilization.
