@@ -1,6 +1,6 @@
 # Session record
 
-Rendered 2026-11-08 03:36:18 UTC from the Claude Code transcript.
+Rendered 2026-11-08 03:37:10 UTC from the Claude Code transcript.
 
 ### Prompt, 2026-11-08 02:33:34
 
@@ -1662,3 +1662,59 @@ I committed and pushed the remaining changes, so the working tree is clean. In t
 </task-notification>
 
 - `Bash` grep -v "^+ \|^$" /tmp/claude-0/-home-user-elec402-p2-open/6503db16-82a0-5ee1-9a2e-83eb2b44d2ca/scratchpad/fresh.log | grep -v "^==\|^#\|^host\|^iverilog\|^gtkwave\|^python\|^docker\|^yosys\|^opensta\ ...
+  - result: 8f205c3 Checkpoint 5 (draft): report sources, figures, report build and token-usage scripts; work-log times corrected 03:34:16 install complete worst slack max 0.152 worst slack min 0.053 tns max 0.000 cell area 2386.552 um^2 (sequential 753.844 um^2, 1501 instances) ALL PASS ALL PASS ALL PASS synthesis estimate (vectorless, activity 0.1) 459.65 160.37 32.51 652.53 run: window whole run 455.01 155 ...
+
+#### Reasoning, 2026-11-08 03:36:25
+
+> A fresh-clone rerun matched every result exactly, with all checks and mutation tests passing again. I'm recording this and doing the final build next.
+
+- `Bash` cp /tmp/claude-0/-home-user-elec402-p2-open/6503db16-82a0-5ee1-9a2e-83eb2b44d2ca/scratchpad/fresh.log submission/syn_reports/fresh_clone_rerun.log && cp /tmp/claude-0/-home-user-elec402-p2-open/6503db ...
+  - result: fatal: couldn't find remote ref check-results 0
+
+### Agent, 2026-11-08 03:36:33
+
+Still no `check-results` branch, so the report keeps the "not available" sign-off section. Adding the fresh-clone result to the tool-flow section, then the final build with the final token count.
+
+- `Bash` python3 - <<'EOF' p='submission/pdf_report/src/report.md' s=open(p).read() s=s.replace("All tool versions are recorded in 'submission/syn_reports/tool_versions.txt'. The steps are as follows.", "All t ...
+  - result: report written: submission/pdf_report/report.pdf (Pages: 49) | **claude-opus-5-5, total** | **305** | **593** | **440,903** | **496,976** | **433,050** | **67,599,169** | **28.29** | Total cost at API prices: **USD 28.29** (4 transcripts, 305 API responses). mkMultBuff: a pipelined signed 16 × 16 multiplier with a 64-entry fill/drain buffer at 400 MHz and 800 MHz Design report, open-source flow on ...
+
+- `Bash` cp build/report/tokens.md submission/syn_reports/token_usage.md && pdftotext submission/pdf_report/report.pdf - | grep -n -A3 "Project metrics" | sed -n 1,12p | tail -6; git add -A submission notes && ...
+  - result: 65- -- 765:Project metrics 766- 767-The work took one Claude Code session, which began at 02:33 UTC and ended with the report at about 03:36 768-UTC. In the session, the main agent built the toolchain, the 400 MHz design, candidate (A) and the flow, and 0 032bfb2 Checkpoint 5: final report, fresh-clone rerun log, token usage
+
+### Agent, 2026-11-08 03:37:07
+
+All five checkpoints are committed and pushed (latest `032bfb2`), and both implementations meet the required and target slack. The one thing I couldn't do is compare against the GPDK045 sign-off: `check/400` and `check/800` were pushed, but no `check-results` branch ever appeared, so the service apparently never ran.
+
+A rerun from a fresh clone (install script, all `make` steps for both frequencies, the failing netlists and the mutation tests) reproduced every netlist, SDF file and report byte for byte in about 2 minutes. The design took about 1 h 05 min of wall-clock, from 02:33 to 03:36 UTC.
+
+| | 400 MHz (2.5 ns) | 800 MHz (1.25 ns) |
+|---|---|---|
+| Latency / flip-flops | 3 / 166 | 7 / 577 |
+| Worst setup slack (target ≥ 5 % of period) | **+0.152 ns** (target 125 ps) | **+0.075 ns** (target 62 ps) |
+| Worst hold slack | +0.053 ns | +0.041 ns |
+| Cell area (limit) | **2386.6 µm²** (< 6000) | **4755.0 µm²** (< 12000) |
+| Power, synthesis estimate | 652.5 µW | 2727.6 µW |
+| Power from simulation, whole run / fill window / drain window | 642.8 / 1480.1 / 430.4 µW | 3073.1 / 5209.5 / 2535.6 µW |
+| `make check` / `sim` / `timing` | ALL PASS / ALL PASS / ALL PASS | ALL PASS / ALL PASS / ALL PASS |
+| Netlist that violates timing | TIMING FAIL (slack −1.469 ns) | TIMING FAIL (slack −1.091 ns) |
+| Every flip-flop reset by `RST_N` (formal check, F14) | 166 of 166 | 577 of 577 |
+| One-line RTL mutants caught by the checker | 11 of 11 | 13 of 13 |
+| GPDK045 sign-off scorecard | not published | not published |
+
+**800 MHz candidates.** The 800 MHz design is my Booth multiplier cut into seven register stages by hand. Of the other two candidates evaluated by subagents, the retimed behavioural multiplier missed timing (best −0.20 ns) and lost the reset on its retimed registers. The Baugh-Wooley/Dadda tree met timing with twice the slack, but used 10 % more area and 6–9 % more power, so I kept mine.
+
+**Departures from the spec, all described in the report:**
+- **Simulator.** Icarus Verilog ignores setup/hold checks, so a violation shows up as a wrong product rather than X. The gate-level checkers catch it that way, as SPEC 8.2 allows. Building OSS CVC, which would produce X, was blocked by this session's permissions.
+- **Input drive.** I read the drive constraint as a `DFF_X1` driver with a T/8 transition on that flip-flop's clock input, and also gave the clock a T/8 transition.
+- **Wire load.** STA uses the library's default wire-load model rather than zero wire capacitance.
+- **Inside synthesis only.** ABC maps with a copy of the library that excludes some slow cells, and the gate-sizing tool does a throw-away placement so it can buffer the reset net. Every reported figure is still timed under the Section 6 constraints.
+- **Simulation copies.** The simulation copy of the netlist declares an unused `parameter N`, because the starter testbench instantiates the block with one. The delay file's typical values are set to the maximum, because Icarus uses them.
+- **Power.** Power from simulation excludes glitches, because SPEC prescribes a zero-delay simulation for the VCD.
+- **Corner.** "Slowest available corner" is the `slow` corner (0.95 V, 125 °C) from the public mflowgen mirror.
+
+**Work-log correction.** The clock times in an earlier draft of `notes/WORKLOG.md` were estimates and were wrong. I removed them and anchored the log to commit and file timestamps.
+
+**Token usage.** Claude Opus 5.5 only: 305 API responses across the main session and three subagents, 440,903 output tokens, 67.6 M cache-read tokens and 0.93 M cache-write tokens, about **$28.29** at published API rates. It was measured just before the final report build, so the last few steps aren't counted.
+
+The report is `submission/pdf_report/report.pdf`, and the full record is in `notes/WORKLOG.md`.
+
