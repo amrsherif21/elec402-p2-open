@@ -632,3 +632,9 @@
 | 2026-11-08 17:52:00 UTC | Bash | `cd /home/user/elec402-p2-open/build/r4wal && python3 - <<'PY' p='gen_tree.py'; s=open(p).read() def rep(a,b,cnt=1): global s assert s.count(a)==cnt, (a, s.count(a)) s=s.replace(a,b) rep('''ap.add_argu ...` |
 | 2026-11-08 17:52:09 UTC | Bash | `cd /home/user/elec402-p2-open/build/r4wal && for rb in 1.9 2.0 2.1 2.2 2.3 2.5; do echo "rb=$rb: $(python3 gen_tree.py --mode wallace --rawlevels 3 --nosel --cuts 4 --gp cpa --cpa one --res-budget $rb ...` |
 | 2026-11-08 17:52:27 UTC | Bash | `cd /home/user/elec402-p2-open/build/r4wal && python3 - <<'PY' p='gen_tree.py'; s=open(p).read() a=''' ranks.append(n) stage += 1; sf = sh = 0 emit_stage_comment(f"stage {stage}: {args.mode} levels") ' ...` |
+| 2026-11-08 17:52:37 UTC | Bash | `cd /home/user/elec402-p2-open/build/r4wal && cat batch1.log \| grep -v "^ "` |
+| 2026-11-08 17:52:41 UTC | Bash | `cd /home/user/elec402-p2-open/build/r4wal && awk '/Startpoint/{f=1} f' a8_np/rep/sta.rpt \| head -50` |
+| 2026-11-08 17:52:46 UTC | Bash | `cat submission/scripts/resize.tcl \| head -60; tail -20 build/r4wal/a8_np/rep/resize.log` |
+| 2026-11-08 17:52:52 UTC | Bash | `until grep -q "a4_np RUN" /home/user/elec402-p2-open/build/r4wal/batch1.log && grep -q "per register" <(sed -n '/a4_np RUN/,$p' /home/user/elec402-p2-open/build/r4wal/batch1.log) && [ $(sed -n '/a4_np ...` |
+| 2026-11-08 17:52:58 UTC | Bash | `D=build/r4row/c1c_bpa && mkdir -p $D/rtl && cp build/r4row/c3a/rtl/*.sv $D/rtl/ && python3 - $D/rtl/mult_pipe.sv <<'EOF' import sys f=sys.argv[1]; t=open(f).read() t=t.replace(""" parameter logic [31: ...` |
+| 2026-11-08 17:53:33 UTC | Bash | `cd /home/user/elec402-p2-open/build/r4wal && for b in 0.66,0.66 0.66,0.72 0.72,0.72 0.60,0.72 0.66,0.78; do echo "== $b"; python3 gen_tree.py --mode fill --budgets $b --gp gt --k0 8 --k 5 --noprod; do ...` |
