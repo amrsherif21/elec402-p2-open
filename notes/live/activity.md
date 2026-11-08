@@ -493,3 +493,5 @@
 | 2026-11-08 08:31:11 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800b && python3 - <<'EOF' s = open("gen_tree.py").read() old = ''' sv = [mA[s0[c]] for c in range(l, h)] andp = [sv[0]] # Kogge-Stone AND prefix''' new = ''' sv ...` |
 | 2026-11-08 08:31:16 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800b && sed -n 1,40p w24cpa5s/rep/sta.rpt \| grep -v "^ *0\.[0-9]* *0.000" \| sed -n 6,16p` |
 | 2026-11-08 08:33:46 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800b && ./run.sh 800 w24gt4p --mode wallace --cuts 2,4 --gp gt --k0 4 --k 4 --bpair 2>&1 \| grep -v "u_mult.[aont][1enw]" \| tail -16` |
+| 2026-11-08 08:34:10 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800b && grep -n "WALLACE_HA_MIN" gen_tree.py && python3 - <<'EOF' s = open("gen_tree.py").read() s = s.replace(" if len(bits) == 2 and len(cols[c]) >= WALLACE_H ...` |
+| 2026-11-08 08:36:26 UTC | Bash | `cd /home/user/elec402-p2-open/build/cand800b && ./run.sh 800 w24r3gt4p --mode wallace --rawlevels 3 --cuts 2,4 --gp gt --k0 4 --k 4 --bpair 2>&1 \| grep -v "u_mult.[aont][1enw]" \| tail -16` |
