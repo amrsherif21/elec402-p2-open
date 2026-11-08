@@ -92,7 +92,7 @@ module mkMultBuff #(parameter N = 32) (
     end
 
     mult_pipe #(.PRE_ENC(1'b1), .SEL_REG(1'b1), .CSA_REG(4'b1010), .ORD(1'b1),
-                .CPA(1), .CI1(1'b1), .CSW(4))
+                .CPA(1), .CI1(1'b1), .CSW(4), .DRST(1'b1))
         u_mult (.clk(clk), .RST_N(RST_N), .en(acc), .a(mult_input0), .b(mult_input1), .p(p));
 
     assign RDY_mult      = ~rdy_mult_on;
