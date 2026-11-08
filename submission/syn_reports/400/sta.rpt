@@ -1,0 +1,241 @@
+== constraints: period 2.5 ns, clock/input transition 0.3125 ns, output load 23.536888 fF
+Startpoint: _2923_ (rising edge-triggered flip-flop clocked by clk)
+Endpoint: _2843_ (rising edge-triggered flip-flop clocked by clk)
+Path Group: clk
+Path Type: max
+
+Fanout      Cap     Slew    Delay     Time   Description
+---------------------------------------------------------------------------------
+                   0.312    0.000    0.000   clock clk (rise edge)
+                            0.000    0.000   clock network delay (ideal)
+                   0.312    0.000    0.000 ^ _2923_/CK (DFF_X1)
+    16   34.637    0.289    0.658    0.658 ^ _2923_/Q (DFF_X1)
+                   0.289    0.000    0.658 ^ _2613_/B1 (AOI22_X1)
+     1    2.611    0.085    0.128    0.786 v _2613_/ZN (AOI22_X1)
+                   0.085    0.000    0.786 v _2614_/B (XNOR2_X1)
+     3    6.914    0.164    0.252    1.038 ^ _2614_/ZN (XNOR2_X1)
+                   0.164    0.000    1.038 ^ _2635_/B (XNOR2_X1)
+     1    2.847    0.094    0.174    1.212 ^ _2635_/ZN (XNOR2_X1)
+                   0.094    0.000    1.212 ^ _2636_/B (XNOR2_X1)
+     3    6.616    0.158    0.185    1.397 ^ _2636_/ZN (XNOR2_X1)
+                   0.158    0.000    1.397 ^ _2671_/A (XOR2_X1)
+     1    2.847    0.102    0.222    1.619 ^ _2671_/Z (XOR2_X1)
+                   0.102    0.000    1.619 ^ _2672_/B (XNOR2_X1)
+     2    4.808    0.126    0.173    1.792 ^ _2672_/ZN (XNOR2_X1)
+                   0.126    0.000    1.792 ^ _2818_/B (XNOR2_X1)
+     1    2.647    0.088    0.161    1.953 ^ _2818_/ZN (XNOR2_X1)
+                   0.088    0.000    1.953 ^ _2819_/B (XOR2_X1)
+     1    1.249    0.074    0.166    2.120 ^ _2819_/Z (XOR2_X1)
+                   0.074    0.000    2.120 ^ _2820_/A2 (AND2_X1)
+     1    2.014    0.047    0.115    2.235 ^ _2820_/ZN (AND2_X1)
+                   0.047    0.000    2.235 ^ _2821_/A (BUF_X2)
+     1    1.419    0.017    0.065    2.300 ^ _2821_/Z (BUF_X2)
+                   0.017    0.000    2.300 ^ _2843_/D (DFF_X1)
+                                     2.300   data arrival time
+
+                   0.312    2.500    2.500   clock clk (rise edge)
+                            0.000    2.500   clock network delay (ideal)
+                            0.000    2.500   clock reconvergence pessimism
+                                     2.500 ^ _2843_/CK (DFF_X1)
+                           -0.048    2.452   library setup time
+                                     2.452   data required time
+---------------------------------------------------------------------------------
+                                     2.452   data required time
+                                    -2.300   data arrival time
+---------------------------------------------------------------------------------
+                                     0.152   slack (MET)
+
+
+Startpoint: _2942_ (rising edge-triggered flip-flop clocked by clk)
+Endpoint: _2841_ (rising edge-triggered flip-flop clocked by clk)
+Path Group: clk
+Path Type: max
+
+Fanout      Cap     Slew    Delay     Time   Description
+---------------------------------------------------------------------------------
+                   0.312    0.000    0.000   clock clk (rise edge)
+                            0.000    0.000   clock network delay (ideal)
+                   0.312    0.000    0.000 ^ _2942_/CK (DFF_X1)
+    17   37.589    0.313    0.683    0.683 ^ _2942_/Q (DFF_X1)
+                   0.313    0.000    0.683 ^ _2682_/A2 (AOI22_X1)
+     1    2.611    0.085    0.109    0.792 v _2682_/ZN (AOI22_X1)
+                   0.085    0.000    0.792 v _2683_/B (XNOR2_X1)
+     3    6.430    0.111    0.189    0.981 v _2683_/ZN (XNOR2_X1)
+                   0.111    0.000    0.981 v _2684_/B (XOR2_X1)
+     1    2.611    0.048    0.249    1.230 v _2684_/Z (XOR2_X1)
+                   0.048    0.000    1.230 v _2685_/B (XNOR2_X1)
+     3    6.596    0.158    0.228    1.459 ^ _2685_/ZN (XNOR2_X1)
+                   0.158    0.000    1.459 ^ _2717_/A (XOR2_X1)
+     1    2.847    0.102    0.222    1.680 ^ _2717_/Z (XOR2_X1)
+                   0.102    0.000    1.680 ^ _2718_/B (XNOR2_X1)
+     2    4.639    0.123    0.171    1.852 ^ _2718_/ZN (XNOR2_X1)
+                   0.123    0.000    1.852 ^ _2825_/B (XOR2_X1)
+     1    2.847    0.102    0.209    2.061 ^ _2825_/Z (XOR2_X1)
+                   0.102    0.000    2.061 ^ _2826_/B (XNOR2_X1)
+     1    3.544    0.104    0.162    2.223 ^ _2826_/ZN (XNOR2_X1)
+                   0.104    0.000    2.223 ^ _2827_/A2 (NOR2_X2)
+     1    1.340    0.054    0.041    2.264 v _2827_/ZN (NOR2_X2)
+                   0.054    0.000    2.264 v _2841_/D (DFF_X1)
+                                     2.264   data arrival time
+
+                   0.312    2.500    2.500   clock clk (rise edge)
+                            0.000    2.500   clock network delay (ideal)
+                            0.000    2.500   clock reconvergence pessimism
+                                     2.500 ^ _2841_/CK (DFF_X1)
+                           -0.082    2.418   library setup time
+                                     2.418   data required time
+---------------------------------------------------------------------------------
+                                     2.418   data required time
+                                    -2.264   data arrival time
+---------------------------------------------------------------------------------
+                                     0.155   slack (MET)
+
+
+Startpoint: _2913_ (rising edge-triggered flip-flop clocked by clk)
+Endpoint: _2848_ (rising edge-triggered flip-flop clocked by clk)
+Path Group: clk
+Path Type: max
+
+Fanout      Cap     Slew    Delay     Time   Description
+---------------------------------------------------------------------------------
+                   0.312    0.000    0.000   clock clk (rise edge)
+                            0.000    0.000   clock network delay (ideal)
+                   0.312    0.000    0.000 ^ _2913_/CK (DFF_X1)
+    17   37.337    0.311    0.680    0.680 ^ _2913_/Q (DFF_X1)
+                   0.311    0.000    0.680 ^ _2321_/B2 (AOI22_X1)
+     1    2.611    0.085    0.139    0.819 v _2321_/ZN (AOI22_X1)
+                   0.085    0.000    0.819 v _2322_/B (XNOR2_X1)
+     2    4.493    0.108    0.179    0.998 v _2322_/ZN (XNOR2_X1)
+                   0.108    0.000    0.998 v _2328_/B (XNOR2_X1)
+     2    3.004    0.045    0.185    1.183 v _2328_/ZN (XNOR2_X1)
+                   0.045    0.000    1.183 v _2343_/A3 (OR3_X1)
+     2    3.573    0.053    0.348    1.531 v _2343_/ZN (OR3_X1)
+                   0.053    0.000    1.531 v _2537_/A2 (NAND2_X1)
+     1    2.847    0.042    0.084    1.615 ^ _2537_/ZN (NAND2_X1)
+                   0.042    0.000    1.615 ^ _2538_/B (XNOR2_X1)
+     3    6.914    0.164    0.168    1.782 ^ _2538_/ZN (XNOR2_X1)
+                   0.164    0.000    1.782 ^ _2802_/B (XNOR2_X1)
+     1    2.847    0.092    0.174    1.956 ^ _2802_/ZN (XNOR2_X1)
+                   0.092    0.000    1.956 ^ _2803_/B (XNOR2_X1)
+     1    1.249    0.064    0.138    2.094 ^ _2803_/ZN (XNOR2_X1)
+                   0.064    0.000    2.094 ^ _2804_/A2 (AND2_X1)
+     1    1.244    0.042    0.103    2.198 ^ _2804_/ZN (AND2_X1)
+                   0.042    0.000    2.198 ^ _2805_/A (BUF_X1)
+     1    1.419    0.021    0.072    2.269 ^ _2805_/Z (BUF_X1)
+                   0.021    0.000    2.269 ^ _2848_/D (DFF_X1)
+                                     2.269   data arrival time
+
+                   0.312    2.500    2.500   clock clk (rise edge)
+                            0.000    2.500   clock network delay (ideal)
+                            0.000    2.500   clock reconvergence pessimism
+                                     2.500 ^ _2848_/CK (DFF_X1)
+                           -0.050    2.450   library setup time
+                                     2.450   data required time
+---------------------------------------------------------------------------------
+                                     2.450   data required time
+                                    -2.269   data arrival time
+---------------------------------------------------------------------------------
+                                     0.181   slack (MET)
+
+
+Startpoint: mult_input0[0] (input port clocked by clk)
+Endpoint: _2915_ (rising edge-triggered flip-flop clocked by clk)
+Path Group: clk
+Path Type: min
+
+     Cap     Slew    Delay     Time   Description
+---------------------------------------------------------------------------
+            0.312    0.000    0.000   clock clk (rise edge)
+                     0.000    0.000   clock network delay (ideal)
+                     0.000    0.000 ^ input external delay
+   1.204    0.025    0.008    0.008 ^ mult_input0[0] (in)
+            0.025    0.000    0.008 ^ _1652_/A1 (AND2_X1)
+   1.244    0.023    0.084    0.092 ^ _1652_/ZN (AND2_X1)
+            0.023    0.000    0.092 ^ _1653_/A (BUF_X1)
+   1.419    0.021    0.061    0.153 ^ _1653_/Z (BUF_X1)
+            0.021    0.000    0.153 ^ _2915_/D (DFF_X1)
+                              0.153   data arrival time
+
+            0.312    0.000    0.000   clock clk (rise edge)
+                     0.000    0.000   clock network delay (ideal)
+                     0.000    0.000   clock reconvergence pessimism
+                              0.000 ^ _2915_/CK (DFF_X1)
+                     0.099    0.099   library hold time
+                              0.099   data required time
+---------------------------------------------------------------------------
+                              0.099   data required time
+                             -0.153   data arrival time
+---------------------------------------------------------------------------
+                              0.053   slack (MET)
+
+
+== summary
+worst slack max 0.152
+worst slack min 0.053
+tns max 0.000
+max slew
+
+Pin                                    Limit    Slew   Slack
+------------------------------------------------------------
+RST_N                                   0.50    0.57   -0.07 (VIOLATED)
+
+max capacitance
+
+Pin                                    Limit     Cap   Slack
+------------------------------------------------------------
+RST_N                                  60.73   68.90   -8.17 (VIOLATED)
+
+Group                  Internal  Switching    Leakage      Total
+                          Power      Power      Power      Power (Watts)
+----------------------------------------------------------------
+Sequential           3.4445e-04 5.1569e-05 9.0225e-06 4.0504e-04  62.1%
+Combinational        1.1520e-04 1.0880e-04 2.3492e-05 2.4749e-04  37.9%
+Clock                0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00   0.0%
+Macro                0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00   0.0%
+Pad                  0.0000e+00 0.0000e+00 0.0000e+00 0.0000e+00   0.0%
+----------------------------------------------------------------
+Total                4.5965e-04 1.6037e-04 3.2514e-05 6.5253e-04 100.0%
+                          70.4%      24.6%       5.0%
+cell AND2_X1           46     48.944 um^2
+cell AND3_X1           18     23.940 um^2
+cell AND4_X1            3      4.788 um^2
+cell AND4_X2            1      1.862 um^2
+cell AOI211_X1          6      7.980 um^2
+cell AOI211_X2          2      4.788 um^2
+cell AOI21_X1          92     97.888 um^2
+cell AOI21_X2           8     14.896 um^2
+cell AOI21_X4           1      3.458 um^2
+cell AOI22_X1         125    166.250 um^2
+cell BUF_X1            55     43.890 um^2
+cell BUF_X2             1      1.064 um^2
+cell CLKBUF_X1          6      4.788 um^2
+cell DFF_X1           160    723.520 um^2
+cell DFF_X2             6     30.324 um^2
+cell INV_X1            44     23.408 um^2
+cell MUX2_X1           10     18.620 um^2
+cell NAND2_X1         140    111.720 um^2
+cell NAND3_X1          26     27.664 um^2
+cell NAND4_X1           5      6.650 um^2
+cell NAND4_X4           1      4.788 um^2
+cell NOR2_X1          159    126.882 um^2
+cell NOR2_X2           28     37.240 um^2
+cell NOR2_X4            4      9.576 um^2
+cell NOR3_X1           13     13.832 um^2
+cell NOR3_X4            1      3.724 um^2
+cell NOR4_X1            4      5.320 um^2
+cell OAI211_X1         12     15.960 um^2
+cell OAI21_X1          77     81.928 um^2
+cell OAI21_X2           1      1.862 um^2
+cell OAI221_X1          1      1.596 um^2
+cell OAI221_X2          2      5.852 um^2
+cell OAI22_X1           4      5.320 um^2
+cell OR2_X1            16     17.024 um^2
+cell OR3_X1             9     11.970 um^2
+cell OR3_X4             1      2.926 um^2
+cell OR4_X1             1      1.596 um^2
+cell XNOR2_X1         312    497.952 um^2
+cell XNOR2_X2          12     31.920 um^2
+cell XOR2_X1           85    135.660 um^2
+cell XOR2_X2            3      7.182 um^2
+cell area 2386.552 um^2 (sequential 753.844 um^2, 1501 instances)
+SDF written to submission/outputs/mkMultBuff_400_map.sdf

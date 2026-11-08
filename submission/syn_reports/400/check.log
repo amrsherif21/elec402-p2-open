@@ -1,0 +1,60 @@
+INFO: mkMultBuff_tb seed=402 period=2.500 ns
+INFO t=1350 ps: applying reset for 3 cycle(s) (power-on; model accepted=0 written=0 read=0)
+INFO t=7500 ps: phase 1: fill 70%, drain 70%, junk 50%, stalls 2%, directed operands
+INFO t=32500 ps: latency learned from first product = 3 cycles
+INFO t=520000 ps: fill/drain phase 1 complete
+INFO t=520000 ps: phase 2: fill 100%, drain 100%, junk 0%, stalls 0%, POWER WINDOWS
+PWR_WIN fill 521250 681250
+INFO t=847500 ps: fill/drain phase 2 complete
+PWR_WIN drain 688750 848750
+INFO t=847500 ps: phase 3: fill 30%, drain 30%, junk 60%, stalls 0%
+INFO t=1857500 ps: fill/drain phase 3 complete
+INFO t=1857500 ps: phase 4: fill 100%, drain 50%, junk 50%, stalls 0%, reset mid-fill
+INFO t=1958850 ps: applying reset for 1 cycle(s) (mid-fill, products in flight; model accepted=40 written=37 read=0)
+INFO t=2467500 ps: fill/drain phase 4 complete
+INFO t=2467500 ps: phase 5: fill 90%, drain 60%, junk 50%, stalls 3%, directed operands, reset mid-drain
+INFO t=2796350 ps: applying reset for 2 cycle(s) (mid-drain, read data pending; model accepted=64 written=64 read=20)
+INFO t=3375000 ps: fill/drain phase 5 complete
+INFO t=3375000 ps: phase 6: fill 100%, drain 100%, junk 100%, stalls 0%, reset when full
+INFO t=3536350 ps: applying reset for 1 cycle(s) (all 64 accepted, writes pending; model accepted=64 written=61 read=0)
+INFO t=3865000 ps: fill/drain phase 6 complete
+INFO t=3865000 ps: phase 7: fill 50%, drain 25%, junk 50%, stalls 0%
+INFO t=4790000 ps: fill/drain phase 7 complete
+INFO t=4790000 ps: phase 8: fill 75%, drain 10%, junk 50%, stalls 2%
+INFO t=6722500 ps: fill/drain phase 8 complete
+INFO t=6722500 ps: phase 9: fill 95%, drain 100%, junk 50%, stalls 4%
+INFO t=7252500 ps: fill/drain phase 9 complete
+INFO t=7252500 ps: phase 10: fill 100%, drain 95%, junk 50%, stalls 0%, directed operands
+INFO t=7595000 ps: fill/drain phase 10 complete
+INFO t=7595000 ps: phase 11: fill 10%, drain 75%, junk 50%, stalls 2%
+INFO t=9845000 ps: fill/drain phase 11 complete
+INFO t=9845000 ps: phase 12: fill 25%, drain 50%, junk 50%, stalls 4%
+INFO t=11397500 ps: fill/drain phase 12 complete
+INFO t=11397500 ps: phase 13: fill 50%, drain 25%, junk 50%, stalls 0%
+INFO t=12402500 ps: fill/drain phase 13 complete
+INFO t=12402500 ps: phase 14: fill 75%, drain 10%, junk 50%, stalls 2%
+INFO t=14560000 ps: fill/drain phase 14 complete
+
+==== mkMultBuff_tb summary (seed=402, period=2.500 ns, latency=3, cycles=5856) ====
+  fill/drain phases completed: 14, products accepted: 1064, returned: 915
+  F1       checks=    1058  failures=0
+  F2       checks=    1058  failures=0
+  F3       checks=    1059  failures=0
+  F4       checks=    4791  failures=0
+  F5       checks=    7455  failures=0
+  F6       checks=    5835  failures=0
+  F7       checks=    4399  failures=0
+  F8       checks=    6764  failures=0
+  F9       checks=    1450  failures=0
+  F10      checks=      14  failures=0
+  F11      checks=      14  failures=0
+  F12      checks=    5849  failures=0
+  F13      checks=    5849  failures=0
+  F15      checks=      24  failures=0
+  DATA     checks=     915  failures=0
+  XZ       checks=    6764  failures=0
+  PHASES   checks=       2  failures=0
+  WATCHDOG checks=       0  failures=0
+  STIMULUS checks=       0  failures=0
+ALL PASS
+submission/testbench/rtl_checker.sv:420: $finish called at 14640000 (1ps)

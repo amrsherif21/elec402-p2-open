@@ -1,0 +1,12 @@
+mutant 1 (RDY_mult drops one pair early): FAIL 10655 check(s) failed
+mutant 2 (drain starts before the last write): FAIL 10040 check(s) failed
+mutant 3 (drain ends one read early): FAIL 12042 check(s) failed
+mutant 4 (VALID_memVal ignores RDY_blockRead): FAIL 1501 check(s) failed
+mutant 5 (EN_mult accepted while not ready): FAIL 8564 check(s) failed
+mutant 6 (reads without EN_blockRead): FAIL 11890 check(s) failed
+mutant 7 (RDY_blockRead not reset): FAIL 1202 check(s) failed
+mutant 8 (valid pipeline not reset): FAIL 5825 check(s) failed
+mutant 9 (valid bit set by unaccepted pairs): FAIL 7987 check(s) failed
+mutant 10 (wrong data source): FAIL 1818 check(s) failed
+mutant 11 (EN_readMem held during drain): FAIL 2158 check(s) failed
+killed 11 of 11 mutants
