@@ -1,20 +1,14 @@
 digraph dp400 {
   rankdir=TB; newrank=true; bgcolor=white; nodesep=0.25; ranksep=0.3;
   node [fontname="Helvetica", fontsize=10];
-  edge [fontname="Helvetica", fontsize=9];
-  in [shape=plaintext, label="mult_input0 (a)\nmult_input1 (b)\nEN_mult & RDY_mult"];
-  enc [shape=box, style=rounded, label="Booth radix-4\nrecode b\n(one, two, neg)\n+ operand isolation"];
-  r1 [shape=box, style=filled, fillcolor="#dde8f5", label="Rank 1\na 16b + digits 24b\n(+ valid v[0])"];
-  pp [shape=box, style=rounded, label="select 8 PP rows\n17b + '+1' bits\n+ constant row K"];
-  c12 [shape=box, style=rounded, label="3:2 levels 1-2\n9 -> 6 -> 4 rows"];
-  r2 [shape=box, style=filled, fillcolor="#dde8f5", label="Rank 2\n4 carry-save rows\n(+ v[1])"];
-  c34 [shape=box, style=rounded, label="3:2 levels 3-4\n4 -> 3 -> 2 rows"];
-  cpa [shape=box, style=rounded, label="32-bit\nKogge-Stone\nadder"];
-  r3 [shape=box, style=filled, fillcolor="#dde8f5", label="Rank 3\nproduct 32b\n(+ v[2])"];
-  out [shape=plaintext, label="writeMem_val\nEN_writeMem = v[2]\nwriteMem_addr = ptr"];
-  in -> enc -> r1 -> pp -> c12 -> r2 -> c34 -> cpa -> r3 -> out;
-  {rank=same; enc; r1;}
-  {rank=same; c12; r2;}
-  {rank=same; pp;}
-  {rank=same; cpa; r3;}
+  in [shape=plaintext, label="mult_input0 (a), mult_input1 (b)\nEN_mult & RDY_mult"];
+  enc [shape=box, style=rounded, label="Booth radix-4\nrecode b\n+ operand isolation"];
+  r1 [shape=box, style=filled, fillcolor="#dde8f5", label="Rank 1 (40)\na 16b + digits 24b"];
+  tree [shape=box, style=rounded, label="select 8 PP rows,\nWallace bit-level\ncompression, 4 levels\n(low 8 columns resolved)"];
+  r2 [shape=box, style=filled, fillcolor="#dde8f5", label="Rank 2 (51)\ntwo rows +\nresolved low bits"];
+  cpa [shape=box, style=rounded, label="carry-propagate\nadder"];
+  r3 [shape=box, style=filled, fillcolor="#dde8f5", label="Rank 3 (32)\nproduct"];
+  out [shape=plaintext, label="writeMem_val, EN_writeMem = v[2]"];
+  in -> enc -> r1 -> tree -> r2 -> cpa -> r3 -> out;
+  {rank=same; enc; r1;} {rank=same; tree; r2;} {rank=same; cpa; r3;}
 }

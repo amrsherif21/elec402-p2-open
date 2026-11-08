@@ -1,28 +1,20 @@
 digraph dp800 {
   rankdir=TB; newrank=true; bgcolor=white; nodesep=0.2; ranksep=0.22;
   node [fontname="Helvetica", fontsize=9];
-  in [shape=plaintext, label="a, b,\nEN_mult &\nRDY_mult"];
-  enc [shape=box, style=rounded, label="Booth\nrecode b\n+ isolation"];
-  r1 [shape=box, style=filled, fillcolor="#dde8f5", label="R1\na 16b\ndigits 24b"];
+  in [shape=plaintext, label="a, b, EN_mult & RDY_mult"];
+  enc [shape=box, style=rounded, label="Booth recode b\n+ isolation"];
+  r1 [shape=box, style=filled, fillcolor="#dde8f5", label="R1 (40)\na + digits"];
   pp [shape=box, style=rounded, label="select\n8 PP rows"];
-  r2 [shape=box, style=filled, fillcolor="#dde8f5", label="R2\n8x17b PP\n+ 8 '+1'"];
-  c1 [shape=box, style=rounded, label="3:2 L1\n9->6"];
-  r3 [shape=box, style=filled, fillcolor="#dde8f5", label="R3\n6 rows"];
-  c23 [shape=box, style=rounded, label="3:2 L2, L3\n6->4->3"];
-  r4 [shape=box, style=filled, fillcolor="#dde8f5", label="R4\n3 rows"];
-  c4 [shape=box, style=rounded, label="3:2 L4\n3->2\ng=c&s\np=c^s"];
-  r5 [shape=box, style=filled, fillcolor="#dde8f5", label="R5\ng, p\n32b+32b"];
-  ca [shape=box, style=rounded, label="4-bit block\nprefix:\nsums for\ncin=0/1,\nblock carries"];
-  r6 [shape=box, style=filled, fillcolor="#dde8f5", label="R6\ns0, s1\nco0, co1"];
-  cb [shape=box, style=rounded, label="block-carry\nprefix (8)\n+ select"];
-  r7 [shape=box, style=filled, fillcolor="#dde8f5", label="R7\nproduct\n32b"];
-  out [shape=plaintext, label="writeMem_val\nEN_writeMem\n(v[6] copy)"];
-  in -> enc -> r1 -> pp -> r2 -> c1 -> r3 -> c23 -> r4 -> c4 -> r5 -> ca -> r6 -> cb -> r7 -> out;
-  {rank=same; enc; r1;}
-  {rank=same; pp; r2;}
-  {rank=same; c1; r3;}
-  {rank=same; c23; r4;}
-  {rank=same; c4; r5;}
-  {rank=same; ca; r6;}
-  {rank=same; cb; r7;}
+  r2 [shape=box, style=filled, fillcolor="#dde8f5", label="R2 (144)\n8x17b PP + 8 '+1'"];
+  c12 [shape=box, style=rounded, label="3:2 levels 1-2\n9->6->4 rows\n(late input last)"];
+  r3 [shape=box, style=filled, fillcolor="#dde8f5", label="R3 (92)\n4 rows"];
+  c34 [shape=box, style=rounded, label="3:2 levels 3-4\n4->3->2 rows"];
+  r4 [shape=box, style=filled, fillcolor="#dde8f5", label="R4 (60)\n2 rows"];
+  ca [shape=box, style=rounded, label="4-bit block sums\n(carry-in 0),\nblock carry-outs\n(carry-in 0 and 1)"];
+  r5 [shape=box, style=filled, fillcolor="#dde8f5", label="R5 (43)"];
+  cb [shape=box, style=rounded, label="block-carry prefix\n+ increment select"];
+  r6 [shape=box, style=filled, fillcolor="#dde8f5", label="R6 (32)\nproduct"];
+  out [shape=plaintext, label="writeMem_val\nEN_writeMem = v[5]"];
+  in -> enc -> r1 -> pp -> r2 -> c12 -> r3 -> c34 -> r4 -> ca -> r5 -> cb -> r6 -> out;
+  {rank=same; enc; r1;} {rank=same; pp; r2;} {rank=same; c12; r3;} {rank=same; c34; r4;} {rank=same; ca; r5;} {rank=same; cb; r6;}
 }
