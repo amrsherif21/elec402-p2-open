@@ -18,3 +18,4 @@
 | check_r5-A-267588f04b | `267588f04b0f` | [scorecard](results/check_r5-A-267588f04b/scorecard.md) |
 | check_r5-AB-71ec77895b | `71ec77895b78` | [scorecard](results/check_r5-AB-71ec77895b/scorecard.md) |
 | check_r5-B-3cdff88b90 | `3cdff88b90d1` | [scorecard](results/check_r5-B-3cdff88b90/scorecard.md) |
+| check_final-db08401acc | `db08401acce5` | [scorecard](results/check_final-db08401acc/scorecard.md) |
