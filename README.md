@@ -15,3 +15,6 @@
 | check_r4-walp-3f78efaa8a | `3f78efaa8a51` | [scorecard](results/check_r4-walp-3f78efaa8a/scorecard.md) |
 | check_r4-f8p-5bad848787 | `5bad8487876e` | [scorecard](results/check_r4-f8p-5bad848787/scorecard.md) |
 | check_final-6d228d0e28 | `6d228d0e2843` | [scorecard](results/check_final-6d228d0e28/scorecard.md) |
+| check_r5-A-267588f04b | `267588f04b0f` | [scorecard](results/check_r5-A-267588f04b/scorecard.md) |
+| check_r5-AB-71ec77895b | `71ec77895b78` | [scorecard](results/check_r5-AB-71ec77895b/scorecard.md) |
+| check_r5-B-3cdff88b90 | `3cdff88b90d1` | [scorecard](results/check_r5-B-3cdff88b90/scorecard.md) |
