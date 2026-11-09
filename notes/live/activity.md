@@ -780,3 +780,7 @@
 | 2026-11-09 00:42:56 UTC | Bash | `python3 - <<'EOF' p='submission/scripts/build_report.sh' s=open(p).read() s=s.replace("\\setlength{\\columnsep}{12pt}\n","\\setlength{\\columnsep}{12pt}\n\\newcommand{\\startcols}{\\begin{multicols}{2 ...` |
 | 2026-11-09 00:43:00 UTC | Bash | `cd submission/pdf_report/src && pandoc ../../../build/report/report.md -t latex --listings 2>/dev/null \| grep -n "startcols\\|stopcols\\|^#" \| head -8` |
 | 2026-11-09 00:43:19 UTC | Bash | `cd /home/user/elec402-p2-open && python3 - <<'EOF' p='submission/pdf_report/src/report.md' s=open(p).read() s=s.replace("\\startcols\n\nLISTING\n\n\\stopcols","'''{=latex}\n\\begin{multicols}{2}\n'''\ ...` |
+| 2026-11-09 00:43:23 UTC | Read | `/home/user/elec402-p2-open/build/report/pages5/p-22.png` |
+| 2026-11-09 00:43:31 UTC | Bash | `cat build/r4wal/top800.sv.in \| sed -n 1,15p; grep -n "^[a-z0-9_]*:" Makefile; grep -n -A12 "^f14:" Makefile; grep -n -A10 "^timing:" Makefile; ls submission/scripts` |
+| 2026-11-09 00:43:36 UTC | Bash | `cat >> notes/WORKLOG.md <<'EOF' ## Round 5 (last): three final ideas at 800 MHz, report appendix The user's review concluded that the R1–R4 cutsets are at the floor for radix-4 Booth with a Wallace tr ...` |
+| 2026-11-09 00:43:36 UTC | Bash | `mkdir -p build/r5 && cp submission/scripts/gen_tree.py build/r5/ && cp build/r4wal/{tb_mult.sv,mktop.py,top800.sv.in,gcount.sh} build/r5/ && sed 's#build/r4wal#build/r5#g' build/r4wal/run.sh > build/r ...` |
