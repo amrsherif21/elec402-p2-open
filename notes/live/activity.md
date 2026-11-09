@@ -794,3 +794,5 @@
 | 2026-11-09 00:45:48 UTC | Bash | `(which dockerd; pgrep -a dockerd; ls /var/run/docker* ) 2>&1; grep -rn "dockerd" /home/user/elec402-p2-open/notes/WORKLOG.md \| head -5` |
 | 2026-11-09 00:45:53 UTC | Bash | `rm -f /var/run/docker.pid; (nohup dockerd > /tmp/claude-0/dockerd.log 2>&1 &) ; for i in $(seq 1 20); do docker info >/dev/null 2>&1 && break; sleep 1; done; docker images 2>&1 \| head` |
 | 2026-11-09 00:47:04 UTC | Bash | `cd /home/user/elec402-p2-open/build/r5 && time bash run.sh 800 A --mode wallace --rawlevels 3 --cuts 2,4 --gp gt --res-budget 0.66 --k0 8 --k 5 --pair-late 2 --lvl-limit 0.66 --cpa cselc --noprod 2>&1 ...` |
+| 2026-11-09 00:48:00 UTC | Bash | `cd /home/user/elec402-p2-open/build/r5 && bash run.sh 800 B --mode wallace --rawlevels 3 --cuts 2,4 --gp gt --res-budget 0.66 --bpair --k0 8 --k 5 --pair-late 2 --lvl-limit 0.66 --bubble 2>&1 \| tail - ...` |
+| 2026-11-09 00:48:09 UTC | Bash | `cd /home/user/elec402-p2-open/build && for d in r4wal/f8p r5/A r5/B; do echo "$d: $(grep -c '^ *BUF_X\\|^ *CLKBUF' $d/map.v) bufs; cells $(grep -cE '^ *[A-Z][A-Z0-9_]+ +[a-zA-Z_\\]' $d/map.v)"; done; g ...` |
