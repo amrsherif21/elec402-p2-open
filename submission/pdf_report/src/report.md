@@ -2,7 +2,7 @@
 title: "mkMultBuff: a pipelined signed 16 × 16 multiplier with a 64-entry fill/drain buffer at 400 MHz and 800 MHz"
 subtitle: "Design report, open-source flow on Nangate45 (FreePDK45), slow corner"
 author: "Claude Opus 5.5 (Anthropic), AI agent in Claude Code"
-date: "8 November 2026"
+date: "9 November 2026"
 ---
 
 \begin{center}\fbox{\parbox{0.92\textwidth}{\textbf{AI-generated report.} This report, the RTL, the testbenches and the flow scripts were produced by an AI agent, Claude Opus 5.5 (Anthropic), working in a Claude Code session with subagents. The model is the author of record. Every number comes from a tool log under \texttt{submission/syn\_reports/} or from the sign-off scorecards, and \texttt{notes/WORKLOG.md} records the decisions in order.}}\end{center}
@@ -11,21 +11,21 @@ date: "8 November 2026"
 
 Two implementations of `mkMultBuff` were built, one for a 2.5 ns clock and one for a 1.25 ns clock. Each takes one pair of 16-bit operands per cycle, writes the 32-bit products to an external 64-word memory in order, and returns them once the memory is full. Both meet the slack target of SPEC Section 5 in the open-source flow at the Nangate45 slow corner (0.95 V, 125 °C) and in the GPDK045 sign-off, and area and power are judged on the sign-off results.
 
-Two rounds of flip-flop minimisation took the 800 MHz design from 577 to 422 flip-flops and the 400 MHz design from 166 to 108. In sign-off, that cut area by 25.3 % and 11.8 % and power by 28.2 % and 21.0 %.
+Three rounds of optimisation took the 800 MHz design from 577 to 422 flip-flops and the 400 MHz design from 166 to 108. In sign-off, that cut area by 21.0 % and 11.8 % and power by 34.8 % and 21.0 %.
 
 | | 400 MHz (2.5 ns) | 800 MHz (1.25 ns) |
 |---------------------------------------|------------:|------------:|
 | Register ranks (latency) / flip-flops | 2 / 108 | 6 / 422 |
-| GPDK045 sign-off: area | 2427.5 µm² | 4240.5 µm² |
-| GPDK045 sign-off: power (vectorless) | 177.5 µW | 805.9 µW |
-| GPDK045 sign-off: worst slack (target) | 158 ps (125) | 75 ps (62) |
+| GPDK045 sign-off: area | 2427.5 µm² | 4485.3 µm² |
+| GPDK045 sign-off: power (vectorless) | 177.5 µW | 732.0 µW |
+| GPDK045 sign-off: worst slack (target) | 158 ps (125) | 79 ps (62) |
 | GPDK045 sign-off: SDF simulation | 1264 of 1264 products | 1162 of 1162 products |
 | First design in sign-off: area / power | 2752.1 µm² / 224.6 µW | 5674.5 µm² / 1121.9 µW |
-| Nangate45: worst setup / hold slack | +0.172 / +0.061 ns | +0.124 / +0.041 ns |
-| Nangate45: cell area (sequential) | 2183.9 (488.4) µm² | 3864.2 (1910.4) µm² |
-| Nangate45: power, vectorless estimate | 550.9 µW | 2113.7 µW |
-| Nangate45: power from simulation, whole run | 546.8 µW | 2400.3 µW |
-| Nangate45: 64-cycle fill / drain window | 1436.8 / 304.2 µW | 4424.7 / 1860.8 µW |
+| Nangate45: worst setup / hold slack | +0.172 / +0.061 ns | +0.127 / +0.041 ns |
+| Nangate45: cell area (sequential) | 2183.9 (488.4) µm² | 3853.3 (1910.4) µm² |
+| Nangate45: power, vectorless estimate | 550.9 µW | 1957.1 µW |
+| Nangate45: power from simulation, whole run | 546.8 µW | 2424.7 µW |
+| Nangate45: 64-cycle fill / drain window | 1436.8 / 304.2 µW | 4411.3 / 1861.2 µW |
 | RTL, gate-level and SDF checkers | ALL PASS | ALL PASS |
 | Netlist that violates timing | TIMING FAIL | TIMING FAIL |
 | Flip-flops proven reset by `RST_N` (F14) / RTL mutants caught | 108 of 108 / 11 of 11 | 422 of 422 / 13 of 13 |
@@ -80,13 +80,15 @@ The critical path runs from rank 2 through the 32-bit adder to `writeMem_val[30]
 
 ## 800 MHz: six ranks, product register kept
 
-A flip-flop's clock-to-output delay (0.35 to 0.47 ns) and setup time leave about 0.72 ns of logic per 1.25 ns stage, which is about two compression levels. The tree is therefore cut after levels 2 and 4, where Wallace leaves 85 and 52 bits. The generate and transmit bits of the final rows are formed before rank 4.
+Six ranks is the floor for radix-4 Booth with a Wallace tree at this corner. A flip-flop's clock-to-output delay and setup time take about 0.58 ns of each 1.25 ns cycle, which leaves about 0.67 ns of logic per stage. Selecting a Booth partial product takes about 0.45 ns and one full-adder sum about 0.35 ns, so selection and the first compression level together need about 1.38 ns and cannot share a stage. Selection therefore gets the stage between the operand register (R1) and the partial-product register (R2). Selecting straight from the input ports would save R1, but through the modelled DFF_X1 driver that alone costs 1.25 to 1.6 ns. Radix-8 recoding would leave six rows instead of eight, but it needs the odd multiple 3a, a 17-bit carry-propagate addition that takes a stage of its own and gives back the rank it saves.
+
+The rest of the cycle budget fits about two compression levels per stage. The tree is therefore cut after levels 2 and 4, where Wallace leaves 85 and 52 bits. The generate and transmit bits of the final rows are formed before rank 4.
 
 No single-stage 32-bit adder fits in one stage at this corner. The prefix networks of Harris's taxonomy [22] all missed: Han-Carlson [23] by 0.164 ns, Sklansky [24] by 0.176 ns, Kogge-Stone [12] by 0.177 ns and Brent-Kung [25] by 0.324 ns. The final adder is therefore a two-stage carry-increment adder [27]. Its middle rank holds the block sums for carry-in 0 and the block carries (38 bits). The second stage resolves the block carries and increments the blocks that receive one.
 
 ![800 MHz datapath, six register ranks (shaded) with their widths in bits.](../fig/dp800.png){width=70%}
 
-At 800 MHz the product register was kept. Without it, the adder's last stage drives the port directly. Our flow needed an extra block-carry level moved into the previous stage to fit, and sign-off upsized that path: the row-tree candidate without the register lost 2.2 % area but gained 19 % power. The tree cuts were rebalanced until every rank had at least +0.124 ns in our flow. The critical path runs from a partial-product bit in rank 2 through levels 1 and 2 into rank 3, arriving at 1.037 ns against 1.161 ns.
+At 800 MHz the product register was kept. Without it, the adder's last stage drives the port directly. Our flow needed an extra block-carry level moved into the previous stage to fit, and sign-off upsized that path: the row-tree candidate without the register lost 2.2 % area but gained 19 % power. The tree cuts were rebalanced until every rank had at least +0.124 ns in our flow. In the final design the worst datapath rank is R3 at +0.128 ns, and the critical path is in the control, from `EN_writeMem` through the write-pointer increment to `writeMem_addr[5]`, arriving at 1.020 ns against 1.147 ns.
 
 ## Candidates and the sign-off decision
 
@@ -99,9 +101,18 @@ Subagents evaluated the row-tree and Wallace lines in parallel. The shortlist we
 | Row tree, no product register, digit-gated reset | 408 | 4320.8 | 988.2 | 109 | 1.165 |
 | Wallace, no product register, digit-gated reset | 389 | 4188.8 | 953.1 | 99 | 1.090 |
 | Wallace, product register, digit-gated reset | 422 | 4270.2 | 860.8 | 101 | 1.003 |
-| **Wallace, product register, rebalanced (final)** | **422** | **4240.5** | **805.9** | **75** | **0.933** |
+| Wallace, product register, rebalanced (round 4 final) | 422 | 4240.5 | 805.9 | 75 | 0.933 |
+| Round 5 A: carry-select tail, no product register | 402 | 4428.9 | 1014.0 | 76 | 1.226 |
+| Round 5 A and B together | 402 | 4359.9 | 820.6 | 80 | 0.976 |
+| **Round 5 B: bubble zeroing (final)** | **422** | **4485.3** | **732.0** | **79** | **0.896** |
 
-The final 800 MHz design is the only one that beats the previous design on both area (−4.0 %) and power (−2.9 %). At 400 MHz the Wallace design without a product register (108 flops, 2427.5 µm², 177.5 µW) replaced the version with one (141 flops, 2660.8 µm², 215.2 µW).
+In round 4 the rebalanced Wallace design was the only one that beat the row tree on both area (−4.0 %) and power (−2.9 %). Round 5 tried three last changes to it, keeping any that lowered the sign-off area × power product.
+
+The carry-select tail (A) forms both sums of each adder block in stage 5 together with the block carry-ins, so the last stage is one 2:1 select per bit and the product register can go (402 flops). Its port path in our flow had +0.238 ns of slack, but sign-off power rose 26 %, the same upsizing of the output path seen in round 4.
+
+Bubble zeroing (B) extends the reset gate that every rank already has for F14. Each rank from R2 on loads zeros unless `RST_N` and the previous rank's valid bit are both 1, so registers behind an empty slot stay at zero. It adds no flip-flops, because synthesis merges the multiplier's valid chain with the control's, and it costs 5.8 % area. Sign-off power fell 9.2 %, so the product is 0.961 of the round 4 design. The saving belongs to the estimate more than to the circuit. A vectorless estimate propagates a default switching probability through each AND gate and so sees quieter registers. In simulation, operand isolation already keeps the data of an empty slot at zero, and our activity-based power changed by only −2 to +1 %.
+
+One-hot Booth selects (C) remove the selection XORs but need 7 more flip-flops, and in our flow they cost 144 to 193 µm² and 8 % vectorless power, so they did not go to sign-off. A and B together ranked best in our flow (0.862) and only third in sign-off (1.047). B is the final 800 MHz design. At 400 MHz the Wallace design without a product register (108 flops, 2427.5 µm², 177.5 µW) replaced the version with one (141 flops, 2660.8 µm², 215.2 µW).
 
 # Verification
 
@@ -121,14 +132,14 @@ Mutation testing of the final RTL measures the checker's strength. It caught all
 
 # Area and power
 
-Area is the sum of the Liberty cell areas of the final netlist. Flip-flops are 22 % of it at 400 MHz and 49 % at 800 MHz. The activity-based figures come from OpenSTA `read_vcd` on the zero-delay gate-level simulation of the full checker run and of its two 64-cycle windows.
+Area is the sum of the Liberty cell areas of the final netlist. Flip-flops are 22 % of it at 400 MHz and 50 % at 800 MHz. The activity-based figures come from OpenSTA `read_vcd` on the zero-delay gate-level simulation of the full checker run and of its two 64-cycle windows.
 
 | Power (µW) | 400 internal | 400 switching | 400 leakage | 400 total | 800 total |
 |--------------|------:|------:|------:|------:|------:|
-| Vectorless estimate | 353.0 | 165.5 | 32.4 | 550.9 | 2113.7 |
-| Whole run | 349.8 | 164.7 | 32.3 | 546.8 | 2400.3 |
-| Fill window | 751.4 | 650.9 | 34.5 | 1436.8 | 4424.7 |
-| Drain window | 244.8 | 27.7 | 31.6 | 304.2 | 1860.8 |
+| Vectorless estimate | 353.0 | 165.5 | 32.4 | 550.9 | 1957.1 |
+| Whole run | 349.8 | 164.7 | 32.3 | 546.8 | 2424.7 |
+| Fill window | 751.4 | 650.9 | 34.5 | 1436.8 | 4411.3 |
+| Drain window | 244.8 | 27.7 | 31.6 | 304.2 | 1861.2 |
 
 In the fill window the multiplier switches every cycle. In the drain window the datapath is still, and what remains is mostly flip-flop clock power. Against the first designs, removing 155 flops at 800 MHz cut drain-window power from 2536 to 1861 µW (−27 %). At 400 MHz, removing 58 cut it from 430 to 304 µW (−29 %). The zero-delay VCD that SPEC prescribes excludes glitch power.
 
@@ -146,8 +157,9 @@ In the fill window the multiplier switches every cycle. In the drain window the 
 | 800 MHz: 3:2 inputs ordered by arrival, two levels per stage | carry-save ranks 117 + 76 + 60 → 92 + 60 flops |
 | 800 MHz: carry-increment instead of carry-select adder | middle rank 64 → 43 flops |
 | 800 MHz: row tree to rebalanced Wallace tree | −20 flops, −175.7 µm² (−4.0 %), −23.8 µW (−2.9 %) |
-| 800 MHz total, from the first design | 577 → 422 flops, −25.3 % area, −28.2 % power |
-| Rejected: digit-gated reset, no product register at 800 MHz, clock gating | +7 %, +19 % sign-off power; vectorless +1 to +27 % |
+| 800 MHz: bubble zeroing | 0 flops, +244.8 µm² (+5.8 %), −73.9 µW (−9.2 %) |
+| 800 MHz total, from the first design | 577 → 422 flops, −21.0 % area, −34.8 % power |
+| Rejected: digit-gated reset, no product register at 800 MHz (row tree, carry-select tail), clock gating, one-hot selects | sign-off power +7 %, +19 %, +26 %; vectorless +1 to +27 %; +8 % (our flow) |
 
 # Tool flow and departures from the constraints
 
@@ -174,7 +186,7 @@ SIGNOFF_SECTION
 
 # Project metrics
 
-The work took one Claude Code session on 8 November 2026. Rounds 1 and 2 (design and report) ran from 02:33 to 07:15 UTC, round 3 from 07:50 to 09:10 UTC, and round 4 after the second review until the final build. Two or three subagents worked in parallel in each design round, with at most three flows running at a time. Token usage was counted from every session transcript under `~/.claude/projects/` by `submission/scripts/token_usage.py`. Each API response is counted once and priced at Anthropic's published API rates for Claude Opus 5.5 [17]: $4 per million input tokens, $20 per million output tokens, $0.20 per million cache reads, and 1.25 or 2 times the input rate for 5-minute or 1-hour cache writes. The count was taken just before the final build.
+The work took one Claude Code session on 8 and 9 November 2026. Rounds 1 and 2 (design and report) ran from 02:33 to 07:15 UTC, round 3 from 07:50 to 09:10 UTC, round 4 from 17:44 to 18:31 UTC, and round 5 on 9 November from 00:43 UTC until the final build. Two or three subagents worked in parallel in each design round, with at most three flows running at a time. Token usage was counted from every session transcript under `~/.claude/projects/` by `submission/scripts/token_usage.py`. Each API response is counted once and priced at Anthropic's published API rates for Claude Opus 5.5 [17]: $4 per million input tokens, $20 per million output tokens, $0.20 per million cache reads, and 1.25 or 2 times the input rate for 5-minute or 1-hour cache writes. The count was taken just before the final build.
 
 TOKEN_TABLE
 

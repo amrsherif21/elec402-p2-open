@@ -6,42 +6,39 @@
         +----------Local Count, excluding submodules.
         |        +-Local Area, excluding submodules.
         |        | 
-     2076        - wires
-     2615        - wire bits
+     2071        - wires
+     2609        - wire bits
        33        - public wires
-      559        - public wire bits
+      558        - public wire bits
        16        - ports
       149        - port bits
-     2046 3.73E+03 cells
-       82   87.248   AND2_X1
+     2041 3.72E+03 cells
+       87   92.568   AND2_X1
        28    37.24   AND3_X1
-        1    1.596   AND3_X2
-      110   117.04   AOI21_X1
+        2    5.852   AND3_X4
+      118  125.552   AOI21_X1
         3    5.586   AOI21_X2
       122   162.26   AOI22_X1
-       70    55.86   BUF_X1
-       67   71.288   BUF_X2
+       84   67.032   BUF_X1
+       43   45.752   BUF_X2
         2    3.724   BUF_X4
-        1    0.798   CLKBUF_X1
-        3    3.192   CLKBUF_X2
+        2    1.596   CLKBUF_X1
+        2    2.128   CLKBUF_X2
       422 1.91E+03   DFF_X1
-       61   32.452   INV_X1
-        1    0.798   INV_X2
-      140   111.72   NAND2_X1
-       44   46.816   NAND3_X1
-      357  284.886   NOR2_X1
+       67   35.644   INV_X1
+      139  110.922   NAND2_X1
+       38   40.432   NAND3_X1
+      359  286.482   NOR2_X1
         2     2.66   NOR2_X2
-       88   93.632   OAI21_X1
+       81   86.184   OAI21_X1
         1    1.862   OAI21_X2
-        5     6.65   OAI22_X1
-       16   17.024   OR2_X1
-        1     1.33   OR2_X2
+        4     5.32   OAI22_X1
+       17   18.088   OR2_X1
         1    2.394   OR2_X4
-      196  312.816   XNOR2_X1
-        9    23.94   XNOR2_X2
-      212  338.352   XOR2_X1
-        1    2.394   XOR2_X2
+      201  320.796   XNOR2_X1
+        8    21.28   XNOR2_X2
+      208  331.968   XOR2_X1
 
-   Chip area for module '\mkMultBuff': 3733.842000
-     of which used for sequential elements: 1908.284000 (51.11%)
+   Chip area for module '\mkMultBuff': 3721.606000
+     of which used for sequential elements: 1908.284000 (51.28%)
 

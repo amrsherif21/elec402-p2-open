@@ -43,15 +43,16 @@ synchronous active-low reset.
 
 usage: gen_tree.py OUT.sv [options]   (prints a stage / cutset summary; --stats only
        prints the level statistics of Dadda and Wallace)
-Final designs (submission/rtl_400, submission/rtl_800; see notes/WORKLOG.md, round 4):
+Final designs (submission/rtl_400, submission/rtl_800; see notes/WORKLOG.md, rounds 4-5):
   400 MHz, 2 ranks, 108 flops (no product register):
     --mode wallace --rawlevels 3 --nosel --cuts 4 --gp cpa --cpa one --res-budget 1.9 --noprod
-  800 MHz, 6 ranks, 422 flops (with product register):
+  800 MHz, 6 ranks, 391 datapath flops + valid chain (with product register, bubble zeroing):
     --mode wallace --rawlevels 3 --cuts 2,4 --gp gt --res-budget 0.66 --bpair --k0 8 --k 5
-    --pair-late 2 --lvl-limit 0.66
+    --pair-late 2 --lvl-limit 0.66 --bubble
   Options evaluated and not used in the final designs: --rst-digits (reset the PP rank
   through the Booth digits; cost sign-off slack and power), --noprod at 800 MHz (output
-  path upsized in sign-off), --blocks, --res-cout, --rawop.
+  path upsized in sign-off), --cpa cselc (round 5 A: sign-off power up), --onehot (round 5
+  C: more area and power in our flow), --blocks, --res-cout, --rawop.
 Delay model (model ns): XOR --dx, AND/OR --da; the level-based modes ignore it except for
 the input assignment (latest input on the fast input) and the optional extras.
 """

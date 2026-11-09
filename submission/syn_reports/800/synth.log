@@ -54,17 +54,18 @@ Removed 0 unused modules.
 Cleaned up 0 empty switches.
 
 5.2.2. Executing PROC_RMDEAD pass (remove dead branches from decision trees).
-Marked 1 switch rules as full_case in process $proc$submission/rtl_800/mult_pipe.sv:1228$1011 in module mult_pipe.
-Marked 1 switch rules as full_case in process $proc$submission/rtl_800/mult_pipe.sv:1184$1009 in module mult_pipe.
-Marked 1 switch rules as full_case in process $proc$submission/rtl_800/mult_pipe.sv:1126$1007 in module mult_pipe.
-Marked 1 switch rules as full_case in process $proc$submission/rtl_800/mult_pipe.sv:1035$1005 in module mult_pipe.
-Marked 1 switch rules as full_case in process $proc$submission/rtl_800/mult_pipe.sv:885$1003 in module mult_pipe.
+Marked 1 switch rules as full_case in process $proc$submission/rtl_800/mult_pipe.sv:1234$1021 in module mult_pipe.
+Marked 1 switch rules as full_case in process $proc$submission/rtl_800/mult_pipe.sv:1190$1017 in module mult_pipe.
+Marked 1 switch rules as full_case in process $proc$submission/rtl_800/mult_pipe.sv:1132$1013 in module mult_pipe.
+Marked 1 switch rules as full_case in process $proc$submission/rtl_800/mult_pipe.sv:1041$1009 in module mult_pipe.
+Marked 1 switch rules as full_case in process $proc$submission/rtl_800/mult_pipe.sv:891$1005 in module mult_pipe.
+Marked 1 switch rules as full_case in process $proc$submission/rtl_800/mult_pipe.sv:53$115 in module mult_pipe.
 Marked 1 switch rules as full_case in process $proc$submission/rtl_800/mult_pipe.sv:43$25 in module mult_pipe.
 Marked 1 switch rules as full_case in process $proc$submission/rtl_800/mkMultBuff.sv:66$9 in module mkMultBuff.
 Removed a total of 0 dead cases.
 
 5.2.3. Executing PROC_PRUNE pass (remove redundant assignments in processes).
-Removed 11 redundant assignments.
+Removed 12 redundant assignments.
 Promoted 7 assignments to connections.
 
 5.2.4. Executing PROC_INIT pass (extract init attributes).
@@ -73,12 +74,12 @@ Promoted 7 assignments to connections.
 
 5.2.6. Executing PROC_ROM pass (convert switches to ROMs).
 Converted 0 switches.
-<suppressed ~15 debug messages>
+<suppressed ~16 debug messages>
 
 5.2.7. Executing PROC_MUX pass (convert decision trees to multiplexers).
-Creating decoders for process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:1228$1011'.
+Creating decoders for process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:1234$1021'.
      1/1: $0\p[31:0]
-Creating decoders for process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:1184$1009'.
+Creating decoders for process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:1190$1017'.
      1/38: $0\r5[37:0] [37]
      2/38: $0\r5[37:0] [36]
      3/38: $0\r5[37:0] [35]
@@ -117,7 +118,7 @@ Creating decoders for process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:
     36/38: $0\r5[37:0] [2]
     37/38: $0\r5[37:0] [1]
     38/38: $0\r5[37:0] [0]
-Creating decoders for process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:1126$1007'.
+Creating decoders for process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:1132$1013'.
      1/52: $0\r4[51:0] [51]
      2/52: $0\r4[51:0] [50]
      3/52: $0\r4[51:0] [49]
@@ -170,7 +171,7 @@ Creating decoders for process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:
     50/52: $0\r4[51:0] [2]
     51/52: $0\r4[51:0] [1]
     52/52: $0\r4[51:0] [0]
-Creating decoders for process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:1035$1005'.
+Creating decoders for process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:1041$1009'.
      1/85: $0\r3[84:0] [84]
      2/85: $0\r3[84:0] [83]
      3/85: $0\r3[84:0] [82]
@@ -256,7 +257,7 @@ Creating decoders for process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:
     83/85: $0\r3[84:0] [2]
     84/85: $0\r3[84:0] [1]
     85/85: $0\r3[84:0] [0]
-Creating decoders for process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:885$1003'.
+Creating decoders for process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:891$1005'.
      1/144: $0\r2[143:0] [143]
      2/144: $0\r2[143:0] [142]
      3/144: $0\r2[143:0] [141]
@@ -401,6 +402,8 @@ Creating decoders for process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:
    142/144: $0\r2[143:0] [2]
    143/144: $0\r2[143:0] [1]
    144/144: $0\r2[143:0] [0]
+Creating decoders for process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:53$115'.
+     1/1: $0\vq[4:0]
 Creating decoders for process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:43$25'.
      1/32: $0\neg_q[7:0]
      2/32: $1\booth_enc$func$submission/rtl_800/mult_pipe.sv:47$24.neg[7:0]$41 [6]
@@ -452,83 +455,87 @@ Creating decoders for process `\mkMultBuff.$proc$submission/rtl_800/mkMultBuff.s
 5.2.8. Executing PROC_DLATCH pass (convert process syncs to latches).
 
 5.2.9. Executing PROC_DFF pass (convert process syncs to FFs).
-Creating register for signal `\mult_pipe.\p' using process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:1228$1011'.
-  created $dff cell `$procdff$2146' with positive edge clock.
-Creating register for signal `\mult_pipe.\r5' using process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:1184$1009'.
-  created $dff cell `$procdff$2147' with positive edge clock.
-Creating register for signal `\mult_pipe.\r4' using process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:1126$1007'.
-  created $dff cell `$procdff$2148' with positive edge clock.
-Creating register for signal `\mult_pipe.\r3' using process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:1035$1005'.
-  created $dff cell `$procdff$2149' with positive edge clock.
-Creating register for signal `\mult_pipe.\r2' using process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:885$1003'.
-  created $dff cell `$procdff$2150' with positive edge clock.
-Creating register for signal `\mult_pipe.\a_q' using process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:43$25'.
-  created $dff cell `$procdff$2151' with positive edge clock.
-Creating register for signal `\mult_pipe.\one_q' using process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:43$25'.
-  created $dff cell `$procdff$2152' with positive edge clock.
-Creating register for signal `\mult_pipe.\two_q' using process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:43$25'.
-  created $dff cell `$procdff$2153' with positive edge clock.
-Creating register for signal `\mult_pipe.\neg_q' using process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:43$25'.
-  created $dff cell `$procdff$2154' with positive edge clock.
-Creating register for signal `\mult_pipe.\booth_enc$func$submission/rtl_800/mult_pipe.sv:47$24.$result' using process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:43$25'.
-  created $dff cell `$procdff$2155' with positive edge clock.
-Creating register for signal `\mult_pipe.\booth_enc$func$submission/rtl_800/mult_pipe.sv:47$24.y' using process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:43$25'.
-  created $dff cell `$procdff$2156' with positive edge clock.
-Creating register for signal `\mult_pipe.\booth_enc$func$submission/rtl_800/mult_pipe.sv:47$24.yx' using process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:43$25'.
-  created $dff cell `$procdff$2157' with positive edge clock.
-Creating register for signal `\mult_pipe.\booth_enc$func$submission/rtl_800/mult_pipe.sv:47$24.one' using process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:43$25'.
-  created $dff cell `$procdff$2158' with positive edge clock.
-Creating register for signal `\mult_pipe.\booth_enc$func$submission/rtl_800/mult_pipe.sv:47$24.two' using process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:43$25'.
-  created $dff cell `$procdff$2159' with positive edge clock.
-Creating register for signal `\mult_pipe.\booth_enc$func$submission/rtl_800/mult_pipe.sv:47$24.neg' using process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:43$25'.
-  created $dff cell `$procdff$2160' with positive edge clock.
-Creating register for signal `\mult_pipe.\booth_enc$func$submission/rtl_800/mult_pipe.sv:47$24.$fordecl_block$22.i' using process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:43$25'.
+Creating register for signal `\mult_pipe.\p' using process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:1234$1021'.
   created $dff cell `$procdff$2161' with positive edge clock.
-Creating register for signal `\mkMultBuff.\rdy_mult_q' using process `\mkMultBuff.$proc$submission/rtl_800/mkMultBuff.sv:66$9'.
+Creating register for signal `\mult_pipe.\r5' using process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:1190$1017'.
   created $dff cell `$procdff$2162' with positive edge clock.
-Creating register for signal `\mkMultBuff.\rdy_rd_q' using process `\mkMultBuff.$proc$submission/rtl_800/mkMultBuff.sv:66$9'.
+Creating register for signal `\mult_pipe.\r4' using process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:1132$1013'.
   created $dff cell `$procdff$2163' with positive edge clock.
-Creating register for signal `\mkMultBuff.\rdy_mult_on' using process `\mkMultBuff.$proc$submission/rtl_800/mkMultBuff.sv:66$9'.
+Creating register for signal `\mult_pipe.\r3' using process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:1041$1009'.
   created $dff cell `$procdff$2164' with positive edge clock.
-Creating register for signal `\mkMultBuff.\rdy_rd_on' using process `\mkMultBuff.$proc$submission/rtl_800/mkMultBuff.sv:66$9'.
+Creating register for signal `\mult_pipe.\r2' using process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:891$1005'.
   created $dff cell `$procdff$2165' with positive edge clock.
-Creating register for signal `\mkMultBuff.\acc_q' using process `\mkMultBuff.$proc$submission/rtl_800/mkMultBuff.sv:66$9'.
+Creating register for signal `\mult_pipe.\vq' using process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:53$115'.
   created $dff cell `$procdff$2166' with positive edge clock.
-Creating register for signal `\mkMultBuff.\wp_q' using process `\mkMultBuff.$proc$submission/rtl_800/mkMultBuff.sv:66$9'.
+Creating register for signal `\mult_pipe.\a_q' using process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:43$25'.
   created $dff cell `$procdff$2167' with positive edge clock.
-Creating register for signal `\mkMultBuff.\rp_q' using process `\mkMultBuff.$proc$submission/rtl_800/mkMultBuff.sv:66$9'.
+Creating register for signal `\mult_pipe.\one_q' using process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:43$25'.
   created $dff cell `$procdff$2168' with positive edge clock.
-Creating register for signal `\mkMultBuff.\wc_q' using process `\mkMultBuff.$proc$submission/rtl_800/mkMultBuff.sv:66$9'.
+Creating register for signal `\mult_pipe.\two_q' using process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:43$25'.
   created $dff cell `$procdff$2169' with positive edge clock.
-Creating register for signal `\mkMultBuff.\rc_q' using process `\mkMultBuff.$proc$submission/rtl_800/mkMultBuff.sv:66$9'.
+Creating register for signal `\mult_pipe.\neg_q' using process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:43$25'.
   created $dff cell `$procdff$2170' with positive edge clock.
-Creating register for signal `\mkMultBuff.\v_q' using process `\mkMultBuff.$proc$submission/rtl_800/mkMultBuff.sv:66$9'.
+Creating register for signal `\mult_pipe.\booth_enc$func$submission/rtl_800/mult_pipe.sv:47$24.$result' using process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:43$25'.
   created $dff cell `$procdff$2171' with positive edge clock.
-Creating register for signal `\mkMultBuff.\vld_q' using process `\mkMultBuff.$proc$submission/rtl_800/mkMultBuff.sv:66$9'.
+Creating register for signal `\mult_pipe.\booth_enc$func$submission/rtl_800/mult_pipe.sv:47$24.y' using process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:43$25'.
   created $dff cell `$procdff$2172' with positive edge clock.
+Creating register for signal `\mult_pipe.\booth_enc$func$submission/rtl_800/mult_pipe.sv:47$24.yx' using process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:43$25'.
+  created $dff cell `$procdff$2173' with positive edge clock.
+Creating register for signal `\mult_pipe.\booth_enc$func$submission/rtl_800/mult_pipe.sv:47$24.one' using process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:43$25'.
+  created $dff cell `$procdff$2174' with positive edge clock.
+Creating register for signal `\mult_pipe.\booth_enc$func$submission/rtl_800/mult_pipe.sv:47$24.two' using process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:43$25'.
+  created $dff cell `$procdff$2175' with positive edge clock.
+Creating register for signal `\mult_pipe.\booth_enc$func$submission/rtl_800/mult_pipe.sv:47$24.neg' using process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:43$25'.
+  created $dff cell `$procdff$2176' with positive edge clock.
+Creating register for signal `\mult_pipe.\booth_enc$func$submission/rtl_800/mult_pipe.sv:47$24.$fordecl_block$22.i' using process `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:43$25'.
+  created $dff cell `$procdff$2177' with positive edge clock.
+Creating register for signal `\mkMultBuff.\rdy_mult_q' using process `\mkMultBuff.$proc$submission/rtl_800/mkMultBuff.sv:66$9'.
+  created $dff cell `$procdff$2178' with positive edge clock.
+Creating register for signal `\mkMultBuff.\rdy_rd_q' using process `\mkMultBuff.$proc$submission/rtl_800/mkMultBuff.sv:66$9'.
+  created $dff cell `$procdff$2179' with positive edge clock.
+Creating register for signal `\mkMultBuff.\rdy_mult_on' using process `\mkMultBuff.$proc$submission/rtl_800/mkMultBuff.sv:66$9'.
+  created $dff cell `$procdff$2180' with positive edge clock.
+Creating register for signal `\mkMultBuff.\rdy_rd_on' using process `\mkMultBuff.$proc$submission/rtl_800/mkMultBuff.sv:66$9'.
+  created $dff cell `$procdff$2181' with positive edge clock.
+Creating register for signal `\mkMultBuff.\acc_q' using process `\mkMultBuff.$proc$submission/rtl_800/mkMultBuff.sv:66$9'.
+  created $dff cell `$procdff$2182' with positive edge clock.
+Creating register for signal `\mkMultBuff.\wp_q' using process `\mkMultBuff.$proc$submission/rtl_800/mkMultBuff.sv:66$9'.
+  created $dff cell `$procdff$2183' with positive edge clock.
+Creating register for signal `\mkMultBuff.\rp_q' using process `\mkMultBuff.$proc$submission/rtl_800/mkMultBuff.sv:66$9'.
+  created $dff cell `$procdff$2184' with positive edge clock.
+Creating register for signal `\mkMultBuff.\wc_q' using process `\mkMultBuff.$proc$submission/rtl_800/mkMultBuff.sv:66$9'.
+  created $dff cell `$procdff$2185' with positive edge clock.
+Creating register for signal `\mkMultBuff.\rc_q' using process `\mkMultBuff.$proc$submission/rtl_800/mkMultBuff.sv:66$9'.
+  created $dff cell `$procdff$2186' with positive edge clock.
+Creating register for signal `\mkMultBuff.\v_q' using process `\mkMultBuff.$proc$submission/rtl_800/mkMultBuff.sv:66$9'.
+  created $dff cell `$procdff$2187' with positive edge clock.
+Creating register for signal `\mkMultBuff.\vld_q' using process `\mkMultBuff.$proc$submission/rtl_800/mkMultBuff.sv:66$9'.
+  created $dff cell `$procdff$2188' with positive edge clock.
 
 5.2.10. Executing PROC_MEMWR pass (convert process memory writes to cells).
 
 5.2.11. Executing PROC_CLEAN pass (remove empty switches from decision trees).
-Found and cleaned up 1 empty switch in `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:1228$1011'.
-Removing empty process `mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:1228$1011'.
-Found and cleaned up 1 empty switch in `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:1184$1009'.
-Removing empty process `mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:1184$1009'.
-Found and cleaned up 1 empty switch in `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:1126$1007'.
-Removing empty process `mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:1126$1007'.
-Found and cleaned up 1 empty switch in `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:1035$1005'.
-Removing empty process `mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:1035$1005'.
-Found and cleaned up 1 empty switch in `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:885$1003'.
-Removing empty process `mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:885$1003'.
+Found and cleaned up 1 empty switch in `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:1234$1021'.
+Removing empty process `mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:1234$1021'.
+Found and cleaned up 1 empty switch in `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:1190$1017'.
+Removing empty process `mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:1190$1017'.
+Found and cleaned up 1 empty switch in `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:1132$1013'.
+Removing empty process `mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:1132$1013'.
+Found and cleaned up 1 empty switch in `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:1041$1009'.
+Removing empty process `mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:1041$1009'.
+Found and cleaned up 1 empty switch in `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:891$1005'.
+Removing empty process `mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:891$1005'.
+Found and cleaned up 1 empty switch in `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:53$115'.
+Removing empty process `mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:53$115'.
 Found and cleaned up 1 empty switch in `\mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:43$25'.
 Removing empty process `mult_pipe.$proc$submission/rtl_800/mult_pipe.sv:43$25'.
 Found and cleaned up 9 empty switches in `\mkMultBuff.$proc$submission/rtl_800/mkMultBuff.sv:66$9'.
 Removing empty process `mkMultBuff.$proc$submission/rtl_800/mkMultBuff.sv:66$9'.
-Cleaned up 15 empty switches.
+Cleaned up 16 empty switches.
 
 5.2.12. Executing OPT_EXPR pass (perform const folding).
 Optimizing module mult_pipe.
-<suppressed ~325 debug messages>
+<suppressed ~6 debug messages>
 Optimizing module mkMultBuff.
 <suppressed ~14 debug messages>
 
@@ -546,8 +553,8 @@ Optimizing module mkMultBuff.
 
 5.6. Executing OPT_CLEAN pass (remove unused cells and wires).
 Finding unused cells or wires in module \mkMultBuff..
-Removed 77 unused cells and 1635 unused wires.
-<suppressed ~115 debug messages>
+Removed 73 unused cells and 1633 unused wires.
+<suppressed ~111 debug messages>
 
 5.7. Executing CHECK pass (checking for obvious problems).
 Checking module mkMultBuff...
@@ -560,12 +567,12 @@ Optimizing module mkMultBuff.
 
 5.8.2. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\mkMultBuff'.
-Computing hashes of 1318 cells of `\mkMultBuff'.
+Computing hashes of 1335 cells of `\mkMultBuff'.
 Finding duplicate cells in `\mkMultBuff'.
-Computing hashes of 1297 cells of `\mkMultBuff'.
+Computing hashes of 1309 cells of `\mkMultBuff'.
 Finding duplicate cells in `\mkMultBuff'.
-<suppressed ~63 debug messages>
-Removed a total of 21 cells.
+<suppressed ~78 debug messages>
+Removed a total of 26 cells.
 
 5.8.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
 Running muxtree optimizer on module \mkMultBuff..
@@ -573,7 +580,7 @@ Running muxtree optimizer on module \mkMultBuff..
   Evaluating internal representation of mux trees.
   Analyzing evaluation results.
 Removed 0 multiplexer ports.
-<suppressed ~693 debug messages>
+<suppressed ~695 debug messages>
 
 5.8.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
   Optimizing cells in module \mkMultBuff.
@@ -581,7 +588,7 @@ Performed a total of 0 changes.
 
 5.8.5. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\mkMultBuff'.
-Computing hashes of 1297 cells of `\mkMultBuff'.
+Computing hashes of 1309 cells of `\mkMultBuff'.
 Finding duplicate cells in `\mkMultBuff'.
 Removed a total of 0 cells.
 
@@ -589,7 +596,7 @@ Removed a total of 0 cells.
 
 5.8.7. Executing OPT_CLEAN pass (remove unused cells and wires).
 Finding unused cells or wires in module \mkMultBuff..
-Removed 0 unused cells and 21 unused wires.
+Removed 0 unused cells and 26 unused wires.
 <suppressed ~1 debug messages>
 
 5.8.8. Executing OPT_EXPR pass (perform const folding).
@@ -603,7 +610,7 @@ Running muxtree optimizer on module \mkMultBuff..
   Evaluating internal representation of mux trees.
   Analyzing evaluation results.
 Removed 0 multiplexer ports.
-<suppressed ~693 debug messages>
+<suppressed ~695 debug messages>
 
 5.8.11. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
   Optimizing cells in module \mkMultBuff.
@@ -611,7 +618,7 @@ Performed a total of 0 changes.
 
 5.8.12. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\mkMultBuff'.
-Computing hashes of 1297 cells of `\mkMultBuff'.
+Computing hashes of 1309 cells of `\mkMultBuff'.
 Finding duplicate cells in `\mkMultBuff'.
 Removed a total of 0 cells.
 
@@ -651,7 +658,7 @@ Optimizing module mkMultBuff.
 
 5.10.2. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\mkMultBuff'.
-Computing hashes of 1297 cells of `\mkMultBuff'.
+Computing hashes of 1309 cells of `\mkMultBuff'.
 Finding duplicate cells in `\mkMultBuff'.
 Removed a total of 0 cells.
 
@@ -661,7 +668,7 @@ Running muxtree optimizer on module \mkMultBuff..
   Evaluating internal representation of mux trees.
   Analyzing evaluation results.
 Removed 0 multiplexer ports.
-<suppressed ~693 debug messages>
+<suppressed ~695 debug messages>
 
 5.10.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
   Optimizing cells in module \mkMultBuff.
@@ -669,47 +676,48 @@ Performed a total of 0 changes.
 
 5.10.5. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\mkMultBuff'.
-Computing hashes of 1297 cells of `\mkMultBuff'.
+Computing hashes of 1309 cells of `\mkMultBuff'.
 Finding duplicate cells in `\mkMultBuff'.
 Removed a total of 0 cells.
 
 5.10.6. Executing OPT_DFF pass (perform DFF optimizations).
-Adding SRST signal on $procdff$2162 ($dff) from module mkMultBuff (D = $procmux$2139_Y, Q = \rdy_mult_q, rval = 1'1).
-Adding EN signal on $auto$ff.cc:337:slice$2174 ($sdff) from module mkMultBuff (D = 1'0, Q = \rdy_mult_q).
-Adding SRST signal on $procdff$2163 ($dff) from module mkMultBuff (D = $procmux$2130_Y, Q = \rdy_rd_q, rval = 1'0).
-Adding EN signal on $auto$ff.cc:337:slice$2182 ($sdff) from module mkMultBuff (D = 1'1, Q = \rdy_rd_q).
-Adding SRST signal on $procdff$2164 ($dff) from module mkMultBuff (D = $procmux$2123_Y, Q = \rdy_mult_on, rval = 1'0).
-Adding EN signal on $auto$ff.cc:337:slice$2188 ($sdff) from module mkMultBuff (D = 1'1, Q = \rdy_mult_on).
-Adding SRST signal on $procdff$2165 ($dff) from module mkMultBuff (D = $procmux$2114_Y, Q = \rdy_rd_on, rval = 1'1).
-Adding EN signal on $auto$ff.cc:337:slice$2196 ($sdff) from module mkMultBuff (D = 1'0, Q = \rdy_rd_on).
-Adding SRST signal on $procdff$2166 ($dff) from module mkMultBuff (D = $procmux$2109_Y, Q = \acc_q, rval = 6'000000).
-Adding EN signal on $auto$ff.cc:337:slice$2202 ($sdff) from module mkMultBuff (D = $add$submission/rtl_800/mkMultBuff.sv:75$11_Y, Q = \acc_q).
-Adding SRST signal on $procdff$2167 ($dff) from module mkMultBuff (D = { $procmux$2101_Y $procmux$2081_Y }, Q = \wp_q, rval = 6'000000).
-Adding EN signal on $auto$ff.cc:337:slice$2204 ($sdff) from module mkMultBuff (D = $add$submission/rtl_800/mkMultBuff.sv:80$14_Y, Q = \wp_q [5:3]).
-Adding EN signal on $auto$ff.cc:337:slice$2204 ($sdff) from module mkMultBuff (D = $add$submission/rtl_800/mkMultBuff.sv:79$13_Y, Q = \wp_q [2:0]).
-Adding SRST signal on $procdff$2168 ($dff) from module mkMultBuff (D = { $procmux$2071_Y $procmux$2076_Y }, Q = \rp_q, rval = 6'000000).
-Adding EN signal on $auto$ff.cc:337:slice$2209 ($sdff) from module mkMultBuff (D = $add$submission/rtl_800/mkMultBuff.sv:85$17_Y, Q = \rp_q [5:3]).
-Adding EN signal on $auto$ff.cc:337:slice$2209 ($sdff) from module mkMultBuff (D = $add$submission/rtl_800/mkMultBuff.sv:84$16_Y, Q = \rp_q [2:0]).
-Adding SRST signal on $procdff$2169 ($dff) from module mkMultBuff (D = $procmux$2094_Y, Q = \wc_q, rval = 1'0).
-Adding EN signal on $auto$ff.cc:337:slice$2214 ($sdff) from module mkMultBuff (D = $eq$submission/rtl_800/mkMultBuff.sv:81$15_Y, Q = \wc_q).
-Adding SRST signal on $procdff$2170 ($dff) from module mkMultBuff (D = $procmux$2089_Y, Q = \rc_q, rval = 1'0).
-Adding EN signal on $auto$ff.cc:337:slice$2216 ($sdff) from module mkMultBuff (D = $eq$submission/rtl_800/mkMultBuff.sv:86$18_Y, Q = \rc_q).
-Adding SRST signal on $procdff$2171 ($dff) from module mkMultBuff (D = { \v_q [4:0] \u_mult.en }, Q = \v_q, rval = 6'000000).
-Adding SRST signal on $procdff$2172 ($dff) from module mkMultBuff (D = \rd, Q = \vld_q, rval = 1'0).
-Adding SRST signal on $flatten\u_mult.$procdff$2154 ($dff) from module mkMultBuff (D = { \mult_input1 [15] \mult_input1 [13] \mult_input1 [11] \mult_input1 [9] \mult_input1 [7] \mult_input1 [5] \mult_input1 [3] \mult_input1 [1] }, Q = \u_mult.neg_q, rval = 8'00000000).
-Adding SRST signal on $flatten\u_mult.$procdff$2153 ($dff) from module mkMultBuff (D = { $flatten\u_mult.$or$submission/rtl_800/mult_pipe.sv:34$114_Y $flatten\u_mult.$or$submission/rtl_800/mult_pipe.sv:34$105_Y $flatten\u_mult.$or$submission/rtl_800/mult_pipe.sv:34$96_Y $flatten\u_mult.$or$submission/rtl_800/mult_pipe.sv:34$87_Y $flatten\u_mult.$or$submission/rtl_800/mult_pipe.sv:34$78_Y $flatten\u_mult.$or$submission/rtl_800/mult_pipe.sv:34$69_Y $flatten\u_mult.$or$submission/rtl_800/mult_pipe.sv:34$60_Y $flatten\u_mult.$and$submission/rtl_800/mult_pipe.sv:34$45_Y }, Q = \u_mult.two_q, rval = 8'00000000).
-Adding SRST signal on $flatten\u_mult.$procdff$2152 ($dff) from module mkMultBuff (D = { $flatten\u_mult.$xor$submission/rtl_800/mult_pipe.sv:33$106_Y $flatten\u_mult.$xor$submission/rtl_800/mult_pipe.sv:33$97_Y $flatten\u_mult.$xor$submission/rtl_800/mult_pipe.sv:33$88_Y $flatten\u_mult.$xor$submission/rtl_800/mult_pipe.sv:33$79_Y $flatten\u_mult.$xor$submission/rtl_800/mult_pipe.sv:33$70_Y $flatten\u_mult.$xor$submission/rtl_800/mult_pipe.sv:33$61_Y $flatten\u_mult.$xor$submission/rtl_800/mult_pipe.sv:33$52_Y \mult_input1 [0] }, Q = \u_mult.one_q, rval = 8'00000000).
-Adding SRST signal on $flatten\u_mult.$procdff$2151 ($dff) from module mkMultBuff (D = \mult_input0, Q = \u_mult.a_q, rval = 16'0000000000000000).
-Adding SRST signal on $flatten\u_mult.$procdff$2150 ($dff) from module mkMultBuff (D = { \u_mult.neg_q \u_mult.pp7 \u_mult.pp6 \u_mult.pp5 \u_mult.pp4 \u_mult.pp3 \u_mult.pp2 \u_mult.pp1 \u_mult.pp0 }, Q = \u_mult.r2, rval = 144'000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000).
-Adding SRST signal on $flatten\u_mult.$procdff$2149 ($dff) from module mkMultBuff (D = { \u_mult.r2 [135] \u_mult.o339 \u_mult.r2 [134] \u_mult.x336 \u_mult.o196 \u_mult.x197 \u_mult.o334 \u_mult.x193 \u_mult.o191 \u_mult.o329 \u_mult.x331 \u_mult.o324 \u_mult.n184 \u_mult.x326 \u_mult.o319 \u_mult.x183 \u_mult.x321 \u_mult.o314 \u_mult.o173 \u_mult.x316 \u_mult.o309 \u_mult.o166 \u_mult.x311 \u_mult.o304 \u_mult.o299 \u_mult.x163 \u_mult.x306 \u_mult.o294 \u_mult.o289 \u_mult.x301 \u_mult.x296 \u_mult.o284 \u_mult.o279 \u_mult.x291 \u_mult.x286 \u_mult.o274 \u_mult.o269 \u_mult.x281 \u_mult.x276 \u_mult.o264 \u_mult.o259 \u_mult.x271 \u_mult.x266 \u_mult.n254 \u_mult.o252 \u_mult.x261 \u_mult.x256 \u_mult.o247 \u_mult.o242 \u_mult.x253 \u_mult.x249 \u_mult.n237 \u_mult.o235 \u_mult.x244 \u_mult.x239 \u_mult.o230 \u_mult.x236 \u_mult.x232 \u_mult.n225 \u_mult.o223 \u_mult.x61 \u_mult.x227 \u_mult.o218 \u_mult.x224 \u_mult.x220 \u_mult.o37 \u_mult.x215 \u_mult.o213 \u_mult.x34 \u_mult.x29 \u_mult.o27 \u_mult.o208 \u_mult.o20 \u_mult.x210 \u_mult.x205 \u_mult.x12 \u_mult.o10 \u_mult.o203 \u_mult.x7 \u_mult.r2 [138] \u_mult.x200 \u_mult.x2 \u_mult.r2 [1] \u_mult.r2 [136] \u_mult.r2 [0] }, Q = \u_mult.r3, rval = 85'0000000000000000000000000000000000000000000000000000000000000000000000000000000000000).
-Adding SRST signal on $flatten\u_mult.$procdff$2148 ($dff) from module mkMultBuff (D = { \u_mult.n520 \u_mult.x519 \u_mult.x435 \u_mult.o568 \u_mult.n567 \u_mult.x515 \u_mult.o566 \u_mult.n565 \u_mult.o564 \u_mult.n563 \u_mult.o562 \u_mult.n561 \u_mult.o560 \u_mult.n559 \u_mult.o558 \u_mult.n557 \u_mult.o556 \u_mult.n555 \u_mult.o554 \u_mult.n553 \u_mult.o552 \u_mult.n551 \u_mult.o550 \u_mult.n549 \u_mult.o548 \u_mult.n547 \u_mult.o546 \u_mult.n545 \u_mult.o544 \u_mult.n543 \u_mult.o542 \u_mult.n541 \u_mult.o540 \u_mult.n539 \u_mult.o538 \u_mult.n537 \u_mult.x455 \u_mult.o536 \u_mult.n535 \u_mult.o534 \u_mult.n533 \u_mult.x445 \u_mult.x346 \u_mult.o532 \u_mult.n531 \u_mult.o530 \u_mult.n529 \u_mult.x527 \u_mult.x525 \u_mult.x523 \u_mult.x521 \u_mult.x437 }, Q = \u_mult.r4, rval = 52'0000000000000000000000000000000000000000000000000000).
-Adding SRST signal on $flatten\u_mult.$procdff$2147 ($dff) from module mkMultBuff (D = { \u_mult.x729 \u_mult.x728 \u_mult.x727 \u_mult.n588 \u_mult.n737 \u_mult.o736 \u_mult.x718 \u_mult.x717 \u_mult.x716 \u_mult.x715 \u_mult.n584 \u_mult.n734 \u_mult.o733 \u_mult.x691 \u_mult.x690 \u_mult.x689 \u_mult.x688 \u_mult.n579 \u_mult.o731 \u_mult.x663 \u_mult.x662 \u_mult.x661 \u_mult.x660 \u_mult.n574 \u_mult.o627 \u_mult.x635 \u_mult.x634 \u_mult.x633 \u_mult.x632 \u_mult.x631 \u_mult.x630 \u_mult.x629 \u_mult.n569 \u_mult.r4 [4:0] }, Q = \u_mult.r5, rval = 38'00000000000000000000000000000000000000).
-Adding SRST signal on $flatten\u_mult.$procdff$2146 ($dff) from module mkMultBuff (D = { \u_mult.x804 \u_mult.x802 \u_mult.x800 \u_mult.x798 \u_mult.x792 \u_mult.x790 \u_mult.x788 \u_mult.x786 \u_mult.x784 \u_mult.x775 \u_mult.x773 \u_mult.x771 \u_mult.x769 \u_mult.x767 \u_mult.x758 \u_mult.x756 \u_mult.x754 \u_mult.x752 \u_mult.x750 \u_mult.r5 [12:0] }, Q = \u_mult.p, rval = 0).
+Adding SRST signal on $procdff$2178 ($dff) from module mkMultBuff (D = $procmux$2154_Y, Q = \rdy_mult_q, rval = 1'1).
+Adding EN signal on $auto$ff.cc:337:slice$2190 ($sdff) from module mkMultBuff (D = 1'0, Q = \rdy_mult_q).
+Adding SRST signal on $procdff$2179 ($dff) from module mkMultBuff (D = $procmux$2145_Y, Q = \rdy_rd_q, rval = 1'0).
+Adding EN signal on $auto$ff.cc:337:slice$2198 ($sdff) from module mkMultBuff (D = 1'1, Q = \rdy_rd_q).
+Adding SRST signal on $procdff$2180 ($dff) from module mkMultBuff (D = $procmux$2138_Y, Q = \rdy_mult_on, rval = 1'0).
+Adding EN signal on $auto$ff.cc:337:slice$2204 ($sdff) from module mkMultBuff (D = 1'1, Q = \rdy_mult_on).
+Adding SRST signal on $procdff$2181 ($dff) from module mkMultBuff (D = $procmux$2129_Y, Q = \rdy_rd_on, rval = 1'1).
+Adding EN signal on $auto$ff.cc:337:slice$2212 ($sdff) from module mkMultBuff (D = 1'0, Q = \rdy_rd_on).
+Adding SRST signal on $procdff$2182 ($dff) from module mkMultBuff (D = $procmux$2124_Y, Q = \acc_q, rval = 6'000000).
+Adding EN signal on $auto$ff.cc:337:slice$2218 ($sdff) from module mkMultBuff (D = $add$submission/rtl_800/mkMultBuff.sv:75$11_Y, Q = \acc_q).
+Adding SRST signal on $procdff$2183 ($dff) from module mkMultBuff (D = { $procmux$2116_Y $procmux$2096_Y }, Q = \wp_q, rval = 6'000000).
+Adding EN signal on $auto$ff.cc:337:slice$2220 ($sdff) from module mkMultBuff (D = $add$submission/rtl_800/mkMultBuff.sv:80$14_Y, Q = \wp_q [5:3]).
+Adding EN signal on $auto$ff.cc:337:slice$2220 ($sdff) from module mkMultBuff (D = $add$submission/rtl_800/mkMultBuff.sv:79$13_Y, Q = \wp_q [2:0]).
+Adding SRST signal on $procdff$2184 ($dff) from module mkMultBuff (D = { $procmux$2086_Y $procmux$2091_Y }, Q = \rp_q, rval = 6'000000).
+Adding EN signal on $auto$ff.cc:337:slice$2225 ($sdff) from module mkMultBuff (D = $add$submission/rtl_800/mkMultBuff.sv:85$17_Y, Q = \rp_q [5:3]).
+Adding EN signal on $auto$ff.cc:337:slice$2225 ($sdff) from module mkMultBuff (D = $add$submission/rtl_800/mkMultBuff.sv:84$16_Y, Q = \rp_q [2:0]).
+Adding SRST signal on $procdff$2185 ($dff) from module mkMultBuff (D = $procmux$2109_Y, Q = \wc_q, rval = 1'0).
+Adding EN signal on $auto$ff.cc:337:slice$2230 ($sdff) from module mkMultBuff (D = $eq$submission/rtl_800/mkMultBuff.sv:81$15_Y, Q = \wc_q).
+Adding SRST signal on $procdff$2186 ($dff) from module mkMultBuff (D = $procmux$2104_Y, Q = \rc_q, rval = 1'0).
+Adding EN signal on $auto$ff.cc:337:slice$2232 ($sdff) from module mkMultBuff (D = $eq$submission/rtl_800/mkMultBuff.sv:86$18_Y, Q = \rc_q).
+Adding SRST signal on $procdff$2187 ($dff) from module mkMultBuff (D = { \v_q [4:0] \u_mult.en }, Q = \v_q, rval = 6'000000).
+Adding SRST signal on $procdff$2188 ($dff) from module mkMultBuff (D = \rd, Q = \vld_q, rval = 1'0).
+Adding SRST signal on $flatten\u_mult.$procdff$2170 ($dff) from module mkMultBuff (D = { \mult_input1 [15] \mult_input1 [13] \mult_input1 [11] \mult_input1 [9] \mult_input1 [7] \mult_input1 [5] \mult_input1 [3] \mult_input1 [1] }, Q = \u_mult.neg_q, rval = 8'00000000).
+Adding SRST signal on $flatten\u_mult.$procdff$2169 ($dff) from module mkMultBuff (D = { $flatten\u_mult.$or$submission/rtl_800/mult_pipe.sv:34$114_Y $flatten\u_mult.$or$submission/rtl_800/mult_pipe.sv:34$105_Y $flatten\u_mult.$or$submission/rtl_800/mult_pipe.sv:34$96_Y $flatten\u_mult.$or$submission/rtl_800/mult_pipe.sv:34$87_Y $flatten\u_mult.$or$submission/rtl_800/mult_pipe.sv:34$78_Y $flatten\u_mult.$or$submission/rtl_800/mult_pipe.sv:34$69_Y $flatten\u_mult.$or$submission/rtl_800/mult_pipe.sv:34$60_Y $flatten\u_mult.$and$submission/rtl_800/mult_pipe.sv:34$45_Y }, Q = \u_mult.two_q, rval = 8'00000000).
+Adding SRST signal on $flatten\u_mult.$procdff$2168 ($dff) from module mkMultBuff (D = { $flatten\u_mult.$xor$submission/rtl_800/mult_pipe.sv:33$106_Y $flatten\u_mult.$xor$submission/rtl_800/mult_pipe.sv:33$97_Y $flatten\u_mult.$xor$submission/rtl_800/mult_pipe.sv:33$88_Y $flatten\u_mult.$xor$submission/rtl_800/mult_pipe.sv:33$79_Y $flatten\u_mult.$xor$submission/rtl_800/mult_pipe.sv:33$70_Y $flatten\u_mult.$xor$submission/rtl_800/mult_pipe.sv:33$61_Y $flatten\u_mult.$xor$submission/rtl_800/mult_pipe.sv:33$52_Y \mult_input1 [0] }, Q = \u_mult.one_q, rval = 8'00000000).
+Adding SRST signal on $flatten\u_mult.$procdff$2167 ($dff) from module mkMultBuff (D = \mult_input0, Q = \u_mult.a_q, rval = 16'0000000000000000).
+Adding SRST signal on $flatten\u_mult.$procdff$2166 ($dff) from module mkMultBuff (D = { \u_mult.vq [3:0] \u_mult.en }, Q = \u_mult.vq, rval = 5'00000).
+Adding SRST signal on $flatten\u_mult.$procdff$2165 ($dff) from module mkMultBuff (D = { \u_mult.neg_q \u_mult.pp7 \u_mult.pp6 \u_mult.pp5 \u_mult.pp4 \u_mult.pp3 \u_mult.pp2 \u_mult.pp1 \u_mult.pp0 }, Q = \u_mult.r2, rval = 144'000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000).
+Adding SRST signal on $flatten\u_mult.$procdff$2164 ($dff) from module mkMultBuff (D = { \u_mult.r2 [135] \u_mult.o339 \u_mult.r2 [134] \u_mult.x336 \u_mult.o196 \u_mult.x197 \u_mult.o334 \u_mult.x193 \u_mult.o191 \u_mult.o329 \u_mult.x331 \u_mult.o324 \u_mult.n184 \u_mult.x326 \u_mult.o319 \u_mult.x183 \u_mult.x321 \u_mult.o314 \u_mult.o173 \u_mult.x316 \u_mult.o309 \u_mult.o166 \u_mult.x311 \u_mult.o304 \u_mult.o299 \u_mult.x163 \u_mult.x306 \u_mult.o294 \u_mult.o289 \u_mult.x301 \u_mult.x296 \u_mult.o284 \u_mult.o279 \u_mult.x291 \u_mult.x286 \u_mult.o274 \u_mult.o269 \u_mult.x281 \u_mult.x276 \u_mult.o264 \u_mult.o259 \u_mult.x271 \u_mult.x266 \u_mult.n254 \u_mult.o252 \u_mult.x261 \u_mult.x256 \u_mult.o247 \u_mult.o242 \u_mult.x253 \u_mult.x249 \u_mult.n237 \u_mult.o235 \u_mult.x244 \u_mult.x239 \u_mult.o230 \u_mult.x236 \u_mult.x232 \u_mult.n225 \u_mult.o223 \u_mult.x61 \u_mult.x227 \u_mult.o218 \u_mult.x224 \u_mult.x220 \u_mult.o37 \u_mult.x215 \u_mult.o213 \u_mult.x34 \u_mult.x29 \u_mult.o27 \u_mult.o208 \u_mult.o20 \u_mult.x210 \u_mult.x205 \u_mult.x12 \u_mult.o10 \u_mult.o203 \u_mult.x7 \u_mult.r2 [138] \u_mult.x200 \u_mult.x2 \u_mult.r2 [1] \u_mult.r2 [136] \u_mult.r2 [0] }, Q = \u_mult.r3, rval = 85'0000000000000000000000000000000000000000000000000000000000000000000000000000000000000).
+Adding SRST signal on $flatten\u_mult.$procdff$2163 ($dff) from module mkMultBuff (D = { \u_mult.n520 \u_mult.x519 \u_mult.x435 \u_mult.o568 \u_mult.n567 \u_mult.x515 \u_mult.o566 \u_mult.n565 \u_mult.o564 \u_mult.n563 \u_mult.o562 \u_mult.n561 \u_mult.o560 \u_mult.n559 \u_mult.o558 \u_mult.n557 \u_mult.o556 \u_mult.n555 \u_mult.o554 \u_mult.n553 \u_mult.o552 \u_mult.n551 \u_mult.o550 \u_mult.n549 \u_mult.o548 \u_mult.n547 \u_mult.o546 \u_mult.n545 \u_mult.o544 \u_mult.n543 \u_mult.o542 \u_mult.n541 \u_mult.o540 \u_mult.n539 \u_mult.o538 \u_mult.n537 \u_mult.x455 \u_mult.o536 \u_mult.n535 \u_mult.o534 \u_mult.n533 \u_mult.x445 \u_mult.x346 \u_mult.o532 \u_mult.n531 \u_mult.o530 \u_mult.n529 \u_mult.x527 \u_mult.x525 \u_mult.x523 \u_mult.x521 \u_mult.x437 }, Q = \u_mult.r4, rval = 52'0000000000000000000000000000000000000000000000000000).
+Adding SRST signal on $flatten\u_mult.$procdff$2162 ($dff) from module mkMultBuff (D = { \u_mult.x729 \u_mult.x728 \u_mult.x727 \u_mult.n588 \u_mult.n737 \u_mult.o736 \u_mult.x718 \u_mult.x717 \u_mult.x716 \u_mult.x715 \u_mult.n584 \u_mult.n734 \u_mult.o733 \u_mult.x691 \u_mult.x690 \u_mult.x689 \u_mult.x688 \u_mult.n579 \u_mult.o731 \u_mult.x663 \u_mult.x662 \u_mult.x661 \u_mult.x660 \u_mult.n574 \u_mult.o627 \u_mult.x635 \u_mult.x634 \u_mult.x633 \u_mult.x632 \u_mult.x631 \u_mult.x630 \u_mult.x629 \u_mult.n569 \u_mult.r4 [4:0] }, Q = \u_mult.r5, rval = 38'00000000000000000000000000000000000000).
+Adding SRST signal on $flatten\u_mult.$procdff$2161 ($dff) from module mkMultBuff (D = { \u_mult.x804 \u_mult.x802 \u_mult.x800 \u_mult.x798 \u_mult.x792 \u_mult.x790 \u_mult.x788 \u_mult.x786 \u_mult.x784 \u_mult.x775 \u_mult.x773 \u_mult.x771 \u_mult.x769 \u_mult.x767 \u_mult.x758 \u_mult.x756 \u_mult.x754 \u_mult.x752 \u_mult.x750 \u_mult.r5 [12:0] }, Q = \u_mult.p, rval = 0).
 
 5.10.7. Executing OPT_CLEAN pass (remove unused cells and wires).
 Finding unused cells or wires in module \mkMultBuff..
-Removed 356 unused cells and 39 unused wires.
-<suppressed ~357 debug messages>
+Removed 357 unused cells and 40 unused wires.
+<suppressed ~358 debug messages>
 
 5.10.8. Executing OPT_EXPR pass (perform const folding).
 Optimizing module mkMultBuff.
@@ -728,11 +736,11 @@ Performed a total of 0 changes.
 
 5.10.12. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\mkMultBuff'.
-Computing hashes of 955 cells of `\mkMultBuff'.
+Computing hashes of 966 cells of `\mkMultBuff'.
 Finding duplicate cells in `\mkMultBuff'.
-Computing hashes of 951 cells of `\mkMultBuff'.
+Computing hashes of 962 cells of `\mkMultBuff'.
 Finding duplicate cells in `\mkMultBuff'.
-Computing hashes of 948 cells of `\mkMultBuff'.
+Computing hashes of 959 cells of `\mkMultBuff'.
 Finding duplicate cells in `\mkMultBuff'.
 <suppressed ~21 debug messages>
 Removed a total of 7 cells.
@@ -761,7 +769,7 @@ Performed a total of 0 changes.
 
 5.10.19. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\mkMultBuff'.
-Computing hashes of 948 cells of `\mkMultBuff'.
+Computing hashes of 959 cells of `\mkMultBuff'.
 Finding duplicate cells in `\mkMultBuff'.
 Removed a total of 0 cells.
 
@@ -802,11 +810,11 @@ Extracting $alu and $macc cells in module mkMultBuff:
   creating $alu model for $macc $add$submission/rtl_800/mkMultBuff.sv:80$14.
   creating $alu model for $macc $add$submission/rtl_800/mkMultBuff.sv:84$16.
   creating $alu model for $macc $add$submission/rtl_800/mkMultBuff.sv:85$17.
-  creating $alu cell for $add$submission/rtl_800/mkMultBuff.sv:85$17: $auto$alumacc.cc:548:replace_alu$2229
-  creating $alu cell for $add$submission/rtl_800/mkMultBuff.sv:84$16: $auto$alumacc.cc:548:replace_alu$2232
-  creating $alu cell for $add$submission/rtl_800/mkMultBuff.sv:80$14: $auto$alumacc.cc:548:replace_alu$2235
-  creating $alu cell for $add$submission/rtl_800/mkMultBuff.sv:79$13: $auto$alumacc.cc:548:replace_alu$2238
-  creating $alu cell for $add$submission/rtl_800/mkMultBuff.sv:75$11: $auto$alumacc.cc:548:replace_alu$2241
+  creating $alu cell for $add$submission/rtl_800/mkMultBuff.sv:85$17: $auto$alumacc.cc:548:replace_alu$2246
+  creating $alu cell for $add$submission/rtl_800/mkMultBuff.sv:84$16: $auto$alumacc.cc:548:replace_alu$2249
+  creating $alu cell for $add$submission/rtl_800/mkMultBuff.sv:80$14: $auto$alumacc.cc:548:replace_alu$2252
+  creating $alu cell for $add$submission/rtl_800/mkMultBuff.sv:79$13: $auto$alumacc.cc:548:replace_alu$2255
+  creating $alu cell for $add$submission/rtl_800/mkMultBuff.sv:75$11: $auto$alumacc.cc:548:replace_alu$2258
   created 5 $alu and 0 $macc cells.
 
 5.16. Executing SHARE pass (SAT-based resource sharing).
@@ -818,7 +826,7 @@ Optimizing module mkMultBuff.
 
 5.17.2. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\mkMultBuff'.
-Computing hashes of 948 cells of `\mkMultBuff'.
+Computing hashes of 959 cells of `\mkMultBuff'.
 Finding duplicate cells in `\mkMultBuff'.
 Removed a total of 0 cells.
 
@@ -834,7 +842,7 @@ Performed a total of 0 changes.
 
 5.17.5. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\mkMultBuff'.
-Computing hashes of 948 cells of `\mkMultBuff'.
+Computing hashes of 959 cells of `\mkMultBuff'.
 Finding duplicate cells in `\mkMultBuff'.
 Removed a total of 0 cells.
 
@@ -886,7 +894,7 @@ Optimizing module mkMultBuff.
 
 5.20.2. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\mkMultBuff'.
-Computing hashes of 948 cells of `\mkMultBuff'.
+Computing hashes of 959 cells of `\mkMultBuff'.
 Finding duplicate cells in `\mkMultBuff'.
 Removed a total of 0 cells.
 
@@ -908,7 +916,7 @@ Optimizing module mkMultBuff.
 
 5.22.2. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\mkMultBuff'.
-Computing hashes of 948 cells of `\mkMultBuff'.
+Computing hashes of 959 cells of `\mkMultBuff'.
 Finding duplicate cells in `\mkMultBuff'.
 Removed a total of 0 cells.
 
@@ -924,7 +932,7 @@ Performed a total of 0 changes.
 
 5.22.5. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\mkMultBuff'.
-Computing hashes of 948 cells of `\mkMultBuff'.
+Computing hashes of 959 cells of `\mkMultBuff'.
 Finding duplicate cells in `\mkMultBuff'.
 Removed a total of 0 cells.
 
@@ -989,8 +997,8 @@ Using extmapper simplemap for cells of type $not.
 Using extmapper simplemap for cells of type $logic_not.
 Using extmapper simplemap for cells of type $logic_and.
 Using extmapper simplemap for cells of type $eq.
-Using extmapper simplemap for cells of type $xor.
 Using extmapper simplemap for cells of type $logic_or.
+Using extmapper simplemap for cells of type $xor.
 Using extmapper simplemap for cells of type $mux.
 Using extmapper simplemap for cells of type $pos.
 Using template $paramod\_90_fa\WIDTH=32'00000000000000000000000000000011 for cells of type $fa.
@@ -998,7 +1006,7 @@ Using template $paramod\_80_lcu_kogge_stone\WIDTH=32'000000000000000000000000000
 Using template $paramod\_90_fa\WIDTH=32'00000000000000000000000000000110 for cells of type $fa.
 Using template $paramod\_80_lcu_kogge_stone\WIDTH=32'00000000000000000000000000000110 for cells of type $lcu.
 No more expansions possible.
-<suppressed ~1433 debug messages>
+<suppressed ~1444 debug messages>
 
 5.24. Executing OPT pass (performing simple optimizations).
 
@@ -1008,12 +1016,20 @@ Optimizing module mkMultBuff.
 
 5.24.2. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\mkMultBuff'.
-Computing hashes of 1918 cells of `\mkMultBuff'.
+Computing hashes of 1933 cells of `\mkMultBuff'.
 Finding duplicate cells in `\mkMultBuff'.
-Computing hashes of 1899 cells of `\mkMultBuff'.
+Computing hashes of 1913 cells of `\mkMultBuff'.
 Finding duplicate cells in `\mkMultBuff'.
-<suppressed ~57 debug messages>
-Removed a total of 19 cells.
+Computing hashes of 1912 cells of `\mkMultBuff'.
+Finding duplicate cells in `\mkMultBuff'.
+Computing hashes of 1911 cells of `\mkMultBuff'.
+Finding duplicate cells in `\mkMultBuff'.
+Computing hashes of 1910 cells of `\mkMultBuff'.
+Finding duplicate cells in `\mkMultBuff'.
+Computing hashes of 1909 cells of `\mkMultBuff'.
+Finding duplicate cells in `\mkMultBuff'.
+<suppressed ~72 debug messages>
+Removed a total of 24 cells.
 
 5.24.3. Executing OPT_DFF pass (perform DFF optimizations).
 
@@ -1029,7 +1045,7 @@ Removed 13 unused cells and 259 unused wires.
 5.25.1. Extracting gate netlist of module `\mkMultBuff' to `<abc-temp-dir>/input.blif'..
 
 5.25.1.1. Executed ABC.
-Extracted 1463 gates and 1847 wires to a netlist network with 384 inputs and 364 outputs.
+Extracted 1473 gates and 1857 wires to a netlist network with 384 inputs and 369 outputs.
 Running ABC script: <abc-temp-dir>/abc.script
 ABC: UC Berkeley, ABC 1.01 (compiled 0 0)
 ABC: abc 01> empty
@@ -1057,16 +1073,16 @@ ABC: YOSYS_ABC_DONE
 ABC RESULTS:               AND cells:      223
 ABC RESULTS:            ANDNOT cells:       49
 ABC RESULTS:               MUX cells:        7
-ABC RESULTS:              NAND cells:      513
+ABC RESULTS:              NAND cells:      518
 ABC RESULTS:               NOR cells:       35
 ABC RESULTS:               NOT cells:        7
 ABC RESULTS:                OR cells:       60
 ABC RESULTS:             ORNOT cells:       24
 ABC RESULTS:              XNOR cells:      229
 ABC RESULTS:               XOR cells:      174
-ABC RESULTS:        internal signals:     1099
+ABC RESULTS:        internal signals:     1104
 ABC RESULTS:           input signals:      384
-ABC RESULTS:          output signals:      364
+ABC RESULTS:          output signals:      369
 Removing temp directory.
 Removing global temp directory.
 
@@ -1077,7 +1093,7 @@ Optimizing module mkMultBuff.
 
 5.26.2. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\mkMultBuff'.
-Computing hashes of 1744 cells of `\mkMultBuff'.
+Computing hashes of 1749 cells of `\mkMultBuff'.
 Finding duplicate cells in `\mkMultBuff'.
 Removed a total of 0 cells.
 
@@ -1085,7 +1101,7 @@ Removed a total of 0 cells.
 
 5.26.4. Executing OPT_CLEAN pass (remove unused cells and wires).
 Finding unused cells or wires in module \mkMultBuff..
-Removed 0 unused cells and 1481 unused wires.
+Removed 0 unused cells and 1491 unused wires.
 <suppressed ~591 debug messages>
 
 5.26.5. Finished fast OPT passes.
@@ -1106,17 +1122,17 @@ Removed 0 unused modules.
 
         +----------Local Count, excluding submodules.
         | 
-     1229 wires
-     2042 wire bits
-      240 public wires
-     1027 public wire bits
+     1235 wires
+     2052 wire bits
+      241 public wires
+     1032 public wire bits
        16 ports
       149 port bits
-     1744 cells
+     1749 cells
        49   $_ANDNOT_
       223   $_AND_
         7   $_MUX_
-      513   $_NAND_
+      518   $_NAND_
        35   $_NOR_
         7   $_NOT_
        24   $_ORNOT_
@@ -1124,8 +1140,8 @@ Removed 0 unused modules.
        20   $_SDFFE_PN0P_
         2   $_SDFFE_PP0P_
         2   $_SDFFE_PP1P_
-      358   $_SDFF_PN0_
-       40   $_SDFF_PP0_
+        7   $_SDFF_PN0_
+      391   $_SDFF_PP0_
       229   $_XNOR_
       174   $_XOR_
         1   $scopeinfo
@@ -1141,7 +1157,7 @@ Optimizing module mkMultBuff.
 
 6.2. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\mkMultBuff'.
-Computing hashes of 1744 cells of `\mkMultBuff'.
+Computing hashes of 1749 cells of `\mkMultBuff'.
 Finding duplicate cells in `\mkMultBuff'.
 Removed a total of 0 cells.
 
@@ -1157,7 +1173,7 @@ Performed a total of 0 changes.
 
 6.5. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\mkMultBuff'.
-Computing hashes of 1744 cells of `\mkMultBuff'.
+Computing hashes of 1749 cells of `\mkMultBuff'.
 Finding duplicate cells in `\mkMultBuff'.
 Removed a total of 0 cells.
 
@@ -1214,7 +1230,7 @@ Optimizing module mkMultBuff.
 
 8.2. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\mkMultBuff'.
-Computing hashes of 2190 cells of `\mkMultBuff'.
+Computing hashes of 2195 cells of `\mkMultBuff'.
 Finding duplicate cells in `\mkMultBuff'.
 Removed a total of 0 cells.
 
@@ -1230,7 +1246,7 @@ Performed a total of 0 changes.
 
 8.5. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\mkMultBuff'.
-Computing hashes of 2190 cells of `\mkMultBuff'.
+Computing hashes of 2195 cells of `\mkMultBuff'.
 Finding duplicate cells in `\mkMultBuff'.
 Removed a total of 0 cells.
 
@@ -1258,7 +1274,7 @@ Performed a total of 0 changes.
 
 8.12. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\mkMultBuff'.
-Computing hashes of 2183 cells of `\mkMultBuff'.
+Computing hashes of 2188 cells of `\mkMultBuff'.
 Finding duplicate cells in `\mkMultBuff'.
 Removed a total of 0 cells.
 
@@ -1277,7 +1293,7 @@ Optimizing module mkMultBuff.
 9.1. Extracting gate netlist of module `\mkMultBuff' to `<abc-temp-dir>/input.blif'..
 
 9.1.1. Executed ABC.
-Extracted 1760 gates and 2191 wires to a netlist network with 429 inputs and 423 outputs.
+Extracted 1765 gates and 2196 wires to a netlist network with 429 inputs and 423 outputs.
 Running ABC script: <abc-temp-dir>/abc.script
 ABC: UC Berkeley, ABC 1.01 (compiled 0 0)
 ABC: abc 01> empty
@@ -1289,40 +1305,37 @@ ABC: + read_constr -v /home/user/elec402-p2-open/build/800/syn.abc.constr
 ABC: Setting driving cell to be "BUF_X1".
 ABC: Setting output load to be 1.000000.
 ABC: + source /home/user/elec402-p2-open/submission/scripts/abc_speed.script 
-ABC: WireLoad = "5K_hvratio_1_1"  Gates =   1624 ( 12.6 %)   Cap =  3.9 ff (  4.6 %)   Area =     1929.03 ( 91.2 %)   Delay =   930.01 ps  (  1.0 %)               
+ABC: WireLoad = "5K_hvratio_1_1"  Gates =   1619 ( 12.4 %)   Cap =  3.9 ff (  4.4 %)   Area =     1914.40 ( 91.7 %)   Delay =   933.27 ps  (  1.9 %)               
 ABC: + write_blif <abc-temp-dir>/output.blif 
 ABC: 
 ABC: YOSYS_ABC_DONE 
 
 9.1.2. Re-integrating ABC results.
-ABC RESULTS:           AND2_X1 cells:       82
+ABC RESULTS:           AND2_X1 cells:       87
 ABC RESULTS:           AND3_X1 cells:       28
-ABC RESULTS:           AND3_X2 cells:        1
-ABC RESULTS:          AOI21_X1 cells:      110
+ABC RESULTS:           AND3_X4 cells:        2
+ABC RESULTS:          AOI21_X1 cells:      118
 ABC RESULTS:          AOI21_X2 cells:        3
 ABC RESULTS:          AOI22_X1 cells:      122
-ABC RESULTS:            BUF_X1 cells:       70
-ABC RESULTS:            BUF_X2 cells:       67
+ABC RESULTS:            BUF_X1 cells:       84
+ABC RESULTS:            BUF_X2 cells:       43
 ABC RESULTS:            BUF_X4 cells:        2
-ABC RESULTS:         CLKBUF_X1 cells:        1
-ABC RESULTS:         CLKBUF_X2 cells:        3
-ABC RESULTS:            INV_X1 cells:       61
-ABC RESULTS:            INV_X2 cells:        1
-ABC RESULTS:          NAND2_X1 cells:      140
-ABC RESULTS:          NAND3_X1 cells:       44
-ABC RESULTS:           NOR2_X1 cells:      357
+ABC RESULTS:         CLKBUF_X1 cells:        2
+ABC RESULTS:         CLKBUF_X2 cells:        2
+ABC RESULTS:            INV_X1 cells:       67
+ABC RESULTS:          NAND2_X1 cells:      139
+ABC RESULTS:          NAND3_X1 cells:       38
+ABC RESULTS:           NOR2_X1 cells:      359
 ABC RESULTS:           NOR2_X2 cells:        2
-ABC RESULTS:          OAI21_X1 cells:       88
+ABC RESULTS:          OAI21_X1 cells:       81
 ABC RESULTS:          OAI21_X2 cells:        1
-ABC RESULTS:          OAI22_X1 cells:        5
-ABC RESULTS:            OR2_X1 cells:       16
-ABC RESULTS:            OR2_X2 cells:        1
+ABC RESULTS:          OAI22_X1 cells:        4
+ABC RESULTS:            OR2_X1 cells:       17
 ABC RESULTS:            OR2_X4 cells:        1
-ABC RESULTS:          XNOR2_X1 cells:      196
-ABC RESULTS:          XNOR2_X2 cells:        9
-ABC RESULTS:           XOR2_X1 cells:      212
-ABC RESULTS:           XOR2_X2 cells:        1
-ABC RESULTS:        internal signals:     1339
+ABC RESULTS:          XNOR2_X1 cells:      201
+ABC RESULTS:          XNOR2_X2 cells:        8
+ABC RESULTS:           XOR2_X1 cells:      208
+ABC RESULTS:        internal signals:     1344
 ABC RESULTS:           input signals:      429
 ABC RESULTS:          output signals:      423
 Removing temp directory.
@@ -1330,7 +1343,7 @@ Removing global temp directory.
 
 10. Executing OPT_CLEAN pass (remove unused cells and wires).
 Finding unused cells or wires in module \mkMultBuff..
-Removed 0 unused cells and 2035 unused wires.
+Removed 0 unused cells and 2040 unused wires.
 <suppressed ~176 debug messages>
 
 11. Executing SETUNDEF pass (replace undef values with defined constants).
@@ -1339,8 +1352,8 @@ Removed 0 unused cells and 2035 unused wires.
 
 13. Executing OPT_CLEAN pass (remove unused cells and wires).
 Finding unused cells or wires in module \mkMultBuff..
-Removed 2 unused cells and 33 unused wires.
-<suppressed ~35 debug messages>
+Removed 2 unused cells and 34 unused wires.
+<suppressed ~36 debug messages>
 
 14. Executing CHECK pass (checking for obvious problems).
 Checking module mkMultBuff...
@@ -1353,48 +1366,45 @@ Found and reported 0 problems.
         +----------Local Count, excluding submodules.
         |        +-Local Area, excluding submodules.
         |        | 
-     2076        - wires
-     2615        - wire bits
+     2071        - wires
+     2609        - wire bits
        33        - public wires
-      559        - public wire bits
+      558        - public wire bits
        16        - ports
       149        - port bits
-     2046 3.73E+03 cells
-       82   87.248   AND2_X1
+     2041 3.72E+03 cells
+       87   92.568   AND2_X1
        28    37.24   AND3_X1
-        1    1.596   AND3_X2
-      110   117.04   AOI21_X1
+        2    5.852   AND3_X4
+      118  125.552   AOI21_X1
         3    5.586   AOI21_X2
       122   162.26   AOI22_X1
-       70    55.86   BUF_X1
-       67   71.288   BUF_X2
+       84   67.032   BUF_X1
+       43   45.752   BUF_X2
         2    3.724   BUF_X4
-        1    0.798   CLKBUF_X1
-        3    3.192   CLKBUF_X2
+        2    1.596   CLKBUF_X1
+        2    2.128   CLKBUF_X2
       422 1.91E+03   DFF_X1
-       61   32.452   INV_X1
-        1    0.798   INV_X2
-      140   111.72   NAND2_X1
-       44   46.816   NAND3_X1
-      357  284.886   NOR2_X1
+       67   35.644   INV_X1
+      139  110.922   NAND2_X1
+       38   40.432   NAND3_X1
+      359  286.482   NOR2_X1
         2     2.66   NOR2_X2
-       88   93.632   OAI21_X1
+       81   86.184   OAI21_X1
         1    1.862   OAI21_X2
-        5     6.65   OAI22_X1
-       16   17.024   OR2_X1
-        1     1.33   OR2_X2
+        4     5.32   OAI22_X1
+       17   18.088   OR2_X1
         1    2.394   OR2_X4
-      196  312.816   XNOR2_X1
-        9    23.94   XNOR2_X2
-      212  338.352   XOR2_X1
-        1    2.394   XOR2_X2
+      201  320.796   XNOR2_X1
+        8    21.28   XNOR2_X2
+      208  331.968   XOR2_X1
 
-   Chip area for module '\mkMultBuff': 3733.842000
-     of which used for sequential elements: 1908.284000 (51.11%)
+   Chip area for module '\mkMultBuff': 3721.606000
+     of which used for sequential elements: 1908.284000 (51.28%)
 
 16. Executing Verilog backend.
 Dumping module `\mkMultBuff'.
 
-End of script. Logfile hash: 90ec631c74, time: 1.09s, user: 0.57s, system: 0.05s, MEM: 47.15 MB peak
+End of script. Logfile hash: 3d93923d34, time: 1.07s, user: 0.49s, system: 0.08s, MEM: 45.77 MB peak
 Yosys 0.68+post (git sha1 UNKNOWN, Release, GNU /usr/local/bin/wrapped-cc/g++ 15.2.0)
-Time spent: 48% 2x abc (0 sec), 11% 23x opt_clean (0 sec), ...
+Time spent: 51% 2x abc (0 sec), 10% 23x opt_clean (0 sec), ...
