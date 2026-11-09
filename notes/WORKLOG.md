@@ -592,3 +592,21 @@ Ideas to try, kept only if they beat the current design on sign-off area × powe
 A single worker implements them as generator options in `build/r5/` (one generator copy, so there is nothing to merge).
 
 **Report appendix.** Sources are now set at 5.5 pt monospace in two columns (multicol, inserted with pandoc raw-LaTeX fences, because a `\begin{multicols}` raw block swallowed the Markdown). PDF 79 → 39 pages.
+
+**Round 5 worker results** (`build/r5/`, generator copy with `--cpa cselc`, `--bubble`, `--onehot`). Base options: `--mode wallace --rawlevels 3 --cuts 2,4 --gp gt --res-budget 0.66 --k0 8 --k 5 --pair-late 2 --lvl-limit 0.66`.
+
+| cand | added options | ranks | flops | area tot/seq/comb µm² | vectorless µW | run/fill/drain µW | WNS ns | port slack ns | our A×P |
+|---|---|---|---:|---|---:|---|---:|---:|---:|
+| current | --bpair | 40/144/85/52/38/32 | 422 | 3864.2/1910.4/1953.8 | 2113.7 | 2400.3/4424.7/1860.8 | .124 | .714 (reg) | 1.000 |
+| A | --cpa cselc --noprod | 40/144/85/52/51/– | 402 | 3836.3/1820.0/2016.3 | 2058.3 | 2347.3/4422.8/1779.0 | .113 | .238 | 0.967 |
+| B | --bpair --bubble | as current | 422 | 3853.3 | 1957.1 | 2424.7/4411.3/1861.2 | .127 | .714 | 0.923 |
+| **AB** | --cpa cselc --noprod --bubble | 40/144/85/52/51/– | 402 | 3762.8/1820.0/1942.9 | 1870.8 | 2357.5/4345.6/1778.8 | .100 | .238 | 0.862 |
+| C | --bpair --onehot | 47/144/… | 429 | 4008.6 | 2283.0 | 2400.2/4458.7/1896.7 | .124 | .714 | 1.120 |
+| ABC | | 47/…/51/– | 409 | 3956.0 | 1961.9 | | .128 | .238 | 0.950 |
+
+What each idea did:
+- *A:* stage B is one select per bit. The port path is DFF → BUF → OAI21 → port, at +0.238 ns, against an XOR with about 0.1 ns in round 4. R5 is 51 flops.
+- *B:* the valid register is merged with the top's v_q, so no flops are added. Vectorless power drops 7–9 % (probabilistic damping), but activity power changes by only −2 % to +1 %.
+- *C:* removes 136 XORs in generic gates, but costs +144–193 µm² in Nangate. It is dropped.
+
+AB, A and B pass check, sim, timing and F14. They were submitted as `check/r5-AB` (71ec778), `check/r5-A` (267588f) and `check/r5-B` (3cdff88).
