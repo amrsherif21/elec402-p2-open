@@ -666,4 +666,12 @@ To keep the 12 reachable, branch `candidates` (4cabff3) was made off `main` (7d9
 - Check: `git merge-base --is-ancestor origin/check/<label> origin/candidates` holds for all 12 labels, and also for 400, 800, final and the two earlier final commits.
 - `candidates` is listed in the README branch table.
 
-Deleting the `check/*` branches failed. `git push origin --delete check/400` returned HTTP 403 from the GitHub proxy, which rejects branch deletions (CLAUDE.md §5). All 15 branches still exist and must be deleted from the GitHub web interface or from a machine with direct push access. Every commit they point at is reachable from `main` or `candidates`, so deleting them loses nothing. The work branch `claude/focused-dijkstra-3f079i` was left in place.
+The session could not delete the `check/*` branches. `git push origin --delete check/400` returned HTTP 403 from the GitHub proxy, which rejects branch deletions (CLAUDE.md §5). The user then deleted all 15 outside the session.
+
+Check after the deletion (`git fetch --prune origin`):
+- `git ls-remote origin 'refs/heads/check/*'` lists no branches;
+- `candidates` is still at 4cabff3 and reaches all 12 candidate commits;
+- `main` reaches 60ed005585 (400), b6917e9eb1 (800), db08401acc (final) and the earlier final commits 6d228d0e28 and efbfecdf64;
+- so every scorecard on `check-results` still points at a reachable commit.
+
+The work branch `claude/focused-dijkstra-3f079i` was left in place.
