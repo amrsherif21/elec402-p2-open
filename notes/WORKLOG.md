@@ -610,3 +610,28 @@ What each idea did:
 - *C:* removes 136 XORs in generic gates, but costs +144–193 µm² in Nangate. It is dropped.
 
 AB, A and B pass check, sim, timing and F14. They were submitted as `check/r5-AB` (71ec778), `check/r5-A` (267588f) and `check/r5-B` (3cdff88).
+
+**Round 5 sign-off results** (scorecards on `check-results`, 400 MHz unchanged in all three: 158 ps, 2427.5 µm², 177.5 µW). A×P is relative to the round 4 final (4240.5 µm² × 805.9 µW = 1.000).
+
+| cand | flops | area µm² | power µW | WNS ps | SDF | sign-off A×P | our A×P |
+|---|---:|---:|---:|---:|---|---:|---:|
+| round 4 final | 422 | 4240.5 | 805.9 | 75 | 1162/1162 | 1.000 | 1.000 |
+| A (cselc, no prod) | 402 | 4428.9 | 1014.0 | 76 | 1152/1152 | 1.314 | 0.967 |
+| AB | 402 | 4359.9 | 820.6 | 80 | 1152/1152 | 1.047 | 0.862 |
+| **B (bubble)** | 422 | 4485.3 | 732.0 | 79 | 1162/1162 | **0.961** | 0.923 |
+
+**Decision.** B is the only candidate that beats the round 4 design on sign-off area × power: area +5.8 %, power −9.2 %, slack 79 ps against the 62 ps target. It becomes the final 800 MHz design. A loses again to port-path upsizing (power +26 %), the same effect that rejected `--noprod` in round 4. The two flows ranked the candidates differently again (AB was best in ours, third in sign-off), so the decision is made on sign-off as before.
+
+How to read B's gain: the vectorless estimate propagates a default activity through the new AND gates on the rank inputs, so it sees quieter registers (−7.4 % ours, −9.2 % sign-off). In simulation, operand isolation already zeroes the data of empty slots, and the activity-based power moves by −2 % to +1 %. The judged metric is the sign-off vectorless estimate, so B is kept, and the report says this plainly.
+
+**Final 800 MHz flow** (`make all RUN=800`, exit 0; `build/final5_800.log`):
+- generator: `--mode wallace --rawlevels 3 --cuts 2,4 --gp gt --res-budget 0.66 --bpair --k0 8 --k 5 --pair-late 2 --lvl-limit 0.66 --bubble`; the body is identical to `build/r5/B/rtl/mult_pipe.sv` (only the arguments header line differs);
+- check, sim, timing: ALL PASS (SDF: 384 accepted, 384 returned, 0 failures);
+- WNS +0.127 ns (EN_writeMem → writeMem_addr[5], a control path), WHS +0.041 ns; worst datapath rank is R3 at +0.128;
+- area 3853.3 µm² (sequential 1910.4), 422 flops;
+- power (µW): vectorless 1957.1, run 2424.7, fill 4411.3, drain 1861.2;
+- F14: 422 of 422 reset-gated;
+- mutants: 13 of 13 killed (mutant 13's net names are unchanged by `--bubble`);
+- waves regenerated.
+
+Committed as db08401 and pushed to `check/final`. Fresh-clone rerun started.
