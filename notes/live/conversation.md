@@ -1,6 +1,6 @@
 # Session record
 
-Rendered 2026-11-08 18:31:39 UTC from the Claude Code transcript.
+Rendered 2026-11-09 00:41:56 UTC from the Claude Code transcript.
 
 ### Prompt, 2026-11-08 02:33:34
 
@@ -3116,3 +3116,20 @@ The main prose is 2,758 words, about the same as last round. The PDF is now 79 p
 Files are in `submission/pdf_report`:
 - report.pdf
 
+### Prompt, 2026-11-09 00:41:15
+
+Okay, one last round and then we’re done. I looked into whether there’s anything structural left to gain at 800 MHz, and the short answer is mostly no. From a first-principles check, the R1/R2/R3/R4 cutsets are already at the floor for radix-4 Booth with a Wallace tree at this corner. The select stage can’t absorb part of an L1 level because the select (about 0.45 ns) plus an FA sum (about 0.35 ns) plus roughly 0.58 ns of flop overhead comes to around 1.38 ns. Selecting straight from the ports without R1 comes out at 1.25 to 1.6 ns once you include the DFF_X1 port driver, and radix-8 Booth needs a 17-bit adder for 3a that would cost a whole stage on its own. It’s worth putting that reasoning in the design decisions section because it explains why the 800 MHz design sits at six ranks.
+
+There are still three smaller things worth trying. The first is the adder tail. Dropping the product register backfired last time because stage B ended in an XOR driving the port with only about 0.1 ns of slack, and Genus upsized that path. If you switch the final adder from carry-increment to carry-select, stage A can form both sums for each block (s1 comes from s0 and the block transmit prefix you already compute) and finish the block carry-ins, which leaves stage B as a single MUX2 per bit driving the port directly. Clock-to-Q plus a mux is around 0.65 ns, leaving Genus nothing to upsize, and R6 can go away. R5 grows to about 55 flops, but you lose the 32 product flops and one valid flop. 
+
+The second idea is to use the reset gate that we already pay for on every flop because of F14 to zero each rank when the incoming slot is a bubble. In practice that means ANDing RST_N with the previous rank’s valid bit, the same way the operand register already loads zeros when it’s idle. It costs almost no area and should cut switching activity. The open question is whether the vectorless estimate in sign-off actually picks it up, although your 400 MHz isolation experiment moved the OpenSTA vectorless number from 755.9 to 652.5 uW which to me is a hint that it might. The valid flops will end up with a lot of fanout and the resizer should buffer them.
+
+The third one is more of a coin flip. If R1 stores one-hot Booth selects (+a, −a, +2a and −2a, 8 more flops), the selection becomes a single AOI222 per bit with no XOR at all, removing 136 XOR2 gates. Area should come out about neutral, and it’s only worth keeping if the vectorless power drops enough to win on area x power.
+
+The first two ideas stack and the third is independent of them. Try each one, keep only what beats the current design on area × power in sign-off, and don’t go beyond these three. If nothing improves, I recommend keeping 4e57985 as it is would be a perfectly fine outcome. While you’re in the report, please also set the source appendix in a smaller monospace font because it’s 79 pages right now. After that, wrap up the same way as before with check/final, the report update (keeping it concise), the fresh-clone rerun, the PDF, the work log and token usage, then commit and push.
+
+### Agent, 2026-11-09 00:41:34
+
+This round has three experiments on the 800 MHz design and one report formatting change. All three experiments are options in the multiplier generator, so I'll give them to a single subagent working through them in order. Two workers editing the same generator would produce changes that are hard to merge. Meanwhile I'll do the report changes and run sign-off on whatever it shortlists.
+
+- `Agent` 800MHz: last three ideas
