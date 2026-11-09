@@ -635,3 +635,20 @@ How to read B's gain: the vectorless estimate propagates a default activity thro
 - waves regenerated.
 
 Committed as db08401 and pushed to `check/final`. Fresh-clone rerun started.
+
+**Round 5 final.**
+- `check/final` (db08401), checked 03:26 UTC:
+  - 400 MHz: 158 ps, 2427.5 µm², 177.5 µW, SDF 1264/1264;
+  - 800 MHz: 79 ps, 4485.3 µm², 732.0 µW, SDF 1162/1162;
+  - 400 MHz netlist at 1.25 ns: fails as expected.
+  It is identical to `check/r5-B`.
+- Fresh-clone rerun of db08401 (`submission/syn_reports/fresh_clone_rerun.log`, 03:24–03:26 UTC):
+  - install, then all steps at both frequencies; every checker passes;
+  - F14 108/108 and 422/422; mutants 11/11 and 13/13; both timing_fail cases fail as expected;
+  - `submission/outputs` reproduced byte for byte (only tool logs with timestamps differ).
+- Report:
+  - the six-rank floor reasoning goes in the 800 MHz design-decisions section;
+  - round 5 candidates are in the sign-off table, with the A/B/C discussion;
+  - B's power saving is stated as an effect on the vectorless estimate; activity-based power is unchanged within 2 %;
+  - every 800 MHz figure is updated.
+- The PDF was rebuilt with the token count taken just before the build (`submission/syn_reports/token_usage.md`).
