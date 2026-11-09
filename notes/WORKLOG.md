@@ -652,3 +652,18 @@ Committed as db08401 and pushed to `check/final`. Fresh-clone rerun started.
   - B's power saving is stated as an effect on the vectorless estimate; activity-based power is unchanged within 2 %;
   - every 800 MHz figure is updated.
 - The PDF was rebuilt with the token count taken just before the build (`submission/syn_reports/token_usage.md`).
+
+## Branch cleanup (9 November)
+
+There were 15 `check/*` branches.
+- **Already in `main` (3):** `check/400`, `check/800` and `check/final`, together with the earlier `check/final` commits 6d228d0e28 and efbfecdf64 that have scorecards.
+- **Not in `main` (12):** c400-p1c4, c800-e18, c-wallace, c-combo, r4-c2, r4-wal, r4-walp, r4-c2a, r4-f8p, r5-AB, r5-A and r5-B. Their scorecards on `check-results` point at these commits.
+
+To keep the 12 reachable, branch `candidates` (4cabff3) was made off `main` (7d958e9):
+- It is a single merge with strategy `ours`, so its tree is identical to `main`.
+- It has nine candidate parents. Git drops c400-p1c4, c800-e18 and c-wallace as parents because they are ancestors of c-combo.
+- The commit message maps each label to its commit.
+- Check: `git merge-base --is-ancestor origin/check/<label> origin/candidates` holds for all 12 labels, and also for 400, 800, final and the two earlier final commits.
+- `candidates` is listed in the README branch table.
+
+Deleting the `check/*` branches failed. `git push origin --delete check/400` returned HTTP 403 from the GitHub proxy, which rejects branch deletions (CLAUDE.md §5). All 15 branches still exist and must be deleted from the GitHub web interface or from a machine with direct push access. Every commit they point at is reachable from `main` or `candidates`, so deleting them loses nothing. The work branch `claude/focused-dijkstra-3f079i` was left in place.
