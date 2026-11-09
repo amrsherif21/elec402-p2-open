@@ -80,7 +80,7 @@ The critical path runs from rank 2 through the 32-bit adder to `writeMem_val[30]
 
 ## 800 MHz: six ranks, product register kept
 
-Six ranks is the floor for radix-4 Booth with a Wallace tree at this corner. A flip-flop's clock-to-output delay and setup time take about 0.58 ns of each 1.25 ns cycle, which leaves about 0.67 ns of logic per stage. Selecting a Booth partial product takes about 0.45 ns and one full-adder sum about 0.35 ns, so selection and the first compression level together need about 1.38 ns and cannot share a stage. Selection therefore gets the stage between the operand register (R1) and the partial-product register (R2). Selecting straight from the input ports would save R1, but through the modelled DFF_X1 driver that alone costs 1.25 to 1.6 ns. Radix-8 recoding would leave six rows instead of eight, but it needs the odd multiple 3a, a 17-bit carry-propagate addition that takes a stage of its own and gives back the rank it saves.
+Six ranks is the floor for radix-4 Booth with a Wallace tree at this corner. A flip-flop's clock-to-output delay and setup time take about 0.58 ns of each 1.25 ns cycle, which leaves about 0.67 ns of logic per stage. Selecting a Booth partial product takes about 0.45 ns and one full-adder sum about 0.35 ns, so with the flip-flop overhead a stage holding both would need about 1.38 ns, more than the 1.25 ns cycle. Selection therefore gets the stage between the operand register (R1) and the partial-product register (R2). Selecting straight from the input ports would save R1, but through the modelled DFF_X1 driver that alone costs 1.25 to 1.6 ns. Radix-8 recoding would leave six rows instead of eight, but it needs the odd multiple 3a, a 17-bit carry-propagate addition that takes a stage of its own and gives back the rank it saves.
 
 The rest of the cycle budget fits about two compression levels per stage. The tree is therefore cut after levels 2 and 4, where Wallace leaves 85 and 52 bits. The generate and transmit bits of the final rows are formed before rank 4.
 
@@ -159,7 +159,7 @@ In the fill window the multiplier switches every cycle. In the drain window the 
 | 800 MHz: row tree to rebalanced Wallace tree | −20 flops, −175.7 µm² (−4.0 %), −23.8 µW (−2.9 %) |
 | 800 MHz: bubble zeroing | 0 flops, +244.8 µm² (+5.8 %), −73.9 µW (−9.2 %) |
 | 800 MHz total, from the first design | 577 → 422 flops, −21.0 % area, −34.8 % power |
-| Rejected: digit-gated reset, no product register at 800 MHz (row tree, carry-select tail), clock gating, one-hot selects | sign-off power +7 %, +19 %, +26 %; vectorless +1 to +27 %; +8 % (our flow) |
+| Rejected: digit-gated reset, no product register at 800 MHz (row tree, carry-select tail), clock gating, one-hot selects | sign-off power +7 %, +19 % and +26 %, vectorless +1 to +27 %, one-hot selects +8 % (our flow) |
 
 # Tool flow and departures from the constraints
 
