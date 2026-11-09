@@ -574,3 +574,21 @@ Two claims in the first draft were checked against the data and corrected before
 - *`git status` after the run:* only logs and the tool_versions date changed. Netlists, SDF and reports are byte-identical.
 
 The final report build and token usage follow.
+
+## Round 5 (last): three final ideas at 800 MHz, report appendix
+
+The user's review concluded that the R1–R4 cutsets are at the floor for radix-4 Booth with a Wallace tree at this corner:
+- select (~0.45 ns) + one FA sum (~0.35 ns) + flop overhead (~0.58 ns) ≈ 1.38 ns > 1.25 ns;
+- selecting straight from the ports costs 1.25–1.6 ns with the DFF_X1 driver;
+- radix-8 needs a 17-bit adder for 3a, which costs a whole stage.
+
+This reasoning goes into the report.
+
+Ideas to try, kept only if they beat the current design on sign-off area × power (4240.5 × 805.9):
+- (A) carry-select tail, with stage B a single MUX2 per bit to the port and R6 removed;
+- (B) bubble zeroing: each rank's F14 reset gate also gets the previous rank's valid bit;
+- (C) one-hot Booth selects in R1 (no XOR in the selection).
+
+A single worker implements them as generator options in `build/r5/` (one generator copy, so there is nothing to merge).
+
+**Report appendix.** Sources are now set at 5.5 pt monospace in two columns (multicol, inserted with pandoc raw-LaTeX fences, because a `\begin{multicols}` raw block swallowed the Markdown). PDF 79 → 39 pages.

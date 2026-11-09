@@ -218,4 +218,12 @@ No complete implementation of this specification from another source was used. T
 
 Every file of `submission/rtl_400/`, `submission/rtl_800/`, `submission/testbench/` and `submission/scripts/`, and the `Makefile`. Netlists and SDF files are in `submission/outputs/`.
 
+```{=latex}
+\begin{multicols}{2}
+```
+
 LISTING
+
+```{=latex}
+\end{multicols}
+```

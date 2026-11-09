@@ -39,8 +39,14 @@ cat > $B/header.tex <<'EOF'
 \DeclareUnicodeCharacter{2026}{\ldots}
 \DeclareUnicodeCharacter{00B1}{\ensuremath{\pm}}
 \DeclareUnicodeCharacter{00B0}{\ensuremath{^\circ}}
-\lstset{basicstyle=\ttfamily\scriptsize, breaklines=true, columns=fullflexible,
-        keepspaces=true, frame=single, framerule=0.2pt, showstringspaces=false}
+\usepackage{multicol}
+\setlength{\columnsep}{12pt}
+\newcommand{\startcols}{\begin{multicols}{2}}
+\newcommand{\stopcols}{\end{multicols}}
+% source appendix: small monospace, no frame, tight line spacing
+\lstset{basicstyle=\ttfamily\fontsize{5.5}{6.2}\selectfont, breaklines=true,
+        columns=fullflexible, keepspaces=true, frame=none, showstringspaces=false,
+        aboveskip=2pt, belowskip=2pt}
 EOF
 cd $S
 pandoc ../../../$B/report.md -o ../report.pdf --pdf-engine=pdflatex --listings \
