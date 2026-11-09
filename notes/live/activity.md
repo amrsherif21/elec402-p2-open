@@ -841,3 +841,7 @@
 | 2026-11-09 03:24:18 UTC | Bash | `cd /home/user/elec402-p2-open; until git fetch -q origin check-results 2>/dev/null && git ls-tree --name-only origin/check-results results/ \| grep -q "check_final-db08401"; do sleep 60; done; d=$(git  ...` |
 | 2026-11-09 03:24:32 UTC | Bash | `cd /home/user/elec402-p2-open; cat >> notes/WORKLOG.md <<'EOF' **Round 5 sign-off results** (scorecards on 'check-results', 400 MHz unchanged in all three: 158 ps, 2427.5 µm², 177.5 µW). A×P is relati ...` |
 | 2026-11-09 03:24:56 UTC | Bash | `cd /home/user/elec402-p2-open; bash submission/scripts/build_report.sh 2>&1 \| tail -3; wc -w build/report/report.md \| head -1; python3 - <<'EOF' import re s=open('submission/pdf_report/src/report.md') ...` |
+| 2026-11-09 03:25:01 UTC | Bash | `cd /home/user/elec402-p2-open; s=submission/pdf_report/src/report.md; awk '/# References/{exit} {print NR": "$0}' $s \| grep ";" \| cut -c1-220` |
+| 2026-11-09 03:25:05 UTC | Bash | `cd /home/user/elec402-p2-open; sed -i 's/\| sign-off power +7 %, +19 %, +26 %; vectorless +1 to +27 %; +8 % (our flow) \|/\| sign-off power +7 %, +19 % and +26 %, vectorless +1 to +27 %, one-hot selects  ...` |
+| 2026-11-09 03:25:10 UTC | Bash | `cd /home/user/elec402-p2-open; python3 - <<'EOF' p='submission/pdf_report/src/report.md'; s=open(p).read() a="so selection and the first compression level together need about 1.38 ns and cannot share  ...` |
+| 2026-11-09 03:25:11 UTC | ToolSearch | `select:Monitor` |

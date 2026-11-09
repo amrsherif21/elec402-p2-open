@@ -1,6 +1,6 @@
 # Session record
 
-Rendered 2026-11-09 03:24:56 UTC from the Claude Code transcript.
+Rendered 2026-11-09 03:25:23 UTC from the Claude Code transcript.
 
 ### Prompt, 2026-11-08 02:33:34
 
@@ -3684,3 +3684,57 @@ While those run, I'll add the round-5 decision to the WORKLOG.
 I'll do a test build of the PDF now to catch LaTeX problems early.
 
 - `Bash` cd /home/user/elec402-p2-open; bash submission/scripts/build_report.sh 2>&1 | tail -3; wc -w build/report/report.md | head -1; python3 - <<'EOF' import re s=open('submission/pdf_report/src/report.md') ...
+  - result: report written: submission/pdf_report/report.pdf (Pages: 41) 37686 build/report/report.md words body 3956 semicolons 3 emdash 0
+
+- `Bash` cd /home/user/elec402-p2-open; s=submission/pdf_report/src/report.md; awk '/# References/{exit} {print NR": "$0}' $s | grep ";" | cut -c1-220
+  - result: 152: | Slow stacked cells, MUX2 kept out of ABC's mapping; ABC load 1 fF | 800 MHz −0.61 → +0.05 ns, −612 µm² (our flow) | 162: | Rejected: digit-gated reset, no product register at 800 MHz (row tree, carry-select tail), clock gating, one-hot selects | sign-off power +7 %, +19 %, +26 %; vectorless +1 to +27 %; +8 % (our flow) |
+
+- `Bash` cd /home/user/elec402-p2-open; sed -i 's/| sign-off power +7 %, +19 %, +26 %; vectorless +1 to +27 %; +8 % (our flow) |/| sign-off power +7 %, +19 % and +26 %, vectorless +1 to +27 %, one-hot selects ...
+  - result: 1 243:Six ranks is the floor for radix-4 Booth with a Wallace tree at this corner. A flip-flop’s clock-to-output delay 244-and setup time take about 0.58 ns of each 1.25 ns cycle, which leaves about 0.67 ns of logic per stage. Selecting 245-a Booth partial product takes about 0.45 ns and one full-adder sum about 0.35 ns, so selection and the first 246-compression level together need about 1.38 ns  ...
+
+### Agent, 2026-11-09 03:25:08
+
+The sentence implies selection plus one compression level alone take 1.38 ns, but that figure includes the flop overhead. I'll correct the wording.
+
+- `Bash` cd /home/user/elec402-p2-open; python3 - <<'EOF' p='submission/pdf_report/src/report.md'; s=open(p).read() a="so selection and the first compression level together need about 1.38 ns and cannot share ...
+  - result: done
+
+- `ToolSearch` select:Monitor
+  - result: 
+
+### Agent, 2026-11-09 03:25:21
+
+Bubble zeroing (B) is the only round-5 idea that beat the round-4 design on sign-off area × power, so it is now the final 800 MHz design. The fresh-clone rerun and the `check/final` scorecard are still running, so the rest of the wrap-up is still to do.
+
+| 800 MHz candidate | Flops | Sign-off area | Sign-off power | Slack | Area × power vs round 4 |
+|---|---:|---:|---:|---:|---:|
+| Round 4 final | 422 | 4240.5 µm² | 805.9 µW | 75 ps | 1.000 |
+| A: carry-select tail, no product register | 402 | 4428.9 µm² | 1014.0 µW | 76 ps | 1.314 |
+| A and B together | 402 | 4359.9 µm² | 820.6 µW | 80 ps | 1.047 |
+| **B: bubble zeroing (final)** | 422 | 4485.3 µm² | 732.0 µW | 79 ps | **0.961** |
+
+- **B:** it adds no flip-flops and costs 5.8 % area, but sign-off power falls 9.2 %. Most of that gain is in how the vectorless estimate treats the extra AND gates, not in the circuit. Our activity-based power from simulation changed by only −2 % to +1 %, because operand isolation already keeps the data of empty slots at zero. The report says this plainly.
+- **A:** sign-off power rose 26 %, for the same reason dropping the product register lost in round 4. The output path gets upsized.
+- **C (one-hot selects):** it added 7 flip-flops and 8 % power in our flow, so it never went to sign-off.
+- **A and B together:** this was best in our flow (0.862) but only third in sign-off. The two flows disagreed again, so the decision was made on sign-off.
+
+In our flow, the full 800 MHz run passes all checks:
+- **Tests:** RTL, gate-level and SDF simulation all pass, all 422 flip-flops are proven reset by `RST_N`, and all 13 mutants are caught.
+- **Timing:** worst setup slack is +0.127 ns and hold +0.041 ns. The critical path is now in the control logic, from `EN_writeMem` to `writeMem_addr[5]`.
+- **Area and power:** area is 3853.3 µm² and the vectorless power estimate is 1957.1 µW.
+
+The final RTL is committed as db08401 and pushed to both the work branch and `check/final`, and the work log has the round-5 results and decision. The 400 MHz design is unchanged.
+
+The report now has the six-rank floor reasoning in the 800 MHz section and the round-5 results, and all the 800 MHz numbers are updated. These report edits are not committed yet. The source appendix is now in 5.5 pt monospace, two columns, and a test build of the PDF came to 41 pages, down from 79. That build failed silently once before, so I'll check the LaTeX log on the final one.
+
+Still to do once the rerun and scorecard finish:
+- confirm the `check/final` scorecard matches the B result;
+- copy the rerun log into `submission/syn_reports/` and check that it reproduces every netlist, SDF file and report byte for byte;
+- count tokens, rebuild the PDF and update the work log;
+- commit and push, and give you the final summary table.
+
+### Prompt, 2026-11-09 03:25:23
+
+Stop hook feedback:
+[command hook 2]: There are uncommitted changes in the repository. Please commit and push these changes to the remote branch.
+
