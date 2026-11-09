@@ -26,6 +26,17 @@ Options added in round 4 (each unit-tested against a*b):
                  and the latest one
   --lvl-limit T  in a level before a mid-tree cut, skip full adders whose sum arrives after
                  T if the column stays within --lvl-cap bits (keeps the level count)
+Options added in round 5 (each unit-tested against a*b):
+  --cpa cselc    carry-select tail: stage A forms per block both sums s0 (carry-in 0) and s1
+                 (carry-in 1, from the block's transmit prefix) and finishes the block
+                 carry-ins (prefix over the blocks); stage B is one 2:1 select per bit
+                 (an XOR for the first bit of a block, whose s1 = ~s0). Meant with --noprod.
+  --bubble       bubble zeroing: a valid shift register inside mult_pipe follows the data;
+                 each rank k >= 2 loads zeros unless RST_N & valid(k-1) (the same reset
+                 gate; the operand register already loads zeros when en = 0)
+  --onehot       one-hot Booth selects: R1 holds {+a, -a, +2a, -2a} per digit (32 flops
+                 instead of one/two/neg = 24); selection is one AND-OR term per bit,
+                 pp = (pa & a) | (na & ~a) | (p2a & 2a) | (n2a & ~2a), neg = na | n2a
 Sign extension: classic form, row 0 top bits {~s0, s0, s0}, rows i >= 1 {1, ~s_i}; the
 constant ones are tree inputs that are never registered.  Every register has a
 synchronous active-low reset.
@@ -55,7 +66,7 @@ ap.add_argument("--budgets", default="0.72,0.72", help="fill: logic budget (mode
 ap.add_argument("--target", default="", help="fill: per-stage target column height (default 2 = greedy)")
 ap.add_argument("--res", action="store_true", help="resolve low columns to 1 bit (ripple) inside tree stages")
 ap.add_argument("--gp", default="tree", choices=["tree", "gt", "cpa"], help="where p = x^y, g = x&y is formed")
-ap.add_argument("--cpa", default="cinc", choices=["cinc", "csel", "one"],
+ap.add_argument("--cpa", default="cinc", choices=["cinc", "csel", "cselc", "one"],
                 help="cinc: carry-increment, 2 stages; csel: carry-select (s0/s1), 2 stages; one: 1-stage KS")
 ap.add_argument("--k", type=int, default=8, help="adder block size")
 ap.add_argument("--k0", type=int, default=0, help="size of the first adder block (default k)")
@@ -89,9 +100,17 @@ ap.add_argument("--lvl-limit", type=float, default=0.0,
                 help="wallace: in a level followed by a cut, skip full adders whose sum would arrive "
                      "after this (model ns) where the column stays within --lvl-cap bits")
 ap.add_argument("--lvl-cap", type=int, default=4)
+ap.add_argument("--bubble", action="store_true",
+                help="each rank k >= 2 loads zeros unless RST_N & valid(k-1) (valid shift register inside)")
+ap.add_argument("--onehot", action="store_true",
+                help="R1 holds one-hot Booth selects {+a,-a,+2a,-2a} per digit (32 flops)")
 ap.add_argument("--stats", action="store_true")
 ap.add_argument("--tag", default="")
 args = ap.parse_args()
+if args.bubble and args.rst_digits:
+    sys.exit("--bubble and --rst-digits are exclusive")
+if args.onehot and (args.rawop or args.rst_digits):
+    sys.exit("--onehot excludes --rawop and --rst-digits")
 
 W = 32
 ONE, ZERO = "1'b1", "1'b0"
@@ -442,16 +461,25 @@ else:
 net.lines.append("    wire [16:0] a17 = {a_q[15], a_q};")
 net.lines.append("    wire [16:0] a2  = {a_q, 1'b0};")
 pps = []
+if args.onehot:
+    # one AND-OR term per bit, no XOR; the +1 of a negative row is neg = na | n2a
+    net.lines.append("    wire [7:0] neg_s = na_q | n2a_q;")
+    DG = (None, None, "neg_s")
 for i in range(8):
-    net.lines.append(f"    wire [16:0] pp{i} = (({{17{{{DG[0]}[{i}]}}}} & a17) | ({{17{{{DG[1]}[{i}]}}}} & a2)) ^ {{17{{{DG[2]}[{i}]}}}};")
+    if args.onehot:
+        net.lines.append(f"    wire [16:0] pp{i} = ({{17{{pa_q[{i}]}}}} & a17) | ({{17{{na_q[{i}]}}}} & ~a17)"
+                         f" | ({{17{{p2a_q[{i}]}}}} & a2) | ({{17{{n2a_q[{i}]}}}} & ~a2);")
+    else:
+        net.lines.append(f"    wire [16:0] pp{i} = (({{17{{{DG[0]}[{i}]}}}} & a17) | ({{17{{{DG[1]}[{i}]}}}} & a2)) ^ {{17{{{DG[2]}[{i}]}}}};")
     pps += [f"pp{i}[{j}]" for j in range(17)]
 pps += [f"{DG[2]}[{i}]" for i in range(8)]
 summary.append("R1 raw operands a, b: 32 flops (Booth recoding after the register)" if args.rawop
+               else "R1 operands + one-hot Booth selects: 48 flops" if args.onehot
                else "R1 operands + Booth digits: 40 flops")
 if args.nosel:
     # no register after the selection: the tree continues in the same stage
     ppr = [[(f"pp{i}[{j}]", args.sel_t) for j in range(17)] for i in range(8)]
-    ngr = [(f"neg_q[{i}]", 0.0) for i in range(8)]
+    ngr = [(f"{DG[2]}[{i}]", 0.0) for i in range(8)]
     n2 = None
 else:
     m2, n2 = register("r2", pps)
@@ -461,7 +489,7 @@ else:
                    + (" (reset by gating the Booth digits with RST_N)" if args.rst_digits else ""))
 cols0 = booth_matrix([[b for b in row] for row in ppr], ngr)
 heights0 = [len(c) for c in cols0]
-ranks = [32 if args.rawop else 40] + ([n2] if n2 is not None else [])
+ranks = [32 if args.rawop else 48 if args.onehot else 40] + ([n2] if n2 is not None else [])
 
 # ---- statistics of the level-based trees (separate gate counters)
 def level_stats(kind):
@@ -667,6 +695,43 @@ if args.cpa == "one":
     G, P = ks([g for p, g in pg], tpr)
     prod = [pg[0][0]] + [net.xor(pg[c][0], G[c - 1]) for c in range(1, W)]
     cpa_desc = "single-stage Kogge-Stone"
+elif args.cpa == "cselc":
+    # carry-select tail: stage A = block sums for carry-in 0 and 1 plus the block
+    # carry-ins (Kogge-Stone over the blocks' generate / transmit prefixes);
+    # stage B = one 2:1 select per bit by the block carry-in
+    items = list(fin)
+    s0 = {}; s1 = {}; BG = []; BP = []
+    for bi, (l, h) in enumerate(blocks):
+        gs = [pg[c][1] for c in range(l, h)]; ps = [pg[c][0] for c in range(l, h)]
+        Gp, Pp = ks(gs, [tpr[c] for c in range(l, h)])
+        for kk, c in enumerate(range(l, h)):
+            s0[c] = ps[kk] if kk == 0 else net.xor(ps[kk], Gp[kk - 1])
+            if bi > 0:
+                s1[c] = inv(ps[kk]) if kk == 0 else net.xor(ps[kk], net.or_(Gp[kk - 1], Pp[kk - 1]))
+        BG.append(Gp[-1]); BP.append(Pp[-1] if bi > 0 else ZERO)
+    Gc, _ = ks(BG[:nb - 1], BP[:nb - 1])
+    cinA = [ZERO] + Gc
+    for bi, (l, h) in enumerate(blocks):
+        items += [s0[c] for c in range(l, h)]
+        if bi > 0:
+            items += [s1[c] for c in range(l, h)] + [cinA[bi]]
+    mA, nA = register(f"r{stage}", items)
+    ranks.append(nA)
+    summary.append(f"R{stage} adder stage A (carry-select, block carry-ins in stage A, blocks {blocks}): {nA} flops")
+    stage += 1
+    emit_stage_comment(f"stage {stage}: carry-select: s = cin_blk ? s1 : s0")
+    prod = [mA[e] for e in fin]
+    for bi, (l, h) in enumerate(blocks):
+        for c in range(l, h):
+            a0 = mA[s0[c]]
+            if bi == 0:
+                prod.append(a0); continue
+            a1, ci = mA[s1[c]], mA[cinA[bi]]
+            if a1 == inv(a0):
+                prod.append(net.xor(a0, ci))         # first bit of the block: s1 = ~s0
+            else:
+                prod.append(net.or_(net.and_(inv(ci), a0), net.and_(ci, a1)))
+    cpa_desc = f"two-stage carry-select, block carry-ins in stage A, blocks {blocks}"
 else:
     items = list(fin)
     s0 = {}; s1 = {}; BG = {}; BP = {}
@@ -793,6 +858,29 @@ if args.out:
         o.append("    // Booth digits of the registered multiplier (all 0 when b_q = 0)")
         o.append("    logic [7:0]  one_q, two_q, neg_q;")
         o.append("    assign {neg_q, two_q, one_q} = booth_enc(b_q);")
+    elif args.onehot:
+        o.append("    // one-hot Booth selects of each digit: +a, -a, +2a, -2a (a zero digit: none)")
+        o.append("    function automatic logic [31:0] booth_sel(input logic [15:0] y);")
+        o.append("        logic [16:0] yx;")
+        o.append("        logic [7:0]  pa, na, p2a, n2a;")
+        o.append("        yx = {y, 1'b0};")
+        o.append("        for (int i = 0; i < 8; i++) begin")
+        o.append("            pa[i]  = ~yx[2*i+2] & (yx[2*i+1] ^ yx[2*i]);")
+        o.append("            na[i]  =  yx[2*i+2] & (yx[2*i+1] ^ yx[2*i]);")
+        o.append("            p2a[i] = ~yx[2*i+2] &  yx[2*i+1] &  yx[2*i];")
+        o.append("            n2a[i] =  yx[2*i+2] & ~yx[2*i+1] & ~yx[2*i];")
+        o.append("        end")
+        o.append("        booth_sel = {n2a, p2a, na, pa};")
+        o.append("    endfunction")
+        o.append("    logic [15:0] a_q;")
+        o.append("    logic [7:0]  pa_q, na_q, p2a_q, n2a_q;")
+        o.append("    always_ff @(posedge clk) begin")
+        o.append("        if (!RST_N || !en) begin")
+        o.append("            a_q <= '0; pa_q <= '0; na_q <= '0; p2a_q <= '0; n2a_q <= '0;")
+        o.append("        end else begin")
+        o.append("            a_q <= a; {n2a_q, p2a_q, na_q, pa_q} <= booth_sel(b);")
+        o.append("        end")
+        o.append("    end")
     else:
         o.append("    logic [15:0] a_q;")
         o.append("    logic [7:0]  one_q, two_q, neg_q;")
@@ -804,6 +892,13 @@ if args.out:
         o.append("        end")
         o.append("    end")
     o.append("")
+    if args.bubble:
+        o.append(f"    // valid shift register: vq[k] = rank k+1 holds an accepted pair (bubble zeroing)")
+        o.append(f"    logic [{LAT - 2}:0] vq;")
+        o.append("    always_ff @(posedge clk) begin")
+        o.append("        if (!RST_N) vq <= '0;")
+        o.append("        else        vq <= " + ("{vq[%d:0], en};" % (LAT - 3) if LAT > 2 else "en;"))
+        o.append("    end")
     for name, pairs in regs:
         o.append(f"    logic [{len(pairs) - 1}:0] {name};")
     o.append("    logic [31:0] prod;")
@@ -818,7 +913,10 @@ if args.out:
             for d, s in pairs:
                 o.append(f"        {d} <= {s};")
         else:
-            o.append(f"        if (!RST_N) {name} <= '0;")
+            if args.bubble:
+                o.append(f"        if (!RST_N || !vq[{int(name[1:]) - 2}]) {name} <= '0;   // reset or bubble")
+            else:
+                o.append(f"        if (!RST_N) {name} <= '0;")
             o.append("        else begin")
             for d, s in pairs:
                 o.append(f"            {d} <= {s};")
@@ -830,7 +928,8 @@ if args.out:
     else:
         o.append("    // product register")
         o.append("    always_ff @(posedge clk) begin")
-        o.append("        if (!RST_N) p <= '0;")
+        o.append(f"        if (!RST_N || !vq[{LAT - 2}]) p <= '0;   // reset or bubble" if args.bubble
+                 else "        if (!RST_N) p <= '0;")
         o.append("        else        p <= prod;")
         o.append("    end")
     o.append("endmodule : mult_pipe")
