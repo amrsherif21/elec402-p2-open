@@ -1,6 +1,6 @@
 # Session record
 
-Rendered 2026-11-09 03:27:42 UTC from the Claude Code transcript.
+Rendered 2026-11-09 03:28:05 UTC from the Claude Code transcript.
 
 ### Prompt, 2026-11-08 02:33:34
 
@@ -3815,3 +3815,51 @@ I'm still waiting for the `check/final` scorecard; a background job is watching 
 The `check/final` scorecard matches B exactly: 4485.3 µm², 732.0 µW, 79 ps, 1162 of 1162 products. Next I'll finish the work log, count tokens and rebuild the PDF.
 
 - `Bash` cd /home/user/elec402-p2-open; cat >> notes/WORKLOG.md <<'EOF' **Round 5 final.** - 'check/final' (db08401), checked 03:26 UTC: - 400 MHz: 158 ps, 2427.5 µm², 177.5 µW, SDF 1264/1264; - 800 MHz: 79 ps ...
+  - result: report written: submission/pdf_report/report.pdf (Pages: 41) All responses were served by claude-opus-5-5. Token counts: | source | responses | input | output | cache write 5 min | cache write 1 h | cache read | cost (USD) | |----------------------------------|------:|------:|------:|------:|------:|------:|------:| | main session | 382 | 759 | 443,483 | 0 | 2,573,193 | 157,671,414 | 60.99 | | sub ...
+
+- `Bash` cd /home/user/elec402-p2-open; pdftotext submission/pdf_report/report.pdf - | grep -c "USD 95.84"; git add -A notes submission && git commit -q -m "Round 5 final: report PDF rebuilt, token usage, work ...
+  - result: 1 7d958e9
+
+### Agent, 2026-11-09 03:28:03
+
+Round 5 is finished. Of the three ideas, only bubble zeroing (B) beat the round-4 design on sign-off area × power, so it is now the final 800 MHz design. Everything is committed and pushed (7d958e9), and the `check/final` scorecard for the final RTL (db08401) matches the B candidate exactly.
+
+**Round 5 at 800 MHz (sign-off):**
+
+| Candidate | Flops | Area | Power | Slack | Area × power vs round 4 |
+|---|---:|---:|---:|---:|---:|
+| Round 4 final | 422 | 4240.5 µm² | 805.9 µW | 75 ps | 1.000 |
+| A: carry-select tail, no product register | 402 | 4428.9 µm² | 1014.0 µW | 76 ps | 1.314 |
+| A and B together | 402 | 4359.9 µm² | 820.6 µW | 80 ps | 1.047 |
+| **B: bubble zeroing (final)** | 422 | 4485.3 µm² | 732.0 µW | 79 ps | **0.961** |
+| C: one-hot Booth selects | 429 | not submitted (+8 % power in our flow) | | | |
+
+B costs 5.8 % area and saves 9.2 % sign-off power. That saving comes from how the vectorless estimate treats the new gates, not from the circuit doing less work. Power measured from simulation changed by only −2 % to +1 %, because operand isolation already keeps empty slots at zero. You asked whether vectorless power picks it up; it does, in both flows, and the report says the gain is in the estimate. A lost on output-path upsizing again, the same effect that ruled out dropping the product register in round 4. A and B together ranked best in our flow but only third in sign-off, so the decision was made on sign-off as before.
+
+**Final designs:**
+
+| | 400 MHz | 800 MHz |
+|---|---:|---:|
+| Ranks / flip-flops | 2 / 108 | 6 / 422 |
+| Sign-off area | 2427.5 µm² | 4485.3 µm² |
+| Sign-off power | 177.5 µW | 732.0 µW |
+| Sign-off slack (target) | 158 ps (125) | 79 ps (62) |
+| Sign-off simulation with SDF | 1264 of 1264 products | 1162 of 1162 products |
+| Change from the first design (area / power) | −11.8 % / −21.0 % | −21.0 % / −34.8 % |
+| Our flow: setup / hold slack | +0.172 / +0.061 ns | +0.127 / +0.041 ns |
+| Our flow: area / vectorless power | 2183.9 µm² / 550.9 µW | 3853.3 µm² / 1957.1 µW |
+| Checkers, reset proof, mutants caught | all pass, 108/108, 11/11 | all pass, 422/422, 13/13 |
+
+At 800 MHz our flow's critical path is now in the control logic (from `EN_writeMem` to `writeMem_addr[5]`, +0.127 ns). The worst datapath stage has +0.128 ns.
+
+**Wrap-up:**
+- **Fresh-clone rerun:** a clean clone of db08401 installed the tools and ran the whole flow at both frequencies. Every check passed, and the netlists and SDF files came out byte-identical.
+- **Report:**
+  - The six-rank floor reasoning is now in the 800 MHz design-decisions section.
+  - The round-5 results and all 800 MHz numbers are updated.
+  - The source appendix is set in 5.5 pt monospace in two columns, which brings the PDF from 79 pages to 41.
+- **Token usage:** USD 95.84 at API prices, over 851 responses from the main session and nine subagents, all on Opus 5.5. It's in the report and in `submission/syn_reports/token_usage.md`.
+- **Work log:** round 5, the decision and the final results are recorded in `notes/WORKLOG.md`.
+
+The report is at `submission/pdf_report/report.pdf`.
+
